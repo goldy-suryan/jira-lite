@@ -1,6 +1,6 @@
 'use client';
 
-import { gql } from '@apollo/client';
+import { CREATE_PROJECT } from '@/app/graphql/mutations/project.mutation';
 import { useMutation } from '@apollo/client/react';
 import { useState } from 'react';
 
@@ -10,25 +10,12 @@ const formInitialValue = {
   key: '',
 };
 
-const CREATE_PROJECT = gql`
-  mutation CreateProject($input: createProjectInput) {
-    createProject(input: $input) {
-      name
-      key
-      description
-    }
-  }
-`;
-
 export default function CreateProjectModal({ isOpen, onClose }: any) {
   const [formValue, setFormValue] = useState(formInitialValue);
   const [error, setError] = useState('');
-  const [createProject, { loading, error: projectError }] = useMutation(
-    CREATE_PROJECT,
-    {
-      refetchQueries: ['GetUserProjects'],
-    },
-  );
+  const [createProject] = useMutation(CREATE_PROJECT, {
+    refetchQueries: ['GetUserProjects'],
+  });
 
   const addProject = () => {
     try {

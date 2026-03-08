@@ -1,45 +1,26 @@
 'use client';
 
-import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
+import { useEffect, useState } from 'react';
+import { GET_USER_PROJECTS } from '../graphql/queries/project.query';
+import { IGetUserProjects } from '../graphql/types/interfaces';
+import { useAppSelector } from '../state/hooks';
+import CreateProjectButton from './components/createProjectButton';
 import LeftNav from './components/leftNav';
 import ProjectCard from './components/projectCard';
 import UserDropdown from './components/userDropdown';
-import CreateProjectButton from './components/createProjectButton';
-import { useAppSelector } from '../state/hooks';
-import { useState } from 'react';
-
-const GET_USER_PROJECTS = gql`
-  query GetUserProjects($userId: ID!) {
-    getUserProjects(id: $userId) {
-      name
-      email
-      role
-      projects {
-        id
-        name
-        key
-        description
-      }
-    }
-  }
-`;
-
-export interface IGetUserProjects {
-  getUserProjects: {
-    name: string;
-    email: string;
-    role: string;
-    projects: [];
-  };
-}
 
 export default function DashboardLayout() {
   const userSelector = useAppSelector((state) => state.user);
-  const { data, loading } = useQuery<IGetUserProjects>(GET_USER_PROJECTS, {
+  const { data } = useQuery<IGetUserProjects>(GET_USER_PROJECTS, {
     variables: { userId: userSelector?.user?.id },
   });
-  const [myProjects, setMyProjects] = useState(data?.getUserProjects ?? null);
+  const [myProjects, setMyProjects] = useState(data?.getUserProjects);
+
+  useEffect(() => {
+    setMyProjects(data?.getUserProjects);
+  }, [data]);
+
   return (
     <main className="min-h-screen bg-zinc-950 text-white px-6 py-8 grid grid-cols-[220px_1fr] gap-8">
       {/* Sidebar */}

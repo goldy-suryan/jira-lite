@@ -2,7 +2,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 let userObj;
-if (typeof window != 'undefined') {
+const isBrowser = () => typeof window !== 'undefined';
+if (isBrowser()) {
   userObj = localStorage.getItem('user');
 }
 const initialState = {

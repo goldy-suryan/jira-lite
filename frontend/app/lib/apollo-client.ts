@@ -10,7 +10,8 @@ const httpLink = new HttpLink({
 
 const authLink = new SetContextLink(({ headers }, operation) => {
   let token = null;
-  if (typeof window != 'undefined') {
+  const isBrowser = () => typeof window !== 'undefined';
+  if (isBrowser()) {
     token = localStorage.getItem('token');
   }
   return {
