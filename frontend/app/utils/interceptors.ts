@@ -1,5 +1,3 @@
-'use client';
-
 import axios from 'axios';
 
 export const instance = axios.create({
@@ -10,8 +8,3 @@ export const instance = axios.create({
   withCredentials: true,
 });
 
-instance.interceptors.response.use((response) => {
-  if (response.status == 200) {
-    return response.data;
-  }
-});

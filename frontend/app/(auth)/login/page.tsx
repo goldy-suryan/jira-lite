@@ -1,5 +1,7 @@
 'use client';
-import { LockIcon, MailIcon } from '@/app/components/icons';
+import { LockIcon, MailIcon } from '@/app/(auth)/components/icons';
+import { addUser } from '@/app/state/features/user.slice';
+import { useAppDispatch } from '@/app/state/hooks';
 import { instance } from '@/app/utils/interceptors';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -13,6 +15,7 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const login = async () => {
     try {
@@ -20,15 +23,14 @@ function Login() {
         setError('Email and Password are required');
       }
       const { data } = await instance.post<any>('/auth/login', formVal);
-      localStorage.setItem(
-        'user',
-        JSON.stringify({
-          id: data.id,
-          name: data.name,
-          role: data.role,
-          email: data.email,
-        }),
-      );
+      const dataToStore = {
+        id: data.data.id,
+        name: data.data.name,
+        role: data.data.role,
+        email: data.data.email,
+      };
+      localStorage.setItem('user', JSON.stringify(dataToStore));
+      dispatch(addUser(dataToStore));
       router.replace('/dashboard');
     } catch (e: any) {
       console.log(e.error, 'error here while loging');

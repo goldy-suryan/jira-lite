@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import CreateProjectModal from '../components/createProjectModal';
+import CreateProjectModal from './createProjectModal';
 
 const CreateProjectButton = () => {
   const [modalOpen, setModalOpen] = useState(false);

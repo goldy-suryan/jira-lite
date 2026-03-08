@@ -5,6 +5,7 @@ import { SetContextLink } from '@apollo/client/link/context';
 
 const httpLink = new HttpLink({
   uri: 'http://localhost:5000/graphql',
+  credentials: 'include',
 });
 
 const authLink = new SetContextLink(({ headers }, operation) => {

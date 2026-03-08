@@ -1,6 +1,6 @@
 'use client';
 
-import { LockIcon, MailIcon, UserIcon } from '@/app/components/icons';
+import { LockIcon, MailIcon, UserIcon } from '@/app/(auth)/components/icons';
 import { instance } from '@/app/utils/interceptors';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

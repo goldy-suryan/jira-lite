@@ -54,4 +54,11 @@ export class ProjectService {
     });
     return foundProject;
   };
+
+  findUserProjects = async (id: string) => {
+    const userProjects = await UserModel.findByPk(id, {
+      include: [{ model: ProjectModel, as: 'projects' }],
+    });
+    return userProjects;
+  };
 }

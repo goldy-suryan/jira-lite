@@ -41,4 +41,10 @@ export class ProjectController {
     const project = await this.projectSrvc.findProjectByPK(body.id);
     return project;
   };
+
+  getUserProjects = async (userId: string) => {
+    const userProjects = await this.projectSrvc.findUserProjects(userId);
+    console.log(userProjects?.toJSON())
+    return userProjects;
+  };
 }

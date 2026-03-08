@@ -1,5 +1,6 @@
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@as-integrations/express5';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, {
   type Application,
@@ -14,11 +15,11 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ValidationError } from 'sequelize';
 import { ProjectController } from './controllers/project.controller';
+import { TaskController } from './controllers/task.contoller';
 import { schema } from './graphql-schema/schema';
 import { UserRoute } from './routes/user.route';
 import { unauthorizedError } from './utils/helperFunc';
 import { authenticateToken } from './utils/validateToken';
-import { TaskController } from './controllers/task.contoller';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -54,6 +55,7 @@ export class App {
     this.app.use(morgan('combined', { stream: this.loggingFile }));
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(cookieParser());
 
     // Registering routes
     this.app.use('/auth', this.userRoute.router);
@@ -64,16 +66,16 @@ export class App {
       express.json(),
       expressMiddleware(this.server, {
         context: async ({ req }) => {
-          const authHeader = req.get('authorization');
+          const authHeader = req.cookies.token;
+          const user = authenticateToken(authHeader) as any;
+          return {
+            user,
+            projectCtrl: new ProjectController(),
+            taskCtrl: new TaskController(),
+          };
           if (authHeader) {
-            const user = authenticateToken(authHeader) as any;
-            return {
-              user,
-              projectCtrl: new ProjectController(),
-              taskCtrl: new TaskController(),
-            };
           }
-          throw unauthorizedError();
+          // throw unauthorizedError();
         },
       }),
     );

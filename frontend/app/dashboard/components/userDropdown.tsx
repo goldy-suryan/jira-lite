@@ -1,12 +1,14 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { instance } from '../utils/interceptors';
+import { instance } from '../../utils/interceptors';
 import { useRouter } from 'next/navigation';
+import { useAppSelector } from '../../state/hooks';
 
 export default function UserDropdown() {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const userSelector = useAppSelector((state: any) => state.user);
 
   useEffect(() => {
     function handleClickOutside(event: any) {
@@ -23,6 +25,7 @@ export default function UserDropdown() {
       await instance.post('/auth/logout', {});
       localStorage.removeItem('user');
       router.replace('/');
+      router.refresh();
     } catch (e) {
       console.log(e);
     }
@@ -36,8 +39,8 @@ export default function UserDropdown() {
         aria-haspopup="true"
         aria-expanded={open}
       >
-        <span>
-          John <code>&#9660;</code>
+        <span className="text-sm">
+          {userSelector?.user?.name} <code>&#9660;</code>
         </span>
       </button>
 
