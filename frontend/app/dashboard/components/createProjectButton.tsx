@@ -5,8 +5,6 @@ import CreateProjectModal from './createProjectModal';
 const CreateProjectButton = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleCreateProject = () => {};
-
   return (
     <>
       <button
@@ -18,7 +16,6 @@ const CreateProjectButton = () => {
       <CreateProjectModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        onCreate={handleCreateProject}
       />
     </>
   );

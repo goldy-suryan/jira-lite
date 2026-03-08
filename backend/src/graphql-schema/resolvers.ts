@@ -19,7 +19,7 @@ export const resolvers = {
       if (!user) {
         throw unauthorizedError();
       }
-      return projectCtrl.createProject(args, user);
+      return projectCtrl.createProject(args?.input, user);
     },
     createTask(
       parent: any,

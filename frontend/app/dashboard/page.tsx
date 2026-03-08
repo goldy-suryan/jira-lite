@@ -7,6 +7,7 @@ import ProjectCard from './components/projectCard';
 import UserDropdown from './components/userDropdown';
 import CreateProjectButton from './components/createProjectButton';
 import { useAppSelector } from '../state/hooks';
+import { useState } from 'react';
 
 const GET_USER_PROJECTS = gql`
   query GetUserProjects($userId: ID!) {
@@ -15,18 +16,30 @@ const GET_USER_PROJECTS = gql`
       email
       role
       projects {
+        id
         name
+        key
+        description
       }
     }
   }
 `;
 
+export interface IGetUserProjects {
+  getUserProjects: {
+    name: string;
+    email: string;
+    role: string;
+    projects: [];
+  };
+}
+
 export default function DashboardLayout() {
   const userSelector = useAppSelector((state) => state.user);
-  const { data, loading } = useQuery(GET_USER_PROJECTS, {
-    variables: { userId: userSelector.user.id },
+  const { data, loading } = useQuery<IGetUserProjects>(GET_USER_PROJECTS, {
+    variables: { userId: userSelector?.user?.id },
   });
-  console.log(data, 'projectList');
+  const [myProjects, setMyProjects] = useState(data?.getUserProjects ?? null);
   return (
     <main className="min-h-screen bg-zinc-950 text-white px-6 py-8 grid grid-cols-[220px_1fr] gap-8">
       {/* Sidebar */}
@@ -53,18 +66,17 @@ export default function DashboardLayout() {
           <CreateProjectButton />
 
           <div className="grid gap-6 max-w-xl">
-            <ProjectCard
-              title="Website Redesign"
-              keyName="WEB"
-              tasks={12}
-              members={3}
-            />
-            <ProjectCard
-              title="Mobile App"
-              keyName="APP"
-              tasks={8}
-              members={4}
-            />
+            {myProjects?.projects?.map((proj: any) => {
+              return (
+                <ProjectCard
+                  key={proj?.id}
+                  title={proj?.name}
+                  keyName={proj?.key}
+                  tasks={12}
+                  members={3}
+                />
+              );
+            })}
           </div>
         </div>
       </section>

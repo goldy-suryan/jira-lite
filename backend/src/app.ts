@@ -67,15 +67,15 @@ export class App {
       expressMiddleware(this.server, {
         context: async ({ req }) => {
           const authHeader = req.cookies.token;
-          const user = authenticateToken(authHeader) as any;
-          return {
-            user,
-            projectCtrl: new ProjectController(),
-            taskCtrl: new TaskController(),
-          };
           if (authHeader) {
+            const user = authenticateToken(authHeader) as any;
+            return {
+              user,
+              projectCtrl: new ProjectController(),
+              taskCtrl: new TaskController(),
+            };
           }
-          // throw unauthorizedError();
+          throw unauthorizedError();
         },
       }),
     );
