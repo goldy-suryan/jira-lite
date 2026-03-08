@@ -43,10 +43,12 @@ export default function DashboardLayout() {
         </header>
         <hr className="border-t border-white/20" />
         <div>
-          <h2 className="text-xl font-semibold mb-4">Your Projects</h2>
-          <CreateProjectButton />
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-xl font-semibold mb-4">Your Projects</h2>
+            <CreateProjectButton />
+          </div>
 
-          <div className="grid grid-cols-2 gap-6 max-w-xxl">
+          <div className="grid grid-cols-2 gap-8 max-w-xxl">
             {myProjects?.projects?.map((proj: any) => {
               return (
                 <ProjectCard
@@ -55,6 +57,7 @@ export default function DashboardLayout() {
                   keyName={proj?.key}
                   tasks={12}
                   members={proj?.users?.length}
+                  id={proj.id}
                 />
               );
             })}
