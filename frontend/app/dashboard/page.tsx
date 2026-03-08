@@ -18,7 +18,7 @@ export default function DashboardLayout() {
   const [myProjects, setMyProjects] = useState(data?.getUserProjects);
 
   useEffect(() => {
-    setMyProjects(data?.getUserProjects);
+    setMyProjects((prev) => data?.getUserProjects);
   }, [data]);
 
   return (
@@ -46,7 +46,7 @@ export default function DashboardLayout() {
           <h2 className="text-xl font-semibold mb-4">Your Projects</h2>
           <CreateProjectButton />
 
-          <div className="grid gap-6 max-w-xl">
+          <div className="grid grid-cols-2 gap-6 max-w-xxl">
             {myProjects?.projects?.map((proj: any) => {
               return (
                 <ProjectCard
@@ -54,7 +54,7 @@ export default function DashboardLayout() {
                   title={proj?.name}
                   keyName={proj?.key}
                   tasks={12}
-                  members={3}
+                  members={proj?.users?.length}
                 />
               );
             })}

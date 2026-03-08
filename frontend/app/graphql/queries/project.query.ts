@@ -11,6 +11,11 @@ export const GET_USER_PROJECTS = gql`
         name
         key
         description
+        users {
+          id
+          name
+          email
+        }
       }
     }
   }

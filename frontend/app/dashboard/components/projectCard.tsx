@@ -6,7 +6,8 @@ export default function ProjectCard({ title, keyName, tasks, members }: any) {
         KEY: <span className="font-mono">{keyName}</span>
       </p>
       <p className="text-white/70 text-sm">
-        {tasks} Tasks <span className="mx-2">|</span> {members} Members
+        {tasks} Tasks <span className="mx-2">|</span> {members}{' '}
+        {members?.length > 1 ? 'Members' : 'Member'}
       </p>
     </div>
   );

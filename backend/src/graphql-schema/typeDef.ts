@@ -16,6 +16,7 @@ export const typeDefs = `#graphql
         description: String
         owner: User
         tasks: [Task]
+        users: [User]
     }
 
     enum StatusType {

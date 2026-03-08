@@ -44,7 +44,6 @@ export class ProjectController {
 
   getUserProjects = async (userId: string) => {
     const userProjects = await this.projectSrvc.findUserProjects(userId);
-    console.log(userProjects?.toJSON())
     return userProjects;
   };
 }
