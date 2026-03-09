@@ -1,8 +1,8 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { instance } from '../../utils/interceptors';
 import { useRouter } from 'next/navigation';
-import { useAppSelector } from '../../state/hooks';
+import { useAppSelector } from '@/app/state/hooks';
+import { instance } from '@/app/utils/interceptors';
 
 export default function UserDropdown() {
   const [open, setOpen] = useState(false);
