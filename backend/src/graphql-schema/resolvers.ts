@@ -3,11 +3,13 @@ import type { TaskController } from '../controllers/task.contoller';
 import { unauthorizedError } from '../utils/helperFunc';
 import { projectResolver } from './resolvers/project-resolver';
 import { taskResolver } from './resolvers/task-resolver';
+import { userResolver } from './resolvers/user-resolver';
 
 export const resolvers = {
   Query: {
     ...projectResolver,
     ...taskResolver,
+    ...userResolver
   },
 
   Mutation: {

@@ -29,7 +29,7 @@ export const TaskModel = DBConfig.sequelize.define(
       type: DataTypes.ENUM,
       allowNull: false,
       values: ['LOW', 'MEDIUM', 'HIGH'],
-      defaultValue: 'HIGH',
+      defaultValue: 'LOW',
       set(value: string) {
         this.setDataValue('priority', value.toUpperCase());
       },
@@ -51,7 +51,7 @@ export const TaskModel = DBConfig.sequelize.define(
     position: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 1,
+      defaultValue: 0,
     },
   },
   {

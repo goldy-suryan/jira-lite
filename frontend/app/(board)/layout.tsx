@@ -1,14 +1,14 @@
 'use client';
 import React, { ReactNode } from 'react';
-import LeftNav from './dashboard/components/leftNav';
-import UserDropdown from './dashboard/components/userDropdown';
+import LeftNav from './components/leftNav';
+import UserDropdown from './components/userDropdown';
 import { usePathname } from 'next/navigation';
 import { useAppSelector } from '../state/hooks';
 
 const BoardLayout = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const titleSelector = useAppSelector((state) => state.title);
-  console.log(titleSelector, 'titleSelector');
+  const userSelector = useAppSelector((state) => state?.user?.user);
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white px-6 pt-8 grid grid-cols-[180px_1fr] gap-8">
@@ -21,7 +21,7 @@ const BoardLayout = ({ children }: { children: ReactNode }) => {
           <div className="text-xl font-semibold">
             {pathname.includes('dashboard') ? (
               <span>
-                <code>👋</code> Welcome back
+                <code>👋</code> Welcome {userSelector?.name ?? ''}
               </span>
             ) : (
               <span>{titleSelector?.title}</span>

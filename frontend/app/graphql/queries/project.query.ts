@@ -16,6 +16,9 @@ export const GET_USER_PROJECTS = gql`
           name
           email
         }
+        tasks {
+          title
+        }
       }
     }
   }
@@ -30,6 +33,15 @@ export const GET_PROJECT_BY_ID = gql`
       users {
         name
       }
+    }
+  }
+`;
+
+export const GET_ALL_USERS = gql`
+  query GetAllUsers {
+    getAllUsers {
+      id
+      name
     }
   }
 `;

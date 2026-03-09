@@ -46,4 +46,9 @@ export class ProjectController {
     const userProjects = await this.projectSrvc.findUserProjects(userId);
     return userProjects;
   };
+
+  getAllUsers = async () => {
+    const userList = await this.projectSrvc.getAllUsers();
+    return userList;
+  }
 }

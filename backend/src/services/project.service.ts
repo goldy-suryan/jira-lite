@@ -73,10 +73,19 @@ export class ProjectService {
               as: 'users',
               through: { attributes: [] },
             },
+            {
+              model: TaskModel,
+              as: 'tasks',
+            },
           ],
         },
       ],
     });
     return userProjects;
+  };
+
+  getAllUsers = async () => {
+    const userList = await UserModel.findAll({});
+    return userList;
   };
 }

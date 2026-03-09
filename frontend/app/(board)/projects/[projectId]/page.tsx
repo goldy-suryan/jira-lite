@@ -6,7 +6,8 @@ import { addCurrentProject } from '@/app/state/features/project.slice';
 import { useAppDispatch } from '@/app/state/hooks';
 import { useQuery } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import CreateTaskModal from '../../components/createTaskModal';
 
 const columnsData = [
   { id: 1, title: 'Todo', color: 'bg-cyan-500' },
@@ -89,6 +90,7 @@ const cardsData = {
 };
 
 export default function KanbanBoard() {
+  const [modalOpen, setModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const params = useParams();
   const { data } = useQuery<{ getProjectById: { name: string } }>(
@@ -120,9 +122,18 @@ export default function KanbanBoard() {
 
             {/* Cards container with vertical scroll */}
             <div className="p-4 overflow-y-auto flex-grow space-y-4 my-2 min-h-[600px] max-h-[600px]">
-              <button className="text-blue-400 text-sm hover:underline cursor-pointer">
+              <button
+                className="text-blue-400 text-sm hover:underline cursor-pointer"
+                onClick={() => setModalOpen(true)}
+              >
                 + Add Task
               </button>
+              {modalOpen && (
+                <CreateTaskModal
+                  isOpen={modalOpen}
+                  onClose={() => setModalOpen(false)}
+                />
+              )}
               {((cardsData as any)[col.id] || []).map((card: any) => (
                 <div
                   key={card.id}
