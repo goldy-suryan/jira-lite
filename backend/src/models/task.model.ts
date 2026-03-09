@@ -51,7 +51,7 @@ export const TaskModel = DBConfig.sequelize.define(
     position: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 10000,
     },
   },
   {

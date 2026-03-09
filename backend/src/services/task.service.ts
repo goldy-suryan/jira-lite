@@ -17,7 +17,7 @@ export class TaskService {
         assigneeId: body.assigneeId,
       },
     });
-    const nextPosition = (result?.toJSON()?.maxPosition || 0) + 1;
+    const nextPosition = (result?.toJSON()?.maxPosition || 0) + 10000;
     return await TaskModel.create({
       ...body,
       position: nextPosition,

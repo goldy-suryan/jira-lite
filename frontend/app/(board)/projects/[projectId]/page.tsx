@@ -1,13 +1,29 @@
 'use client';
 
 import { GET_PROJECT_BY_ID } from '@/app/graphql/queries/project.query';
+import { Task } from '@/app/graphql/types/interfaces';
 import { addTitle } from '@/app/state/features/pageTitle.slice';
 import { addCurrentProject } from '@/app/state/features/project.slice';
-import { useAppDispatch, useAppSelector } from '@/app/state/hooks';
+import { useAppDispatch } from '@/app/state/hooks';
 import { useQuery } from '@apollo/client/react';
+import {
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import CreateTaskModal from '../../components/createTaskModal';
+import { DroppableColumn } from '../../components/dropableColumn';
+import TaskCard from '../../components/taskCard';
 
 const columnsData = [
   { id: 1, title: 'Todo', color: 'bg-cyan-500' },
@@ -21,7 +37,8 @@ export default function KanbanBoard() {
   const dispatch = useAppDispatch();
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [taskGroup, setTaskGroup] = useState({});
+  const [taskGroup, setTaskGroup] = useState<Record<string, Task[]>>({});
+  const [activeTask, setActiveTask] = useState(null);
 
   const { data } = useQuery<{ getProjectById: { name: string; tasks: any[] } }>(
     GET_PROJECT_BY_ID,
@@ -33,31 +50,106 @@ export default function KanbanBoard() {
   useEffect(() => {
     dispatch(addTitle(data?.getProjectById?.name ?? 'Projects'));
     dispatch(addCurrentProject(data?.getProjectById));
-    setTaskGroup(
-      Object.groupBy(data?.getProjectById.tasks ?? [], ({ status }) =>
-        status?.toLowerCase(),
-      ),
-    );
+    const grouped = Object.groupBy(
+      data?.getProjectById?.tasks ?? [],
+      ({ status }) => status?.toLowerCase(),
+    ) as Record<string, Task[]>;
+    setTaskGroup(grouped);
   }, [data]);
 
-  const formatDate = (dateString: string) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' } as any;
-    return new Date(dateString).toLocaleDateString(undefined, options);
+  const handleDragEnd = ({ active, over }) => {
+    if (!over) return;
+
+    const draggedTaskId = active.id;
+    const targetId = over.id;
+
+    setTaskGroup((prev) => {
+      let draggedTask: any = null;
+      let sourceColumn: string | null = null;
+
+      const updated = Object.fromEntries(
+        Object.entries(prev).map(([status, tasks]: any) => {
+          const filtered = tasks.filter((t) => {
+            if (t.id === draggedTaskId) {
+              draggedTask = t;
+              sourceColumn = status;
+              return false;
+            }
+            return true;
+          });
+
+          return [status, filtered];
+        }),
+      );
+
+      if (!draggedTask || !sourceColumn) return prev;
+
+      let targetColumn: string = targetId;
+
+      if (!updated[targetColumn]) {
+        for (const col in updated) {
+          if (updated[col].some((t) => t.id === targetId)) {
+            targetColumn = col;
+            break;
+          }
+        }
+      }
+
+      draggedTask = { ...draggedTask, status: targetColumn };
+
+      if (!updated[targetColumn]) {
+        updated[targetColumn] = [];
+      }
+
+      if (sourceColumn === targetColumn) {
+        const sourceTasks = [...prev[sourceColumn]];
+        const oldIndex = sourceTasks.findIndex((t) => t.id === draggedTaskId);
+        const newIndex = sourceTasks.findIndex((t) => t.id === targetId);
+
+        if (oldIndex === -1 || newIndex === -1) return prev;
+
+        updated[sourceColumn] = arrayMove(sourceTasks, oldIndex, newIndex);
+        return updated;
+      }
+
+      const overIndex = updated[targetColumn].findIndex(
+        (t) => t.id === targetId,
+      );
+
+      if (overIndex === -1) {
+        updated[targetColumn].push(draggedTask);
+      } else {
+        updated[targetColumn].splice(overIndex, 0, draggedTask);
+      }
+
+      return updated;
+    });
   };
 
-  const priorityBackground = (priority: string) => {
-    let lowerCasePriority = priority?.toLowerCase();
-    if (lowerCasePriority == 'low') {
-      return 'bg-green-600';
-    } else if (lowerCasePriority == 'medium') {
-      return 'bg-orange-600';
-    } else {
-      return 'bg-red-600';
-    }
-  };
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
 
   return (
-    <>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={(event) => {
+        const id = event.active.id;
+        const task = Object.values<any>(taskGroup)
+          .flat()
+          .find((t: any) => t.id === id);
+        setActiveTask(task);
+      }}
+      onDragEnd={(event) => {
+        handleDragEnd(event);
+        setActiveTask(null);
+      }}
+    >
       <h2 className="text-xl mb-6 -mt-1">Tasks</h2>
       <div className="flex gap-6 min-w-max">
         {columnsData.map((col) => (
@@ -71,53 +163,46 @@ export default function KanbanBoard() {
               {col.title.replaceAll('_', ' ')}
             </div>
 
-            {/* Cards container with vertical scroll */}
-            <div className="p-4 overflow-y-auto flex-grow space-y-4 my-2 min-h-[600px] max-h-[600px]">
-              <button
-                className="text-blue-400 text-sm hover:underline cursor-pointer"
-                onClick={() => setModalOpen(true)}
+            <DroppableColumn id={col.title.toLowerCase()}>
+              <SortableContext
+                items={(taskGroup[col.title.toLowerCase()] || []).map(
+                  (t) => t.id,
+                )}
+                strategy={verticalListSortingStrategy}
               >
-                + Add Task
-              </button>
-              {modalOpen && (
-                <CreateTaskModal
-                  isOpen={modalOpen}
-                  onClose={() => setModalOpen(false)}
-                />
-              )}
-              {taskGroup[col?.title?.toLowerCase()]?.length ? (
-                (taskGroup[col?.title?.toLowerCase()] || [])
-                  .map((card) => (
-                    <div
-                      key={card.id}
-                      className="bg-white/10 rounded-md p-4 cursor-pointer hover:bg-white/20 transition"
-                    >
-                      <h3 className="text-white mb-4 text-lg">{card?.title}</h3>
-                      <p className="text-xs">
-                        Priority:{' '}
-                        <span
-                          className={`${priorityBackground(card?.priority)} text-white text-xs px-1 py-0.5 rounded`}
-                        >
-                          {card?.priority}
-                        </span>
+                <div className="p-4 overflow-y-auto flex-grow space-y-4 my-2 min-h-[600px] max-h-[600px]">
+                  <button
+                    className="text-blue-400 text-sm hover:underline cursor-pointer"
+                    onClick={() => setModalOpen(true)}
+                  >
+                    + Add Task
+                  </button>
+                  {modalOpen && (
+                    <CreateTaskModal
+                      isOpen={modalOpen}
+                      onClose={() => setModalOpen(false)}
+                    />
+                  )}
+                  {taskGroup[col?.title?.toLowerCase()]?.length ? (
+                    (taskGroup[col?.title?.toLowerCase()] || []).map((card) => (
+                      <TaskCard key={card.id} card={card} />
+                    ))
+                  ) : (
+                    <div className="flex items-center justify-center min-h-[30rem]">
+                      <p className="text-sm text-center align-middle">
+                        No Task assigned
                       </p>
-                      <p className="text-white text-xs mt-2">
-                        Due Date: {formatDate(card.dueDate)}
-                      </p>
-                      <div className="flex flex-wrap gap-2"></div>
                     </div>
-                  ))
-              ) : (
-                <div className="flex items-center justify-center min-h-[30rem]">
-                  <p className="text-sm text-center align-middle">
-                    No Task assigned
-                  </p>
+                  )}
                 </div>
-              )}
-            </div>
+              </SortableContext>
+            </DroppableColumn>
           </div>
         ))}
       </div>
-    </>
+      <DragOverlay>
+        {activeTask ? <TaskCard card={activeTask} overlay /> : null}
+      </DragOverlay>
+    </DndContext>
   );
 }
