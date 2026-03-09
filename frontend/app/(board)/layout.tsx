@@ -17,7 +17,7 @@ const BoardLayout = ({ children }: { children: ReactNode }) => {
 
       {/* Main content */}
       <section className="flex flex-col gap-6 overflow-hidden">
-        <header className="flex justify-between items-center">
+        <header className="flex justify-between items-center mt-1">
           <div className="text-xl font-semibold">
             {pathname.includes('dashboard') ? (
               <span>
@@ -27,7 +27,7 @@ const BoardLayout = ({ children }: { children: ReactNode }) => {
               <span>{titleSelector?.title}</span>
             )}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
             <input
               type="search"
               placeholder="Search"
