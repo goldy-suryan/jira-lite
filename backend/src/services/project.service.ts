@@ -48,6 +48,11 @@ export class ProjectService {
   findProjectByPK = async (id: string) => {
     const foundProject = await ProjectModel.findByPk(id, {
       include: [
+        {
+          model: UserModel,
+          as: 'users',
+          through: { attributes: [] },
+        },
         { model: UserModel, as: 'owner' },
         { model: TaskModel, as: 'tasks' },
       ],

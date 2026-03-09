@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function ProjectCard({
   title,
@@ -7,11 +7,11 @@ export default function ProjectCard({
   members,
   id,
 }: any) {
-  const router = useRouter();
   return (
-    <div
+    <Link
+      href={`/projects/${id}`}
       className="border border-white/20 rounded-lg p-4 bg-white/5 shadow-md cursor-pointer"
-      onClick={() => router.push(`/projects/${id}`)}
+      role="button"
     >
       <h3 className="font-semibold text-lg mb-1">{title}</h3>
       <p className="text-white/70 mb-1">
@@ -21,6 +21,6 @@ export default function ProjectCard({
         {tasks} Tasks <span className="mx-2">|</span> {members}{' '}
         {members?.length > 1 ? 'Members' : 'Member'}
       </p>
-    </div>
+    </Link>
   );
 }

@@ -20,3 +20,16 @@ export const GET_USER_PROJECTS = gql`
     }
   }
 `;
+
+export const GET_PROJECT_BY_ID = gql`
+  query GetProjectById($projectId: ID!) {
+    getProjectById(id: $projectId) {
+      name
+      key
+      description
+      users {
+        name
+      }
+    }
+  }
+`;

@@ -2,21 +2,30 @@
 import React, { ReactNode } from 'react';
 import LeftNav from './dashboard/components/leftNav';
 import UserDropdown from './dashboard/components/userDropdown';
-import { usePathname  } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { useAppSelector } from '../state/hooks';
 
 const BoardLayout = ({ children }: { children: ReactNode }) => {
-  const pathname = usePathname ();
-  
+  const pathname = usePathname();
+  const titleSelector = useAppSelector((state) => state.title);
+  console.log(titleSelector, 'titleSelector');
+
   return (
     <main className="min-h-screen bg-zinc-950 text-white px-6 pt-8 grid grid-cols-[180px_1fr] gap-8">
       {/* Sidebar */}
       <LeftNav />
 
       {/* Main content */}
-      <section className="flex flex-col gap-8 overflow-hidden">
+      <section className="flex flex-col gap-6 overflow-hidden">
         <header className="flex justify-between items-center">
-          <div className="text-lg font-semibold">
-            {pathname.includes('dashboard') && <span><code>👋</code> Welcome back</span>}
+          <div className="text-xl font-semibold">
+            {pathname.includes('dashboard') ? (
+              <span>
+                <code>👋</code> Welcome back
+              </span>
+            ) : (
+              <span>{titleSelector?.title}</span>
+            )}
           </div>
           <div className="flex items-center gap-4">
             <input

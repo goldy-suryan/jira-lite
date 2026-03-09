@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/app/state/hooks';
 import { instance } from '@/app/utils/interceptors';
+import { UserIcon } from '@/app/(auth)/components/icons';
 
 export default function UserDropdown() {
   const [open, setOpen] = useState(false);
@@ -39,8 +40,8 @@ export default function UserDropdown() {
         aria-haspopup="true"
         aria-expanded={open}
       >
-        <span className="text-sm">
-          {userSelector?.user?.name} <code>&#9660;</code>
+        <span className="text-sm flex items-center">
+          <UserIcon className='w-5 h-5 rounded-full mx-auto block text-gray-700 border border-gray-500 mr-2'/> <code>&#9660;</code>
         </span>
       </button>
 
