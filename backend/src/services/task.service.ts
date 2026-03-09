@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize';
 import { TaskModel } from '../models/task.model';
 
 export class TaskService {
@@ -6,7 +7,20 @@ export class TaskService {
   };
 
   createTask = async (body: any) => {
-    console.log(body, 'body here')
-    return await TaskModel.create(body);
+    const result = await TaskModel.findOne({
+      attributes: [
+        [Sequelize.fn('Max', Sequelize.col('position')), 'maxPosition'],
+      ],
+      where: {
+        projectId: body.projectId,
+        status: body.status,
+        assigneeId: body.assigneeId,
+      },
+    });
+    const nextPosition = (result?.toJSON()?.maxPosition || 0) + 1;
+    return await TaskModel.create({
+      ...body,
+      position: nextPosition,
+    });
   };
 }

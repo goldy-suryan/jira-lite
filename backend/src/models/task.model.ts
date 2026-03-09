@@ -19,7 +19,7 @@ export const TaskModel = DBConfig.sequelize.define(
     status: {
       type: DataTypes.ENUM,
       allowNull: false,
-      values: ['TODO', 'IN_PROGRESS', 'DONE'],
+      values: ['TODO', 'IN_PROGRESS', 'DONE', 'READY_FOR_REVIEW'],
       defaultValue: 'TODO',
       set(value: string) {
         this.setDataValue('status', value.toUpperCase());

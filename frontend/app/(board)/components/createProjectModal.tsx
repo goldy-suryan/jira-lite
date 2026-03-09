@@ -1,6 +1,8 @@
 'use client';
 
 import { CREATE_PROJECT } from '@/app/graphql/mutations/board.mutation';
+import { GET_USER_PROJECTS } from '@/app/graphql/queries/project.query';
+import { useAppSelector } from '@/app/state/hooks';
 import { useMutation } from '@apollo/client/react';
 import { useState } from 'react';
 
@@ -13,8 +15,14 @@ const formInitialValue = {
 export default function CreateProjectModal({ isOpen, onClose }: any) {
   const [formValue, setFormValue] = useState(formInitialValue);
   const [error, setError] = useState('');
+  const userSelector = useAppSelector((state) => state?.user?.user);
   const [createProject] = useMutation(CREATE_PROJECT, {
-    refetchQueries: ['GetUserProjects'],
+    refetchQueries: [
+      {
+        query: GET_USER_PROJECTS,
+        variables: { userId: userSelector?.id },
+      },
+    ],
   });
 
   const addProject = () => {
@@ -46,7 +54,7 @@ export default function CreateProjectModal({ isOpen, onClose }: any) {
         <h2 className="text-xl font-semibold mb-4 text-white">
           Create Project
         </h2>
-        <form>
+        <form className="text-sm">
           <label htmlFor="projectName" className="block mb-2 text-white/80">
             Project Name
           </label>
@@ -84,7 +92,7 @@ export default function CreateProjectModal({ isOpen, onClose }: any) {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6 h-32"
             placeholder="Enter description"
             autoFocus
           />

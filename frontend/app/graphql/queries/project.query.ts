@@ -30,8 +30,22 @@ export const GET_PROJECT_BY_ID = gql`
       name
       key
       description
-      users {
+      owner {
+        id
         name
+      }
+      users {
+        id
+        name
+      }
+      tasks {
+        id
+        title
+        description
+        priority
+        status
+        dueDate
+        position
       }
     }
   }

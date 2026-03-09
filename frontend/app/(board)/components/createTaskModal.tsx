@@ -1,11 +1,15 @@
 'use client';
 
 import { CREATE_TASK } from '@/app/graphql/mutations/board.mutation';
-import { GET_ALL_USERS } from '@/app/graphql/queries/project.query';
+import {
+  GET_ALL_USERS,
+  GET_PROJECT_BY_ID,
+} from '@/app/graphql/queries/project.query';
 import { useAppSelector } from '@/app/state/hooks';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
+import { ConfirmDialog } from './confirmDialog';
 
 const formInitialValue = {
   title: '',
@@ -20,15 +24,25 @@ const formInitialValue = {
 };
 
 export default function CreateTaskModal({ isOpen, onClose }: any) {
-  const [formValue, setFormValue] = useState(formInitialValue);
-  const [error, setError] = useState('');
   const params = useParams();
 
+  const [formValue, setFormValue] = useState(formInitialValue);
+  const [error, setError] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
+
   const userSelector = useAppSelector((state) => state?.user?.user);
+  const currentProjectSelector = useAppSelector(
+    (state) => state.project.currentProject,
+  );
 
   const { data: userList } = useQuery<{ getAllUsers: any }>(GET_ALL_USERS);
   const [createTask] = useMutation(CREATE_TASK, {
-    refetchQueries: ['GetUserProjects'],
+    refetchQueries: [
+      {
+        query: GET_PROJECT_BY_ID,
+        variables: { projectId: params.projectId },
+      },
+    ],
   });
 
   const addTask = () => {
@@ -58,13 +72,30 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
     }
   };
 
+  const getOwner = (user) => {
+    if (user?.id == (currentProjectSelector as any)?.owner?.id) {
+      return '(Owner)';
+    } else if (
+      (currentProjectSelector as any).users.some((item) => item.id == user?.id)
+    ) {
+      return '';
+    } else {
+      return 'Invite';
+    }
+  };
+
+  const sendInvitation = () => {
+    // need to send invitation/email to user
+    console.log(formValue.assigneeId, 'send invitation/email to this user');
+  };
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-transparent backdrop-blur-md flex items-center justify-center z-50">
       <div className="bg-white/10 rounded-lg p-6 w-full max-w-md mx-4">
         <h2 className="text-xl font-semibold mb-4 text-white">Create Task</h2>
-        <form>
+        <form className="text-sm">
           {/* Title */}
           <label htmlFor="taskTitle" className="block text-white/80">
             Title
@@ -90,7 +121,7 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 h-32"
             placeholder="Enter description"
             autoFocus
           />
@@ -106,9 +137,10 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
             }
             className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
           >
-            <option value="todo">TODO</option>
-            <option value="in_progress">IN-PROGRESS</option>
-            <option value="done">DONE</option>
+            <option value="todo">Todo</option>
+            <option value="in_progress">In Progress</option>
+            <option value="done">Done</option>
+            <option value="ready_for_review">Ready for review</option>
           </select>
 
           {/* Priority */}
@@ -134,17 +166,28 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
           </label>
           <select
             id="assign"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 pr-[10rem]"
             value={formValue.assigneeId}
-            onChange={(e) =>
-              setFormValue((prev) => ({ ...prev, assigneeId: e.target.value }))
-            }
+            onChange={(e) => {
+              setFormValue((prev) => ({ ...prev, assigneeId: e.target.value }));
+              console.log(
+                e.target.value,
+                (currentProjectSelector as any).users,
+              );
+              if (
+                !(currentProjectSelector as any).users.some(
+                  (item) => item.id == e.target.value,
+                )
+              ) {
+                setOpenDialog(true);
+              }
+            }}
           >
             <option value="">Select</option>
             {userList?.getAllUsers?.map((user: any) => {
               return (
                 <option key={user?.id} value={user?.id}>
-                  {user?.name}
+                  {user?.name} &nbsp;&nbsp;{getOwner(user)}
                 </option>
               );
             })}
@@ -183,6 +226,15 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
             </button>
           </div>
         </form>
+        <ConfirmDialog
+          isOpen={openDialog}
+          onConfirm={sendInvitation}
+          onCancel={() => {
+            setOpenDialog(false);
+            setFormValue((prev) => ({ ...prev, assigneeId: '' }));
+          }}
+          message="User is not the member of project. Send Invitation?"
+        />
       </div>
     </div>
   );

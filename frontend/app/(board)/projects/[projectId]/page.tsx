@@ -3,7 +3,7 @@
 import { GET_PROJECT_BY_ID } from '@/app/graphql/queries/project.query';
 import { addTitle } from '@/app/state/features/pageTitle.slice';
 import { addCurrentProject } from '@/app/state/features/project.slice';
-import { useAppDispatch } from '@/app/state/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/state/hooks';
 import { useQuery } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -11,89 +11,19 @@ import CreateTaskModal from '../../components/createTaskModal';
 
 const columnsData = [
   { id: 1, title: 'Todo', color: 'bg-cyan-500' },
-  { id: 2, title: 'In-progress', color: 'bg-purple-600' },
+  { id: 2, title: 'In_progress', color: 'bg-purple-600' },
   { id: 3, title: 'Done', color: 'bg-green-600' },
-  { id: 4, title: 'Offer', color: 'bg-yellow-500' },
+  { id: 4, title: 'Ready_for_review', color: 'bg-yellow-500' },
 ];
 
-const cardsData = {
-  1: [
-    {
-      id: 1,
-      title: 'UI/UX Designer',
-      company: 'Wise',
-      tags: ['Figma', 'Design Systems', 'User Research'],
-    },
-    {
-      id: 2,
-      title: 'Mobile Developer',
-      company: 'I Networks',
-      tags: ['Flutter', 'Dart', 'Firebase'],
-    },
-    {
-      id: 3,
-      title: 'Mobile Developer',
-      company: 'I Networks',
-      tags: ['Flutter', 'Dart', 'Firebase'],
-    },
-    {
-      id: 4,
-      title: 'Mobile Developer',
-      company: 'I Networks',
-      tags: ['Flutter', 'Dart', 'Firebase'],
-    },
-    {
-      id: 5,
-      title: 'Mobile Developer',
-      company: 'I Networks',
-      tags: ['Flutter', 'Dart', 'Firebase'],
-    },
-  ],
-  2: [
-    {
-      id: 3,
-      title: 'Front End Developer',
-      company: 'Stripe',
-      tags: ['TypeScript', 'React', 'Next.js'],
-    },
-    {
-      id: 4,
-      title: 'QA Engineer',
-      company: 'Nutrish',
-      tags: ['CIT', 'Appium', 'CI/CD'],
-    },
-  ],
-  3: [
-    {
-      id: 5,
-      title: 'Software Developer',
-      company: 'MU Company',
-      tags: ['React', 'Tailwind', 'High Pay'],
-    },
-  ],
-  4: [
-    {
-      id: 6,
-      title: 'Software Developer',
-      company: 'Profan',
-      tags: ['Node.js', 'PostgreSQL'],
-    },
-  ],
-  5: [
-    {
-      id: 6,
-      title: 'Software Developer',
-      company: 'Profan',
-      tags: ['Node.js', 'PostgreSQL'],
-    },
-  ],
-};
-
 export default function KanbanBoard() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const dispatch = useAppDispatch();
   const params = useParams();
-  const { data } = useQuery<{ getProjectById: { name: string } }>(
+  const dispatch = useAppDispatch();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [taskGroup, setTaskGroup] = useState({});
+
+  const { data } = useQuery<{ getProjectById: { name: string; tasks: any[] } }>(
     GET_PROJECT_BY_ID,
     {
       variables: { projectId: params.projectId },
@@ -103,7 +33,28 @@ export default function KanbanBoard() {
   useEffect(() => {
     dispatch(addTitle(data?.getProjectById?.name ?? 'Projects'));
     dispatch(addCurrentProject(data?.getProjectById));
+    setTaskGroup(
+      Object.groupBy(data?.getProjectById.tasks ?? [], ({ status }) =>
+        status?.toLowerCase(),
+      ),
+    );
   }, [data]);
+
+  const formatDate = (dateString: string) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' } as any;
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const priorityBackground = (priority: string) => {
+    let lowerCasePriority = priority?.toLowerCase();
+    if (lowerCasePriority == 'low') {
+      return 'bg-green-600';
+    } else if (lowerCasePriority == 'medium') {
+      return 'bg-orange-600';
+    } else {
+      return 'bg-red-600';
+    }
+  };
 
   return (
     <>
@@ -117,7 +68,7 @@ export default function KanbanBoard() {
             <div
               className={`${col.color} text-white font-semibold px-4 py-3 rounded-t-lg`}
             >
-              {col.title}
+              {col.title.replaceAll('_', ' ')}
             </div>
 
             {/* Cards container with vertical scroll */}
@@ -134,25 +85,35 @@ export default function KanbanBoard() {
                   onClose={() => setModalOpen(false)}
                 />
               )}
-              {((cardsData as any)[col.id] || []).map((card: any) => (
-                <div
-                  key={card.id}
-                  className="bg-white/10 rounded-md p-4 cursor-pointer hover:bg-white/20 transition"
-                >
-                  <h3 className="text-white font-bold mb-1">{card.title}</h3>
-                  <p className="text-white mb-2">{card.company}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {card.tags.map((tag: any, idx: number) => (
-                      <span
-                        key={`${card.id}-${idx}`}
-                        className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+              {taskGroup[col?.title?.toLowerCase()]?.length ? (
+                (taskGroup[col?.title?.toLowerCase()] || [])
+                  .map((card) => (
+                    <div
+                      key={card.id}
+                      className="bg-white/10 rounded-md p-4 cursor-pointer hover:bg-white/20 transition"
+                    >
+                      <h3 className="text-white mb-4 text-lg">{card?.title}</h3>
+                      <p className="text-xs">
+                        Priority:{' '}
+                        <span
+                          className={`${priorityBackground(card?.priority)} text-white text-xs px-1 py-0.5 rounded`}
+                        >
+                          {card?.priority}
+                        </span>
+                      </p>
+                      <p className="text-white text-xs mt-2">
+                        Due Date: {formatDate(card.dueDate)}
+                      </p>
+                      <div className="flex flex-wrap gap-2"></div>
+                    </div>
+                  ))
+              ) : (
+                <div className="flex items-center justify-center min-h-[30rem]">
+                  <p className="text-sm text-center align-middle">
+                    No Task assigned
+                  </p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         ))}

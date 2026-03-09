@@ -54,7 +54,12 @@ export class ProjectService {
           through: { attributes: [] },
         },
         { model: UserModel, as: 'owner' },
-        { model: TaskModel, as: 'tasks' },
+        {
+          model: TaskModel,
+          as: 'tasks',
+          order: [['position', 'asc']],
+          separate: true,
+        },
       ],
     });
     return foundProject;
