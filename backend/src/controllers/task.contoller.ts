@@ -10,4 +10,8 @@ export class TaskController {
   createTask = async (body: any) => {
     return await this.taskSrvc.createTask(body);
   };
+
+  removeTask = async (taskId: string) => {
+    return await this.taskSrvc.deleteTask(taskId);
+  };
 }

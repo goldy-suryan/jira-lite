@@ -1,5 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import TaskCardKebabMenu from './taskCardKebabMenu';
 
 const TaskCard = ({ card, overlay = false }) => {
   const priorityBackground = (priority: string) => {
@@ -19,19 +20,20 @@ const TaskCard = ({ card, overlay = false }) => {
   };
 
   const {
-  attributes,
-  listeners,
-  setNodeRef,
-  transform,
-  transition,
-  isDragging,
-} = useSortable({
-  id: card.id,
-  data: {
-    type: 'task',
-    columnId: card.status,
-  },
-});
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: card.id,
+    data: {
+      type: 'task',
+      columnId: card.status,
+      column: card,
+    },
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -41,12 +43,13 @@ const TaskCard = ({ card, overlay = false }) => {
 
   return (
     <div
-      className="bg-white/10 rounded-md p-4 cursor-pointer hover:bg-white/20 transition"
+      className="bg-white/10 rounded-md p-4 cursor-pointer hover:bg-white/20 transition relative"
       ref={setNodeRef}
       style={style}
       {...listeners}
       {...attributes}
     >
+      <TaskCardKebabMenu card={card} />
       <h3 className="text-white mb-4 text-lg">{card?.title}</h3>
       <p className="text-xs">
         Priority:{' '}

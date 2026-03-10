@@ -11,7 +11,7 @@ export const CREATE_PROJECT = gql`
 `;
 
 export const CREATE_TASK = gql`
-  mutation CreateTask($input: taskInput) { 
+  mutation CreateTask($input: taskInput) {
     createTask(input: $input) {
       title
       description
@@ -23,5 +23,11 @@ export const CREATE_TASK = gql`
       dueDate
       position
     }
+  }
+`;
+
+export const DELETE_TASK = gql`
+  mutation DeleteTask($taskId: ID!) {
+    deleteTask(taskId: $taskId)
   }
 `;

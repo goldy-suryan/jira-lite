@@ -45,12 +45,12 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
     ],
   });
 
-  const addTask = () => {
+  const addTask = async () => {
     try {
       if (!formValue.title || !formValue.status || !formValue.priority) {
         return setError('Project name and key are required');
       }
-      createTask({
+      await createTask({
         variables: {
           input: {
             title: formValue.title,
@@ -65,10 +65,11 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
           },
         },
       });
-      setFormValue(formInitialValue);
-      onClose();
     } catch (e) {
       console.log(e, 'error while creating project');
+    } finally {
+      setFormValue(formInitialValue);
+      onClose();
     }
   };
 
@@ -227,6 +228,7 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
           </div>
         </form>
         <ConfirmDialog
+          heading="Confirm Invite"
           isOpen={openDialog}
           onConfirm={sendInvitation}
           onCancel={() => {
@@ -234,6 +236,7 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
             setFormValue((prev) => ({ ...prev, assigneeId: '' }));
           }}
           message="User is not the member of project. Send Invitation?"
+          btnText='Invite'
         />
       </div>
     </div>

@@ -20,5 +20,6 @@ export const RootMutation = `#graphql
     type Mutation {
         createProject(input: createProjectInput): Project!
         createTask(input: taskInput): Task!
+        deleteTask(taskId: ID!): Boolean!
     }
 `;

@@ -23,4 +23,14 @@ export class TaskService {
       position: nextPosition,
     });
   };
+
+  deleteTask = async (taskId: string) => {
+    const result = await TaskModel.destroy({
+      where: {
+        id: taskId,
+      },
+    });
+    console.log(result, 'result');
+    return result > 0;
+  };
 }

@@ -20,7 +20,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import CreateTaskModal from '../../components/createTaskModal';
 import { DroppableColumn } from '../../components/dropableColumn';
 import TaskCard from '../../components/taskCard';
@@ -36,9 +36,11 @@ export default function KanbanBoard() {
   const params = useParams();
   const dispatch = useAppDispatch();
 
+  const prevTaskGroupRef = useRef<Record<string, Task[]>>({});
   const [modalOpen, setModalOpen] = useState(false);
   const [taskGroup, setTaskGroup] = useState<Record<string, Task[]>>({});
-  const [activeTask, setActiveTask] = useState(null);
+  const [activeTask, setActiveTask] = useState<null | Task>(null);
+  const [taskMap, setTaskMap] = useState<Record<string, Task>>({});
 
   const { data } = useQuery<{ getProjectById: { name: string; tasks: any[] } }>(
     GET_PROJECT_BY_ID,
@@ -50,12 +52,51 @@ export default function KanbanBoard() {
   useEffect(() => {
     dispatch(addTitle(data?.getProjectById?.name ?? 'Projects'));
     dispatch(addCurrentProject(data?.getProjectById));
+
+    const tasks = data?.getProjectById?.tasks ?? [];
     const grouped = Object.groupBy(
-      data?.getProjectById?.tasks ?? [],
-      ({ status }) => status?.toLowerCase(),
+      tasks.map((task) => ({
+        ...task,
+        status: task.status.toLowerCase(),
+      })),
+      (task) => task.status,
     ) as Record<string, Task[]>;
     setTaskGroup(grouped);
+
+    const map: Record<string, Task> = {};
+    tasks.forEach((task) => {
+      map[task.id] = task;
+    });
+    setTaskMap(map);
   }, [data]);
+
+  const updateTaskGroup = (
+    draggedTaskId: string,
+    updater: (prev: Record<string, Task[]>) => Record<string, Task[]>,
+  ) => {
+    setTaskGroup((prev) => {
+      const newTaskGroup = updater(prev);
+      const draggedTaskOld = Object.values(prev)
+        .flat()
+        .find((t) => t.id === draggedTaskId);
+
+      const draggedTaskNew = Object.values(newTaskGroup)
+        .flat()
+        .find((t) => t.id === draggedTaskId);
+
+      if (
+        draggedTaskOld &&
+        draggedTaskNew &&
+        (draggedTaskOld.status !== draggedTaskNew.status ||
+          draggedTaskOld.position !== draggedTaskNew.position)
+      ) {
+        // Need to update DB here with new status and position based on taskId
+        console.log('Dragged task changed:', draggedTaskNew);
+      }
+
+      return newTaskGroup;
+    });
+  };
 
   const handleDragEnd = ({ active, over }) => {
     if (!over) return;
@@ -63,67 +104,127 @@ export default function KanbanBoard() {
     const draggedTaskId = active.id;
     const targetId = over.id;
 
-    setTaskGroup((prev) => {
+    updateTaskGroup(draggedTaskId, (prev) => {
       let draggedTask: any = null;
       let sourceColumn: string | null = null;
 
-      const updated = Object.fromEntries(
-        Object.entries(prev).map(([status, tasks]: any) => {
-          const filtered = tasks.filter((t) => {
-            if (t.id === draggedTaskId) {
-              draggedTask = t;
-              sourceColumn = status;
-              return false;
-            }
-            return true;
-          });
-
-          return [status, filtered];
-        }),
-      );
+      for (const [status, tasks] of Object.entries(prev)) {
+        const foundTask = tasks.find((t) => t.id == draggedTaskId);
+        if (foundTask) {
+          draggedTask = foundTask;
+          sourceColumn = status;
+          break;
+        }
+      }
 
       if (!draggedTask || !sourceColumn) return prev;
 
-      let targetColumn: string = targetId;
+      let targetColumn: any = null;
 
-      if (!updated[targetColumn]) {
-        for (const col in updated) {
-          if (updated[col].some((t) => t.id === targetId)) {
-            targetColumn = col;
+      if (prev[over.id]) {
+        targetColumn = over.id;
+      } else {
+        for (const [status, tasks] of Object.entries(prev)) {
+          if (tasks.some((t) => t.id == targetId)) {
+            targetColumn = status;
             break;
           }
         }
       }
 
-      draggedTask = { ...draggedTask, status: targetColumn };
-
-      if (!updated[targetColumn]) {
-        updated[targetColumn] = [];
+      if (!targetColumn) {
+        const columnExists = columnsData.find(
+          (col) => col.title.toLowerCase() == over.id,
+        );
+        if (columnExists) {
+          targetColumn = over.id;
+        } else {
+          return prev;
+        }
       }
 
-      if (sourceColumn === targetColumn) {
-        const sourceTasks = [...prev[sourceColumn]];
-        const oldIndex = sourceTasks.findIndex((t) => t.id === draggedTaskId);
-        const newIndex = sourceTasks.findIndex((t) => t.id === targetId);
-
-        if (oldIndex === -1 || newIndex === -1) return prev;
-
-        updated[sourceColumn] = arrayMove(sourceTasks, oldIndex, newIndex);
-        return updated;
-      }
-
-      const overIndex = updated[targetColumn].findIndex(
-        (t) => t.id === targetId,
+      const newSourceTasks = prev[sourceColumn].filter(
+        (t) => t.id != draggedTaskId,
       );
+      const newTargetTasks = prev[targetColumn] ? [...prev[targetColumn]] : [];
 
-      if (overIndex === -1) {
-        updated[targetColumn].push(draggedTask);
+      if (sourceColumn == targetColumn) {
+        const oldIndex = prev[sourceColumn].findIndex(
+          (t) => t.id == draggedTaskId,
+        );
+        const newIndex = prev[targetColumn].findIndex((t) => t.id == targetId);
+        if (oldIndex == -1 || newIndex == -1) {
+          return prev;
+        }
+        const newPosition = calculateNewPosition(targetColumn, prev, newIndex);
+
+        const updatedDraggedTask = { ...draggedTask, position: newPosition };
+        const reorderedTasks = arrayMove(
+          prev[sourceColumn],
+          oldIndex,
+          newIndex,
+        );
+
+        reorderedTasks.splice(newIndex, 1, updatedDraggedTask);
+
+        return {
+          ...prev,
+          [sourceColumn]: reorderedTasks,
+        };
       } else {
-        updated[targetColumn].splice(overIndex, 0, draggedTask);
-      }
+        const targetIndex = newTargetTasks.findIndex((t) => t.id == targetId);
 
-      return updated;
+        const insertionIndex =
+          targetIndex == -1 ? newTargetTasks.length : targetIndex;
+        const newPosition = calculateNewPosition(
+          targetColumn,
+          prev,
+          insertionIndex,
+        );
+
+        const updatedDraggedTask = {
+          ...draggedTask,
+          status: targetColumn,
+          position: newPosition,
+        };
+
+        if (targetIndex == -1) {
+          newTargetTasks.push(updatedDraggedTask);
+        } else {
+          newTargetTasks.splice(targetIndex, 0, updatedDraggedTask);
+        }
+
+        return {
+          ...prev,
+          [sourceColumn]: newSourceTasks,
+          [targetColumn]: newTargetTasks,
+        };
+      }
     });
+  };
+
+  const calculateNewPosition = (
+    newStatus: string,
+    taskGroup: Record<string, Task[]>,
+    targetIndex: number,
+  ): number => {
+    const tasks: any = taskGroup[newStatus] || [];
+
+    if (targetIndex == 0) {
+      if (tasks.length == 0) {
+        return 10000;
+      }
+      return tasks[0].position / 2;
+    }
+
+    if (targetIndex >= tasks.length) {
+      return tasks[tasks.length - 1].position + 10000;
+    }
+
+    const prevPosition = tasks[targetIndex - 1].position;
+    const nextPosition = tasks[targetIndex].position;
+
+    return (prevPosition + nextPosition) / 2;
   };
 
   const sensors = useSensors(
@@ -140,9 +241,7 @@ export default function KanbanBoard() {
       collisionDetection={closestCenter}
       onDragStart={(event) => {
         const id = event.active.id;
-        const task = Object.values<any>(taskGroup)
-          .flat()
-          .find((t: any) => t.id === id);
+        const task = taskMap[id];
         setActiveTask(task);
       }}
       onDragEnd={(event) => {
@@ -155,7 +254,7 @@ export default function KanbanBoard() {
         {columnsData.map((col) => (
           <div
             key={col.id}
-            className="w-80 rounded-lg bg-white/5 flex-shrink-0 flex flex-col"
+            className="w-90 rounded-lg bg-white/5 flex-shrink-0 flex flex-col"
           >
             <div
               className={`${col.color} text-white font-semibold px-4 py-3 rounded-t-lg`}

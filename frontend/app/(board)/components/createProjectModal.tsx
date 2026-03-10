@@ -25,12 +25,12 @@ export default function CreateProjectModal({ isOpen, onClose }: any) {
     ],
   });
 
-  const addProject = () => {
+  const addProject = async () => {
     try {
       if (!formValue.name || !formValue.key) {
         return setError('Project name and key are required');
       }
-      createProject({
+      await createProject({
         variables: {
           input: {
             name: formValue.name,
@@ -39,10 +39,11 @@ export default function CreateProjectModal({ isOpen, onClose }: any) {
           },
         },
       });
-      setFormValue(formInitialValue);
-      onClose();
     } catch (e) {
       console.log(e, 'error while creating project');
+    } finally {
+      setFormValue(formInitialValue);
+      onClose();
     }
   };
 

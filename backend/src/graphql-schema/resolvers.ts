@@ -9,7 +9,7 @@ export const resolvers = {
   Query: {
     ...projectResolver,
     ...taskResolver,
-    ...userResolver
+    ...userResolver,
   },
 
   Mutation: {
@@ -32,6 +32,17 @@ export const resolvers = {
         throw unauthorizedError();
       }
       return taskCtrl.createTask(args?.input);
+    },
+
+    deleteTask(
+      parent: any,
+      args: any,
+      { user, taskCtrl }: { user: any; taskCtrl: TaskController },
+    ) {
+      if (!user) {
+        throw unauthorizedError();
+      }
+      return taskCtrl.removeTask(args.taskId);
     },
   },
 };
