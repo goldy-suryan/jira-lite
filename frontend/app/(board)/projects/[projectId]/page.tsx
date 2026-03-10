@@ -1,11 +1,12 @@
 'use client';
 
+import { UPDATE_TASK_STATUS_POSITION } from '@/app/graphql/mutations/board.mutation';
 import { GET_PROJECT_BY_ID } from '@/app/graphql/queries/project.query';
 import { Task } from '@/app/graphql/types/interfaces';
 import { addTitle } from '@/app/state/features/pageTitle.slice';
 import { addCurrentProject } from '@/app/state/features/project.slice';
 import { useAppDispatch } from '@/app/state/hooks';
-import { useQuery } from '@apollo/client/react';
+import { useMutation, useQuery } from '@apollo/client/react';
 import {
   closestCenter,
   DndContext,
@@ -20,27 +21,28 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import CreateTaskModal from '../../components/createTaskModal';
+import { useEffect, useState } from 'react';
+import { CreateOrUpdateTaskModal } from '../../components/createOrUpdateTaskModal';
 import { DroppableColumn } from '../../components/dropableColumn';
-import TaskCard from '../../components/taskCard';
+import { TaskCard } from '../../components/taskCard';
 
 const columnsData = [
-  { id: 1, title: 'Todo', color: 'bg-cyan-500' },
-  { id: 2, title: 'In_progress', color: 'bg-purple-600' },
-  { id: 3, title: 'Done', color: 'bg-green-600' },
-  { id: 4, title: 'Ready_for_review', color: 'bg-yellow-500' },
+  { id: 1, title: 'Todo', color: 'bg-cyan-700' },
+  { id: 2, title: 'In_progress', color: 'bg-purple-700' },
+  { id: 3, title: 'Ready_for_review', color: 'bg-yellow-700' },
+  { id: 4, title: 'In_review', color: 'bg-teal-700' },
+  { id: 5, title: 'Done', color: 'bg-green-700' },
 ];
 
 export default function KanbanBoard() {
   const params = useParams();
   const dispatch = useAppDispatch();
 
-  const prevTaskGroupRef = useRef<Record<string, Task[]>>({});
   const [modalOpen, setModalOpen] = useState(false);
   const [taskGroup, setTaskGroup] = useState<Record<string, Task[]>>({});
   const [activeTask, setActiveTask] = useState<null | Task>(null);
   const [taskMap, setTaskMap] = useState<Record<string, Task>>({});
+  const [taskToUpdate, setTaskToUpdate] = useState<null | Task>(null);
 
   const { data } = useQuery<{ getProjectById: { name: string; tasks: any[] } }>(
     GET_PROJECT_BY_ID,
@@ -48,6 +50,14 @@ export default function KanbanBoard() {
       variables: { projectId: params.projectId },
     },
   );
+  const [updateTaskStatusPosition] = useMutation(UPDATE_TASK_STATUS_POSITION, {
+    refetchQueries: [
+      {
+        query: GET_PROJECT_BY_ID,
+        variables: { projectId: params.projectId },
+      },
+    ],
+  });
 
   useEffect(() => {
     dispatch(addTitle(data?.getProjectById?.name ?? 'Projects'));
@@ -70,6 +80,28 @@ export default function KanbanBoard() {
     setTaskMap(map);
   }, [data]);
 
+  useEffect(() => {
+    if (!taskToUpdate) return;
+    const updateTaskStatusAndPosition = async () => {
+      try {
+        await updateTaskStatusPosition({
+          variables: {
+            id: taskToUpdate.id,
+            input: {
+              status: taskToUpdate?.status?.toUpperCase(),
+              position: taskToUpdate.position,
+            },
+          },
+        });
+      } catch (e) {
+        console.log(e, 'error while updating task');
+      } finally {
+        setTaskToUpdate(null);
+      }
+    };
+    updateTaskStatusAndPosition();
+  }, [taskToUpdate]);
+
   const updateTaskGroup = (
     draggedTaskId: string,
     updater: (prev: Record<string, Task[]>) => Record<string, Task[]>,
@@ -90,8 +122,7 @@ export default function KanbanBoard() {
         (draggedTaskOld.status !== draggedTaskNew.status ||
           draggedTaskOld.position !== draggedTaskNew.position)
       ) {
-        // Need to update DB here with new status and position based on taskId
-        console.log('Dragged task changed:', draggedTaskNew);
+        setTaskToUpdate(draggedTaskNew);
       }
 
       return newTaskGroup;
@@ -156,7 +187,12 @@ export default function KanbanBoard() {
         if (oldIndex == -1 || newIndex == -1) {
           return prev;
         }
-        const newPosition = calculateNewPosition(targetColumn, prev, newIndex);
+        const newPosition = calculateNewPosition(
+          targetColumn,
+          prev,
+          newIndex,
+          draggedTaskId,
+        );
 
         const updatedDraggedTask = { ...draggedTask, position: newPosition };
         const reorderedTasks = arrayMove(
@@ -180,6 +216,7 @@ export default function KanbanBoard() {
           targetColumn,
           prev,
           insertionIndex,
+          draggedTaskId,
         );
 
         const updatedDraggedTask = {
@@ -207,24 +244,30 @@ export default function KanbanBoard() {
     newStatus: string,
     taskGroup: Record<string, Task[]>,
     targetIndex: number,
+    draggedTaskId: string,
   ): number => {
-    const tasks: any = taskGroup[newStatus] || [];
+    const tasks = (taskGroup[newStatus] || []).filter(
+      (task) => task.id !== draggedTaskId,
+    );
 
-    if (targetIndex == 0) {
-      if (tasks.length == 0) {
-        return 10000;
-      }
-      return tasks[0].position / 2;
+    if (targetIndex === 0) {
+      if (tasks.length === 0) return 10000;
+
+      const firstTask = tasks[0];
+      return firstTask.position / 2;
     }
 
     if (targetIndex >= tasks.length) {
-      return tasks[tasks.length - 1].position + 10000;
+      const lastPosition = tasks.at(-1)?.position ?? 0;
+      return lastPosition + 10000;
     }
 
-    const prevPosition = tasks[targetIndex - 1].position;
-    const nextPosition = tasks[targetIndex].position;
+    const prevTask = tasks[targetIndex - 1];
+    const nextTask = tasks[targetIndex];
 
-    return (prevPosition + nextPosition) / 2;
+    if (!prevTask || !nextTask) return 10000;
+
+    return (prevTask.position + nextTask.position) / 2;
   };
 
   const sensors = useSensors(
@@ -277,7 +320,7 @@ export default function KanbanBoard() {
                     + Add Task
                   </button>
                   {modalOpen && (
-                    <CreateTaskModal
+                    <CreateOrUpdateTaskModal
                       isOpen={modalOpen}
                       onClose={() => setModalOpen(false)}
                     />

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-const LeftNav = () => {
+export const LeftNav = () => {
   return (
     <nav className="flex flex-col gap-3 border-r border-white/10 pr-6">
       <h1 className="text-2xl font-bold text-blue-500 mb-8">JiraLite</h1>
@@ -31,5 +31,3 @@ const LeftNav = () => {
     </nav>
   );
 };
-
-export default LeftNav;

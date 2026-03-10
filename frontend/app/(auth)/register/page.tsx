@@ -106,7 +106,7 @@ export const Register = () => {
                     onChange={(e) =>
                       setformValues({ ...formValues, name: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-violet-300/40 focus:ring-4 focus:ring-violet-400/15"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm text-white placeholder:text-white/40 outline-none transition"
                     required
                   />
                 </div>
@@ -140,7 +140,7 @@ export const Register = () => {
                     onChange={(e) =>
                       setformValues({ ...formValues, email: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-violet-300/40 focus:ring-4 focus:ring-violet-400/15"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm text-white placeholder:text-white/40 outline-none transition"
                     required
                   />
                 </div>
@@ -171,7 +171,7 @@ export const Register = () => {
                       setformValues({ ...formValues, password: e.target.value })
                     }
                     minLength={8}
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-16 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-violet-300/40 focus:ring-4 focus:ring-violet-400/15"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-16 text-sm text-white placeholder:text-white/40 outline-none transition"
                     required
                   />
 

@@ -80,7 +80,7 @@ function Login() {
                     onChange={(e) =>
                       setFormVal({ ...formVal, email: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-violet-300/40 focus:ring-4 focus:ring-violet-400/15"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm text-white placeholder:text-white/40 outline-none transition"
                     required
                   />
                 </div>
@@ -110,7 +110,7 @@ function Login() {
                     onChange={(e) =>
                       setFormVal({ ...formVal, password: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-16 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-violet-300/40 focus:ring-4 focus:ring-violet-400/15"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-16 text-sm text-white placeholder:text-white/40 outline-none transition"
                     required
                   />
 

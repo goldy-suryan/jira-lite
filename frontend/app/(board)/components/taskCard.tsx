@@ -1,8 +1,8 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import TaskCardKebabMenu from './taskCardKebabMenu';
+import { TaskCardKebabMenu } from './taskCardKebabMenu';
 
-const TaskCard = ({ card, overlay = false }) => {
+export const TaskCard = ({ card, overlay = false }) => {
   const priorityBackground = (priority: string) => {
     let lowerCasePriority = priority?.toLowerCase();
     if (lowerCasePriority == 'low') {
@@ -15,10 +15,8 @@ const TaskCard = ({ card, overlay = false }) => {
         priorityColor: 'bg-orange-600',
         borderColor: 'border-l-orange-600',
       };
-      // return 'bg-orange-600';
     } else {
-      return { priorityColor: 'bg-red-600', borderColor: 'border-l-red-600' };
-      // return 'bg-red-600';
+      return { priorityColor: 'bg-red-800', borderColor: 'border-l-red-800' };
     }
   };
 
@@ -58,11 +56,11 @@ const TaskCard = ({ card, overlay = false }) => {
       {...attributes}
     >
       <TaskCardKebabMenu card={card} />
-      <h3 className="text-white mb-4 text-lg">{card?.title}</h3>
+      <h3 className="text-white mb-4 text-md">{card?.title}</h3>
       <p className="text-xs">
         Priority:{' '}
         <span
-          className={`${priorityBackground(card?.priority)?.priorityColor} text-white text-xs px-1 py-0.5 rounded`}
+          className={`${priorityBackground(card?.priority)?.priorityColor} text-white text-[10px] px-1 py-0.5 rounded`}
         >
           {card?.priority}
         </span>
@@ -74,5 +72,3 @@ const TaskCard = ({ card, overlay = false }) => {
     </div>
   );
 };
-
-export default TaskCard;

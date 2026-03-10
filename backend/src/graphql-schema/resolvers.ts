@@ -23,6 +23,7 @@ export const resolvers = {
       }
       return projectCtrl.createProject(args?.input, user);
     },
+
     createTask(
       parent: any,
       args: any,
@@ -32,6 +33,24 @@ export const resolvers = {
         throw unauthorizedError();
       }
       return taskCtrl.createTask(args?.input);
+    },
+
+    updateTask(
+      parent: any,
+      args: any,
+      { user, taskCtrl }: { user: any; taskCtrl: TaskController },
+    ) {
+      if (!user) {
+        throw unauthorizedError();
+      }
+      return taskCtrl.updateTask(args?.id, args?.input);
+    },
+
+    updateTaskStatusPosition(parent: any, args: any, { user, taskCtrl }: { user: any; taskCtrl: TaskController}) {
+      if(!user) {
+        throw unauthorizedError();
+      }
+      return taskCtrl.updateTaskStatusPosition(args?.id, args?.input);
     },
 
     deleteTask(

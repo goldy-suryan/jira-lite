@@ -10,8 +10,9 @@ export interface IGetUserProjects {
 export type Task = {
   id: string;
   title: string;
+  description: string;
   status: string;
   priority: string;
   dueDate: string;
-  position?: number;
+  position: number;
 };

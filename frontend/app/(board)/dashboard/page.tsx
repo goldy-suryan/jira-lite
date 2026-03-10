@@ -5,8 +5,8 @@ import { IGetUserProjects } from '@/app/graphql/types/interfaces';
 import { useAppSelector } from '@/app/state/hooks';
 import { useQuery } from '@apollo/client/react';
 import { useEffect, useState } from 'react';
-import CreateProjectButton from '../components/createProjectButton';
-import ProjectCard from '../components/projectCard';
+import { CreateProjectButton } from '../components/createProjectButton';
+import { ProjectCard } from '../components/projectCard';
 
 export default function DashboardLayout() {
   const userSelector = useAppSelector((state) => state.user);

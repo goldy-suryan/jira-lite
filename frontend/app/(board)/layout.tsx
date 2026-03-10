@@ -1,9 +1,9 @@
 'use client';
-import React, { ReactNode } from 'react';
-import LeftNav from './components/leftNav';
-import UserDropdown from './components/userDropdown';
 import { usePathname } from 'next/navigation';
+import { ReactNode } from 'react';
 import { useAppSelector } from '../state/hooks';
+import { LeftNav } from './components/leftNav';
+import { UserDropdown } from './components/userDropdown';
 
 const BoardLayout = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
@@ -31,7 +31,7 @@ const BoardLayout = ({ children }: { children: ReactNode }) => {
             <input
               type="search"
               placeholder="Search"
-              className="rounded-lg bg-white/5 border border-white/10 px-4 py-1 mr-8 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="rounded-lg bg-white/5 border border-white/10 px-4 py-1 mr-8 text-white placeholder:text-white/50"
             />
             <UserDropdown />
           </div>

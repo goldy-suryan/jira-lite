@@ -14,12 +14,19 @@ export const RootMutation = `#graphql
         createdBy: ID!
         assigneeId: ID
         dueDate: Date
-        position: Int!
+        position: Float!
+    }
+
+    input taskStatusPositionInput {
+        status: StatusType!
+        position: Float!
     }
 
     type Mutation {
         createProject(input: createProjectInput): Project!
         createTask(input: taskInput): Task!
+        updateTask(id: ID!, input: taskInput): Boolean!
         deleteTask(taskId: ID!): Boolean!
+        updateTaskStatusPosition(id: ID!, input: taskStatusPositionInput): Boolean!
     }
 `;

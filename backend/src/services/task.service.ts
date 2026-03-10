@@ -17,11 +17,21 @@ export class TaskService {
         assigneeId: body.assigneeId,
       },
     });
-    const nextPosition = (result?.toJSON()?.maxPosition || 0) + 10000;
+    const nextPosition = (Number(result?.toJSON()?.maxPosition) || 0) + 10000;
     return await TaskModel.create({
       ...body,
       position: nextPosition,
     });
+  };
+
+  updateTask = async (id: string, body: any) => {
+    const [result] = await TaskModel.update({ ...body }, { where: { id } });
+    return result > 0;
+  };
+
+  updateTaskStatusPosition = async (id: string, body: any) => {
+    const [result] = await TaskModel.update({ ...body }, { where: { id } });
+    return result > 0;
   };
 
   deleteTask = async (taskId: string) => {
@@ -30,7 +40,6 @@ export class TaskService {
         id: taskId,
       },
     });
-    console.log(result, 'result');
     return result > 0;
   };
 }

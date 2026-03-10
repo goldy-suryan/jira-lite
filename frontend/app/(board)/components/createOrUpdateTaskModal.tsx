@@ -1,6 +1,9 @@
 'use client';
 
-import { CREATE_TASK } from '@/app/graphql/mutations/board.mutation';
+import {
+  CREATE_TASK,
+  UPDATE_TASK,
+} from '@/app/graphql/mutations/board.mutation';
 import {
   GET_ALL_USERS,
   GET_PROJECT_BY_ID,
@@ -8,7 +11,7 @@ import {
 import { useAppSelector } from '@/app/state/hooks';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ConfirmDialog } from './confirmDialog';
 
 const formInitialValue = {
@@ -23,12 +26,20 @@ const formInitialValue = {
   position: 0,
 };
 
-export default function CreateTaskModal({ isOpen, onClose }: any) {
+export const CreateOrUpdateTaskModal = ({
+  isOpen,
+  onClose,
+  task = null,
+}: any) => {
   const params = useParams();
 
   const [formValue, setFormValue] = useState(formInitialValue);
   const [error, setError] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
+  const queryToRefetch = {
+    query: GET_PROJECT_BY_ID,
+    variables: { projectId: params.projectId },
+  };
 
   const userSelector = useAppSelector((state) => state?.user?.user);
   const currentProjectSelector = useAppSelector(
@@ -37,34 +48,58 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
 
   const { data: userList } = useQuery<{ getAllUsers: any }>(GET_ALL_USERS);
   const [createTask] = useMutation(CREATE_TASK, {
-    refetchQueries: [
-      {
-        query: GET_PROJECT_BY_ID,
-        variables: { projectId: params.projectId },
-      },
-    ],
+    refetchQueries: [queryToRefetch],
+  });
+  const [updateTask] = useMutation(UPDATE_TASK, {
+    refetchQueries: [queryToRefetch],
   });
 
-  const addTask = async () => {
+  useEffect(() => {
+    if (task) {
+      setFormValue({
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        priority: task.priority?.toLowerCase(),
+        projectId: task.projectId,
+        createdBy: task.createdBy,
+        assigneeId: task.assigneeId,
+        dueDate: new Date(task.dueDate).toISOString().slice(0, 10),
+        position: task.position,
+      });
+    }
+  }, [task]);
+
+  const addOrEditTask = async () => {
     try {
       if (!formValue.title || !formValue.status || !formValue.priority) {
         return setError('Project name and key are required');
       }
-      await createTask({
-        variables: {
-          input: {
-            title: formValue.title,
-            description: formValue.description ?? '',
-            status: formValue.status.toUpperCase(),
-            priority: formValue.priority.toUpperCase(),
-            projectId: params?.projectId,
-            createdBy: userSelector?.id,
-            assigneeId: formValue.assigneeId,
-            dueDate: formValue.dueDate,
-            position: formValue.position,
+      const inputValues = {
+        title: formValue.title,
+        description: formValue.description ?? '',
+        status: formValue.status.toUpperCase(),
+        priority: formValue.priority.toUpperCase(),
+        projectId: params?.projectId,
+        createdBy: userSelector?.id,
+        assigneeId: formValue.assigneeId,
+        dueDate: formValue.dueDate,
+        position: formValue.position,
+      };
+      if (task) {
+        await updateTask({
+          variables: {
+            id: task.id,
+            input: inputValues,
           },
-        },
-      });
+        });
+      } else {
+        await createTask({
+          variables: {
+            input: inputValues,
+          },
+        });
+      }
     } catch (e) {
       console.log(e, 'error while creating project');
     } finally {
@@ -93,9 +128,11 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-transparent backdrop-blur-md flex items-center justify-center z-50">
-      <div className="bg-white/10 rounded-lg p-6 w-full max-w-md mx-4">
-        <h2 className="text-xl font-semibold mb-4 text-white">Create Task</h2>
+    <div className="fixed inset-0 bg-transparent backdrop-blur-xl flex items-center justify-center z-50">
+      <div className="bg-white/15 rounded-lg p-6 w-full max-w-md mx-4">
+        <h2 className="text-xl font-semibold mb-4 text-white">
+          {task ? 'Edit' : 'Create'} Task
+        </h2>
         <form className="text-sm">
           {/* Title */}
           <label htmlFor="taskTitle" className="block text-white/80">
@@ -108,7 +145,7 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, title: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white"
             placeholder="Enter task title"
             autoFocus
           />
@@ -122,7 +159,7 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 h-32"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white h-32"
             placeholder="Enter description"
             autoFocus
           />
@@ -136,12 +173,13 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, status: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white"
           >
             <option value="todo">Todo</option>
             <option value="in_progress">In Progress</option>
-            <option value="done">Done</option>
             <option value="ready_for_review">Ready for review</option>
+            <option value="in_review">In review</option>
+            <option value="done">Done</option>
           </select>
 
           {/* Priority */}
@@ -150,15 +188,15 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
           </label>
           <select
             id="priority"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white"
             value={formValue.priority}
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, priority: e.target.value }))
             }
           >
-            <option value="low">LOW</option>
-            <option value="medium">MEDIUM</option>
-            <option value="high">HIGH</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
           </select>
 
           {/* Assign */}
@@ -167,14 +205,10 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
           </label>
           <select
             id="assign"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 pr-[10rem]"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white"
             value={formValue.assigneeId}
             onChange={(e) => {
               setFormValue((prev) => ({ ...prev, assigneeId: e.target.value }));
-              console.log(
-                e.target.value,
-                (currentProjectSelector as any).users,
-              );
               if (
                 !(currentProjectSelector as any).users.some(
                   (item) => item.id == e.target.value,
@@ -200,8 +234,13 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
           <input
             type="date"
             id="date"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            min={new Date().toISOString().split("T")[0]}
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white"
             value={formValue.dueDate}
+            onClick={(e) => {
+              e.preventDefault();
+              (e.currentTarget as HTMLInputElement).showPicker();
+            }}
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, dueDate: e.target.value }))
             }
@@ -220,10 +259,10 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
             </button>
             <button
               type="button"
-              onClick={addTask}
+              onClick={addOrEditTask}
               className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 transition cursor-pointer"
             >
-              Create
+              {task ? 'Save Changes' : 'Create'}
             </button>
           </div>
         </form>
@@ -236,9 +275,9 @@ export default function CreateTaskModal({ isOpen, onClose }: any) {
             setFormValue((prev) => ({ ...prev, assigneeId: '' }));
           }}
           message="User is not the member of project. Send Invitation?"
-          btnText='Invite'
+          btnText="Invite"
         />
       </div>
     </div>
   );
-}
+};

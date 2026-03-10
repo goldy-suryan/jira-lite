@@ -6,11 +6,13 @@ import { useMutation } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ConfirmDialog } from './confirmDialog';
+import { CreateOrUpdateTaskModal } from './createOrUpdateTaskModal';
 
-const TaskCardKebabMenu = ({ card }) => {
+export const TaskCardKebabMenu = ({ card }) => {
   const params = useParams();
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const [removeTask] = useMutation(DELETE_TASK, {
@@ -77,8 +79,7 @@ const TaskCardKebabMenu = ({ card }) => {
             className="block w-full text-left px-4 py-2 text-white hover:bg-zinc-700 cursor-pointer"
             onClick={() => {
               setMenuOpen(false);
-              // Your edit task handler here
-              console.log('Edit task', card.id);
+              setModalOpen(true);
             }}
           >
             Edit Task
@@ -106,8 +107,13 @@ const TaskCardKebabMenu = ({ card }) => {
           btnText="Delete"
         />
       )}
+      {modalOpen && (
+        <CreateOrUpdateTaskModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          task={card}
+        />
+      )}
     </>
   );
 };
-
-export default TaskCardKebabMenu;

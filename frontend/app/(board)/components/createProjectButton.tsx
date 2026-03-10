@@ -1,8 +1,8 @@
 'use client';
 import { useState } from 'react';
-import CreateProjectModal from './createProjectModal';
+import { CreateProjectModal } from './createProjectModal';
 
-const CreateProjectButton = () => {
+export const CreateProjectButton = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -20,5 +20,3 @@ const CreateProjectButton = () => {
     </>
   );
 };
-
-export default CreateProjectButton;

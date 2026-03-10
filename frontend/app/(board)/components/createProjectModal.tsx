@@ -12,7 +12,7 @@ const formInitialValue = {
   key: '',
 };
 
-export default function CreateProjectModal({ isOpen, onClose }: any) {
+export const CreateProjectModal = ({ isOpen, onClose }: any) => {
   const [formValue, setFormValue] = useState(formInitialValue);
   const [error, setError] = useState('');
   const userSelector = useAppSelector((state) => state?.user?.user);
@@ -50,8 +50,8 @@ export default function CreateProjectModal({ isOpen, onClose }: any) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-transparent backdrop-blur-lg flex items-center justify-center z-50">
-      <div className="bg-white/8 rounded-lg p-6 w-full max-w-md mx-4">
+    <div className="fixed inset-0 bg-transparent backdrop-blur-xl flex items-center justify-center z-50">
+      <div className="bg-white/15 rounded-lg p-6 w-full max-w-md mx-4">
         <h2 className="text-xl font-semibold mb-4 text-white">
           Create Project
         </h2>
@@ -66,7 +66,7 @@ export default function CreateProjectModal({ isOpen, onClose }: any) {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, name: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-6"
             placeholder="Enter project name"
             autoFocus
           />
@@ -80,7 +80,7 @@ export default function CreateProjectModal({ isOpen, onClose }: any) {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, key: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-6"
             placeholder="Enter key"
             autoFocus
           />
@@ -93,7 +93,7 @@ export default function CreateProjectModal({ isOpen, onClose }: any) {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6 h-32"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-6 h-32"
             placeholder="Enter description"
             autoFocus
           />
@@ -120,4 +120,4 @@ export default function CreateProjectModal({ isOpen, onClose }: any) {
       </div>
     </div>
   );
-}
+};

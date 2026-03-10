@@ -46,6 +46,9 @@ export const GET_PROJECT_BY_ID = gql`
         status
         dueDate
         position
+        assigneeId
+        createdBy
+        projectId
       }
     }
   }

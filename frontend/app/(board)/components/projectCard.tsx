@@ -1,12 +1,12 @@
 import Link from 'next/link';
 
-export default function ProjectCard({
+export const ProjectCard = ({
   title,
   keyName,
   tasks,
   members,
   id,
-}: any) {
+}: any) => {
   return (
     <Link
       href={`/projects/${id}`}

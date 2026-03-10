@@ -23,6 +23,8 @@ export const typeDefs = `#graphql
         TODO
         IN_PROGRESS
         DONE
+        IN_REVIEW
+        READY_FOR_REVIEW
     }
 
     enum PriorityType {
@@ -41,6 +43,6 @@ export const typeDefs = `#graphql
         createdBy: ID!
         assigneeId: ID
         dueDate: Date
-        position: Int!
+        position: Float!
     }
 `;

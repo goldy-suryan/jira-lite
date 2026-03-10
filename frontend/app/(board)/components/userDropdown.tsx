@@ -5,7 +5,7 @@ import { useAppSelector } from '@/app/state/hooks';
 import { instance } from '@/app/utils/interceptors';
 import { UserIcon } from '@/app/(auth)/components/icons';
 
-export default function UserDropdown() {
+export const UserDropdown = () => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -41,7 +41,8 @@ export default function UserDropdown() {
         aria-expanded={open}
       >
         <span className="text-sm flex items-center">
-          <UserIcon className='w-5 h-5 rounded-full mx-auto block text-gray-700 border border-gray-500 mr-2'/> <code>&#9660;</code>
+          <UserIcon className="w-5 h-5 rounded-full mx-auto block text-gray-700 border border-gray-500 mr-2" />{' '}
+          <code>&#9660;</code>
         </span>
       </button>
 
@@ -77,4 +78,4 @@ export default function UserDropdown() {
       )}
     </div>
   );
-}
+};
