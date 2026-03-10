@@ -6,11 +6,19 @@ const TaskCard = ({ card, overlay = false }) => {
   const priorityBackground = (priority: string) => {
     let lowerCasePriority = priority?.toLowerCase();
     if (lowerCasePriority == 'low') {
-      return 'bg-green-600';
+      return {
+        priorityColor: 'bg-green-600',
+        borderColor: 'border-l-green-600',
+      };
     } else if (lowerCasePriority == 'medium') {
-      return 'bg-orange-600';
+      return {
+        priorityColor: 'bg-orange-600',
+        borderColor: 'border-l-orange-600',
+      };
+      // return 'bg-orange-600';
     } else {
-      return 'bg-red-600';
+      return { priorityColor: 'bg-red-600', borderColor: 'border-l-red-600' };
+      // return 'bg-red-600';
     }
   };
 
@@ -43,7 +51,7 @@ const TaskCard = ({ card, overlay = false }) => {
 
   return (
     <div
-      className="bg-white/10 rounded-md p-4 cursor-pointer hover:bg-white/20 transition relative"
+      className={`bg-white/10 rounded-md p-4 cursor-pointer hover:bg-white/20 transition relative border-l-4 ${priorityBackground(card?.priority)?.borderColor}`}
       ref={setNodeRef}
       style={style}
       {...listeners}
@@ -54,7 +62,7 @@ const TaskCard = ({ card, overlay = false }) => {
       <p className="text-xs">
         Priority:{' '}
         <span
-          className={`${priorityBackground(card?.priority)} text-white text-xs px-1 py-0.5 rounded`}
+          className={`${priorityBackground(card?.priority)?.priorityColor} text-white text-xs px-1 py-0.5 rounded`}
         >
           {card?.priority}
         </span>
