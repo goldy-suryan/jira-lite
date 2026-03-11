@@ -44,5 +44,9 @@ export const typeDefs = `#graphql
         assigneeId: ID
         dueDate: Date
         position: Float!
+        createdAt: String
+        assignee: User
+        reporter: User
+        project: Project
     }
 `;

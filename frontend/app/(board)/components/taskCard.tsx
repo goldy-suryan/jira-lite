@@ -1,30 +1,14 @@
+'use client';
+
+import { formatDate, priorityBackground } from '@/app/utils/helperFunc';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useState } from 'react';
 import { TaskCardKebabMenu } from './taskCardKebabMenu';
+import { TaskDetailModal } from './taskDetailModal';
 
 export const TaskCard = ({ card, overlay = false }) => {
-  const priorityBackground = (priority: string) => {
-    let lowerCasePriority = priority?.toLowerCase();
-    if (lowerCasePriority == 'low') {
-      return {
-        priorityColor: 'bg-green-600',
-        borderColor: 'border-l-green-600',
-      };
-    } else if (lowerCasePriority == 'medium') {
-      return {
-        priorityColor: 'bg-orange-600',
-        borderColor: 'border-l-orange-600',
-      };
-    } else {
-      return { priorityColor: 'bg-red-800', borderColor: 'border-l-red-800' };
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' } as any;
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
+  const [taskDetailDialogOpen, setTaskDetailDialogOpen] = useState(false);
   const {
     attributes,
     listeners,
@@ -54,6 +38,10 @@ export const TaskCard = ({ card, overlay = false }) => {
       style={style}
       {...listeners}
       {...attributes}
+      onClick={(e) => {
+        e.stopPropagation();
+        setTaskDetailDialogOpen(true);
+      }}
     >
       <TaskCardKebabMenu card={card} />
       <h3 className="text-white mb-4 text-md">{card?.title}</h3>
@@ -69,6 +57,16 @@ export const TaskCard = ({ card, overlay = false }) => {
         Due Date: {formatDate(card.dueDate)}
       </p>
       <div className="flex flex-wrap gap-2"></div>
+      {taskDetailDialogOpen && (
+        <TaskDetailModal
+          isOpen={taskDetailDialogOpen}
+          onClose={(e) => {
+            e?.stopPropagation();
+            setTaskDetailDialogOpen(false);
+          }}
+          task={card}
+        />
+      )}
     </div>
   );
 };

@@ -1,9 +1,26 @@
 import { Sequelize } from 'sequelize';
+import { ProjectModel } from '../project/project.model';
+import { UserModel } from '../user/user.model';
 import { TaskModel } from './task.model';
 
 export class TaskService {
   getTaskDetail = async (id: string) => {
-    return await TaskModel.findByPk(id);
+    return await TaskModel.findByPk(id, {
+      include: [
+        {
+          model: UserModel,
+          as: 'reporter',
+        },
+        {
+          model: UserModel,
+          as: 'assignee',
+        },
+        {
+          model: ProjectModel,
+          as: 'project'
+        }
+      ],
+    });
   };
 
   createTask = async (body: any) => {

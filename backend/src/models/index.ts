@@ -50,4 +50,24 @@ TaskModel.belongsTo(ProjectModel, {
 });
 // =====================================================================
 
+// ===================== USER TASK ASSOCIATION =========================
+UserModel.hasMany(TaskModel, {
+  foreignKey: 'assigneeId',
+  as: 'assignedTask',
+});
+TaskModel.belongsTo(UserModel, {
+  foreignKey: 'assigneeId',
+  as: 'assignee',
+});
+
+UserModel.hasMany(TaskModel, {
+  foreignKey: 'createdBy',
+  as: 'createdTasks',
+});
+TaskModel.belongsTo(UserModel, {
+  foreignKey: 'createdBy',
+  as: 'reporter',
+});
+// =====================================================================
+
 await DBConfig.sequelize.sync({ alter: true });

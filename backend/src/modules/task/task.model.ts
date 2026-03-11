@@ -49,7 +49,7 @@ export const TaskModel = DBConfig.sequelize.define(
       type: DataTypes.DATE,
     },
     position: {
-      type: DataTypes.DECIMAL(8, 2),
+      type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 10000,
     },
