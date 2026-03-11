@@ -1,10 +1,10 @@
-export { ProjectModel } from './project.model';
-export { UserModel } from './user.model';
+export { UserModel } from '../modules/user/user.model';
+export { ProjectModel } from '../modules/project/project.model';
 export { UserProjectJunctionModel } from './userProject.model';
 import { DBConfig } from '../config/sequelize.init';
-import { ProjectModel } from './project.model';
-import { TaskModel } from './task.model';
-import { UserModel } from './user.model';
+import { ProjectModel } from '../modules/project/project.model';
+import { TaskModel } from '../modules/task/task.model';
+import { UserModel } from '../modules/user/user.model';
 import { UserProjectJunctionModel } from './userProject.model';
 
 // ========== USER PROJECT ASSOCIATION (Membership / user member of projects)=================

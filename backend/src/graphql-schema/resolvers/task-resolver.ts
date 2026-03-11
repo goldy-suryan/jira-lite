@@ -1,4 +1,4 @@
-import type { TaskController } from '../../controllers/task.contoller';
+import type { TaskController } from '../../modules/task/task.contoller';
 import { unauthorizedError } from '../../utils/helperFunc';
 
 export const taskResolver = {

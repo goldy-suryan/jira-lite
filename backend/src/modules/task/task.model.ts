@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { DBConfig } from '../config/sequelize.init';
+import { DBConfig } from '../../config/sequelize.init';
 
 export const TaskModel = DBConfig.sequelize.define(
   'task',

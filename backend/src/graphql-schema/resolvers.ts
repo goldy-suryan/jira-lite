@@ -1,5 +1,5 @@
-import type { ProjectController } from '../controllers/project.controller';
-import type { TaskController } from '../controllers/task.contoller';
+import type { ProjectController } from '../modules/project/project.controller';
+import type { TaskController } from '../modules/task/task.contoller';
 import { unauthorizedError } from '../utils/helperFunc';
 import { projectResolver } from './resolvers/project-resolver';
 import { taskResolver } from './resolvers/task-resolver';
@@ -46,8 +46,12 @@ export const resolvers = {
       return taskCtrl.updateTask(args?.id, args?.input);
     },
 
-    updateTaskStatusPosition(parent: any, args: any, { user, taskCtrl }: { user: any; taskCtrl: TaskController}) {
-      if(!user) {
+    updateTaskStatusPosition(
+      parent: any,
+      args: any,
+      { user, taskCtrl }: { user: any; taskCtrl: TaskController },
+    ) {
+      if (!user) {
         throw unauthorizedError();
       }
       return taskCtrl.updateTaskStatusPosition(args?.id, args?.input);

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { UserService } from '../services/user.service';
+import { UserService } from './user.service';
 
 export class UserController {
   private readonly userSrvc = new UserService();

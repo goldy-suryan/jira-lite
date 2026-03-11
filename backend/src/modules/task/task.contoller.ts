@@ -1,4 +1,4 @@
-import { TaskService } from '../services/task.service';
+import { TaskService } from './task.service';
 
 export class TaskController {
   private readonly taskSrvc = new TaskService();

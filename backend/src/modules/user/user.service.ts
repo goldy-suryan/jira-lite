@@ -1,17 +1,20 @@
 import bcrypt from 'bcrypt';
-import { ProjectModel, UserModel } from '../models';
+import { ProjectModel, UserModel } from '../../models';
 
 export class UserService {
   getUser = async (email: string, password: string) => {
     const user = await UserModel.scope('withPassword').findOne({
       where: { email },
-      include: [{
-        model: ProjectModel,
-        as: 'projects',
-        through: {
-          attributes: [],
+      include: [
+        {
+          model: ProjectModel,
+          as: 'projects',
+          through: {
+            attributes: [],
+          },
         },
-      }, { model: ProjectModel, as: 'ownedProjects'}],
+        { model: ProjectModel, as: 'ownedProjects' },
+      ],
     });
     const errorObj = new Error('Invalid email or password');
     if (!user) {

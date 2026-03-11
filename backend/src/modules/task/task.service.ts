@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { TaskModel } from '../models/task.model';
+import { TaskModel } from './task.model';
 
 export class TaskService {
   getTaskDetail = async (id: string) => {

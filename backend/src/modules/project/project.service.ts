@@ -1,6 +1,7 @@
 import type { Transaction } from 'sequelize';
-import { ProjectModel, UserModel, UserProjectJunctionModel } from '../models';
-import { TaskModel } from '../models/task.model';
+import { ProjectModel } from './project.model';
+import { UserModel, UserProjectJunctionModel } from '../../models';
+import { TaskModel } from '../task/task.model';
 
 export class ProjectService {
   addProject = async (

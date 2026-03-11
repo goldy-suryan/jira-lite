@@ -14,12 +14,12 @@ import fs from 'node:fs';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ValidationError } from 'sequelize';
-import { ProjectController } from './controllers/project.controller';
-import { TaskController } from './controllers/task.contoller';
+import { ProjectController } from './modules/project/project.controller';
 import { schema } from './graphql-schema/schema';
-import { UserRoute } from './routes/user.route';
+import { UserRoute } from './modules/user/user.route';
 import { unauthorizedError } from './utils/helperFunc';
 import { authenticateToken } from './utils/validateToken';
+import { TaskController } from './modules/task/task.contoller';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

@@ -1,5 +1,5 @@
-import { DBConfig } from '../config/sequelize.init';
-import { ProjectService } from '../services/project.service';
+import { DBConfig } from '../../config/sequelize.init';
+import { ProjectService } from './project.service';
 
 export class ProjectController {
   private readonly projectSrvc = new ProjectService();
@@ -50,5 +50,5 @@ export class ProjectController {
   getAllUsers = async () => {
     const userList = await this.projectSrvc.getAllUsers();
     return userList;
-  }
+  };
 }
