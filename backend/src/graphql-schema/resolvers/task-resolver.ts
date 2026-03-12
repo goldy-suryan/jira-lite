@@ -1,5 +1,5 @@
-import type { TaskController } from '../../modules/task/task.contoller';
-import { unauthorizedError } from '../../utils/helperFunc';
+import type { TaskController } from '../../modules/task/task.contoller.js';
+import { unauthorizedError } from '../../utils/helperFunc.js';
 
 export const taskResolver = {
   getTaskDetail(

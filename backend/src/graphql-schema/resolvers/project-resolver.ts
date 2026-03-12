@@ -1,5 +1,5 @@
-import type { ProjectController } from '../../modules/project/project.controller';
-import { unauthorizedError } from '../../utils/helperFunc';
+import type { ProjectController } from '../../modules/project/project.controller.js';
+import { unauthorizedError } from '../../utils/helperFunc.js';
 
 export const projectResolver = {
   getProjects(

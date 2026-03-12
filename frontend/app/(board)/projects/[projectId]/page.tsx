@@ -1,7 +1,7 @@
 'use client';
 
 import { UPDATE_TASK_STATUS_POSITION } from '@/app/graphql/mutations/board.mutation';
-import { GET_PROJECT_BY_ID } from '@/app/graphql/queries/project.query';
+import { GET_PROJECT_BY_ID } from '@/app/graphql/queries/board.query';
 import { Task } from '@/app/graphql/types/interfaces';
 import { addTitle } from '@/app/state/features/pageTitle.slice';
 import { addCurrentProject } from '@/app/state/features/project.slice';
@@ -34,7 +34,7 @@ const columnsData = [
   { id: 5, title: 'Done', color: 'bg-green-700' },
 ];
 
-export default function KanbanBoard() {
+const KanbanBoard = () => {
   const params = useParams();
   const dispatch = useAppDispatch();
 
@@ -347,4 +347,6 @@ export default function KanbanBoard() {
       </DragOverlay>
     </DndContext>
   );
-}
+};
+
+export default KanbanBoard;

@@ -6,5 +6,6 @@ export const RootQuery = `#graphql
         getProjectById(id: ID!): Project!
         getTaskDetail(id: ID!): Task!
         getUserProjects(id: ID!): User
+        getInvitation(token: String): Invitation
     }
 `;

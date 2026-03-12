@@ -1,11 +1,9 @@
-export { UserModel } from '../modules/user/user.model';
-export { ProjectModel } from '../modules/project/project.model';
-export { UserProjectJunctionModel } from './userProject.model';
-import { DBConfig } from '../config/sequelize.init';
-import { ProjectModel } from '../modules/project/project.model';
-import { TaskModel } from '../modules/task/task.model';
-import { UserModel } from '../modules/user/user.model';
-import { UserProjectJunctionModel } from './userProject.model';
+import { DBConfig } from '../config/sequelize.init.js';
+import { ProjectModel } from '../modules/project/project.model.js';
+import { InvitationModel } from '../modules/invitation/invitation.model.js';
+import { TaskModel } from '../modules/task/task.model.js';
+import { UserModel } from '../modules/user/user.model.js';
+import { UserProjectJunctionModel } from './userProject.model.js';
 
 // ========== USER PROJECT ASSOCIATION (Membership / user member of projects)=================
 UserModel.belongsToMany(ProjectModel, {
@@ -68,6 +66,30 @@ TaskModel.belongsTo(UserModel, {
   foreignKey: 'createdBy',
   as: 'reporter',
 });
+// =====================================================================
+
+// ================= PROJECT INVITATION ASSOCIATION ====================
+
+ProjectModel.hasMany(InvitationModel, {
+  foreignKey: 'projectId',
+  as: 'invitations',
+});
+
+InvitationModel.belongsTo(ProjectModel, {
+  foreignKey: 'projectId',
+  as: 'project'
+});
+
+UserModel.hasMany(InvitationModel, {
+  foreignKey: 'invitedBy',
+  as: 'sendInvitations',
+});
+
+InvitationModel.belongsTo(UserModel, {
+  foreignKey: 'invitedBy',
+  as: 'invitedByUser'
+})
+
 // =====================================================================
 
 await DBConfig.sequelize.sync({ alter: true });

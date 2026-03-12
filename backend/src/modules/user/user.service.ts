@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
-import { ProjectModel, UserModel } from '../../models';
+import { UserModel } from './user.model.js';
+import { ProjectModel } from '../project/project.model.js';
 
 export class UserService {
   getUser = async (email: string, password: string) => {

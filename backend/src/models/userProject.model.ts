@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { DBConfig } from '../config/sequelize.init';
+import { DBConfig } from '../config/sequelize.init.js';
 
 export const UserProjectJunctionModel = DBConfig.sequelize.define(
   'userProject',

@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { DBConfig } from '../../config/sequelize.init';
+import { DBConfig } from '../../config/sequelize.init.js';
 
 export const ProjectModel = DBConfig.sequelize.define(
   'project',
@@ -35,6 +35,7 @@ export const ProjectModel = DBConfig.sequelize.define(
   },
   {
     paranoid: true,
+    tableName: 'projects',
     defaultScope: {
       attributes: {
         exclude: ['deletedAt'],

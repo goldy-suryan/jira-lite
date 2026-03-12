@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { DBConfig } from '../../config/sequelize.init';
+import { DBConfig } from '../../config/sequelize.init.js';
 
 export const UserModel = DBConfig.sequelize.define(
   'user',
@@ -33,6 +33,7 @@ export const UserModel = DBConfig.sequelize.define(
   },
   {
     paranoid: true,
+    tableName: 'users',
     defaultScope: {
       attributes: { exclude: ['password', 'deletedAt'] },
     },

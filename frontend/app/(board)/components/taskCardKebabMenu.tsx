@@ -1,7 +1,7 @@
 'use client';
 
 import { DELETE_TASK } from '@/app/graphql/mutations/board.mutation';
-import { GET_PROJECT_BY_ID } from '@/app/graphql/queries/project.query';
+import { GET_PROJECT_BY_ID } from '@/app/graphql/queries/board.query';
 import { useMutation } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -77,7 +77,8 @@ export const TaskCardKebabMenu = ({ card }) => {
         >
           <button
             className="block w-full text-left px-4 py-2 text-white hover:bg-zinc-700 cursor-pointer"
-            onClick={() => {
+            onClick={(e) => {
+              e?.stopPropagation();
               setMenuOpen(false);
               setModalOpen(true);
             }}
@@ -86,7 +87,8 @@ export const TaskCardKebabMenu = ({ card }) => {
           </button>
           <button
             className="block w-full text-left px-4 py-2 text-white hover:bg-zinc-700 cursor-pointer"
-            onClick={() => {
+            onClick={(e) => {
+              e?.stopPropagation();
               setMenuOpen(false);
               setOpenDialog(true);
             }}

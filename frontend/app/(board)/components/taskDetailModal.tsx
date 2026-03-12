@@ -1,6 +1,6 @@
 'use client';
 
-import { GET_TASK } from '@/app/graphql/queries/task.query';
+import { GET_TASK } from '@/app/graphql/queries/board.query';
 import { formatDate, priorityBackground } from '@/app/utils/helperFunc';
 import { useQuery } from '@apollo/client/react';
 import { useEffect, useRef, useState } from 'react';
@@ -62,6 +62,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
       aria-describedby="task-modal-desc"
       onPointerDown={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
     >
       <div
         ref={modalRef}

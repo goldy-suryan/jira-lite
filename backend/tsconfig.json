@@ -11,9 +11,9 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "esnext",
+    "module": "nodenext",
     "target": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     // "types": [],
     // For nodejs:
     // "lib": ["esnext"],
@@ -36,7 +36,7 @@
     // "noUnusedParameters": true,
     // "noFallthroughCasesInSwitch": true,
     // "noPropertyAccessFromIndexSignature": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
 
     // Recommended Options
     "strict": true,

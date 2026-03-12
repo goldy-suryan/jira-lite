@@ -1,15 +1,18 @@
-import type { ProjectController } from '../modules/project/project.controller';
-import type { TaskController } from '../modules/task/task.contoller';
-import { unauthorizedError } from '../utils/helperFunc';
-import { projectResolver } from './resolvers/project-resolver';
-import { taskResolver } from './resolvers/task-resolver';
-import { userResolver } from './resolvers/user-resolver';
+import type { InvitationController } from '../modules/invitation/invitation.controller.js';
+import type { ProjectController } from '../modules/project/project.controller.js';
+import type { TaskController } from '../modules/task/task.contoller.js';
+import { unauthorizedError } from '../utils/helperFunc.js';
+import { invitationResolver } from './resolvers/invitation-resolver.js';
+import { projectResolver } from './resolvers/project-resolver.js';
+import { taskResolver } from './resolvers/task-resolver.js';
+import { userResolver } from './resolvers/user-resolver.js';
 
 export const resolvers = {
   Query: {
     ...projectResolver,
     ...taskResolver,
     ...userResolver,
+    ...invitationResolver,
   },
 
   Mutation: {
@@ -66,6 +69,31 @@ export const resolvers = {
         throw unauthorizedError();
       }
       return taskCtrl.removeTask(args.taskId);
+    },
+
+    sendProjectInvitation(
+      parent: any,
+      args: any,
+      { user, projectCtrl }: { user: any; projectCtrl: ProjectController },
+    ) {
+      if (!user) {
+        throw unauthorizedError();
+      }
+      return projectCtrl.sendProjectInvitation(user, args);
+    },
+
+    invitationResponse: (
+      parent,
+      args,
+      {
+        user,
+        invitationCtrl,
+      }: { user: any; invitationCtrl: InvitationController },
+    ) => {
+      if (!user) {
+        throw unauthorizedError();
+      }
+      return invitationCtrl.invitationResponse(args);
     },
   },
 };

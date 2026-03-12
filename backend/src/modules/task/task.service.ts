@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize';
-import { ProjectModel } from '../project/project.model';
-import { UserModel } from '../user/user.model';
-import { TaskModel } from './task.model';
+import { ProjectModel } from '../project/project.model.js';
+import { UserModel } from '../user/user.model.js';
+import { TaskModel } from './task.model.js';
 
 export class TaskService {
   getTaskDetail = async (id: string) => {
@@ -17,8 +17,8 @@ export class TaskService {
         },
         {
           model: ProjectModel,
-          as: 'project'
-        }
+          as: 'project',
+        },
       ],
     });
   };

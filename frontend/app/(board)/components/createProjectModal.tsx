@@ -1,7 +1,7 @@
 'use client';
 
 import { CREATE_PROJECT } from '@/app/graphql/mutations/board.mutation';
-import { GET_USER_PROJECTS } from '@/app/graphql/queries/project.query';
+import { GET_USER_PROJECTS } from '@/app/graphql/queries/board.query';
 import { useAppSelector } from '@/app/state/hooks';
 import { useMutation } from '@apollo/client/react';
 import { useState } from 'react';

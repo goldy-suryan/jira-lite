@@ -14,12 +14,13 @@ import fs from 'node:fs';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ValidationError } from 'sequelize';
-import { ProjectController } from './modules/project/project.controller';
-import { schema } from './graphql-schema/schema';
-import { UserRoute } from './modules/user/user.route';
-import { unauthorizedError } from './utils/helperFunc';
-import { authenticateToken } from './utils/validateToken';
-import { TaskController } from './modules/task/task.contoller';
+import { schema } from './graphql-schema/schema.js';
+import { ProjectController } from './modules/project/project.controller.js';
+import { TaskController } from './modules/task/task.contoller.js';
+import { UserRoute } from './modules/user/user.route.js';
+import { unauthorizedError } from './utils/helperFunc.js';
+import { authenticateToken } from './utils/validateToken.js';
+import { InvitationController } from './modules/invitation/invitation.controller.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -35,7 +36,7 @@ export class App {
   constructor() {
     this.app = express();
     this.server = new ApolloServer({
-      schema: schema,
+      schema,
       formatError: (formattedError, error) => {
         return { message: formattedError.message, error };
       },
@@ -73,6 +74,7 @@ export class App {
               user,
               projectCtrl: new ProjectController(),
               taskCtrl: new TaskController(),
+              invitationCtrl: new InvitationController(),
             };
           }
           throw unauthorizedError();

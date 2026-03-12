@@ -11,7 +11,7 @@ const BoardLayout = ({ children }: { children: ReactNode }) => {
   const userSelector = useAppSelector((state) => state?.user?.user);
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white px-6 pt-8 grid grid-cols-[180px_1fr] gap-8">
+    <main className="min-h-screen bg-gray-900 text-white px-6 pt-8 grid grid-cols-[180px_1fr] gap-8">
       {/* Sidebar */}
       <LeftNav />
 

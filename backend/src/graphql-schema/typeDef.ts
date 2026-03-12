@@ -49,4 +49,18 @@ export const typeDefs = `#graphql
         reporter: User
         project: Project
     }
+
+    enum InvitationStatus {
+        PENDING
+        ACCEPTED
+        DECLINED
+    }
+
+    type Invitation {
+        email: String
+        status: InvitationStatus
+        projectId: ID
+        project: Project
+        invitedByUser: User
+    }
 `;

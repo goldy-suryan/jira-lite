@@ -7,12 +7,13 @@ import {
 import {
   GET_ALL_USERS,
   GET_PROJECT_BY_ID,
-} from '@/app/graphql/queries/project.query';
+} from '@/app/graphql/queries/board.query';
 import { useAppSelector } from '@/app/state/hooks';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ConfirmDialog } from './confirmDialog';
+import { SEND_INVITATION } from '@/app/graphql/mutations/invitation.mutation';
 
 const formInitialValue = {
   title: '',
@@ -53,6 +54,7 @@ export const CreateOrUpdateTaskModal = ({
   const [updateTask] = useMutation(UPDATE_TASK, {
     refetchQueries: [queryToRefetch],
   });
+  const [sendProjectInvitation] = useMutation(SEND_INVITATION);
 
   useEffect(() => {
     if (task) {
@@ -101,7 +103,7 @@ export const CreateOrUpdateTaskModal = ({
         });
       }
     } catch (e) {
-      console.log(e, 'error while creating project');
+      console.log(e, 'error while creating/updating task');
     } finally {
       setFormValue(formInitialValue);
       onClose();
@@ -120,15 +122,32 @@ export const CreateOrUpdateTaskModal = ({
     }
   };
 
-  const sendInvitation = () => {
-    // need to send invitation/email to user
-    console.log(formValue.assigneeId, 'send invitation/email to this user');
+  const sendInvitation = async () => {
+    try {
+      const sendEmailTo = userList?.getAllUsers.find(
+        (user) => user.id == formValue.assigneeId,
+      );
+      await sendProjectInvitation({
+        variables: {
+          projectId: params.projectId,
+          email: sendEmailTo?.email,
+        },
+      });
+      setOpenDialog(false);
+    } catch (e) {
+      console.log(e, 'error while sending invitation');
+    }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-transparent backdrop-blur-xl flex items-center justify-center z-50">
+    <div
+      className="fixed inset-0 bg-transparent backdrop-blur-xl flex items-center justify-center z-50"
+      onPointerDown={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
+    >
       <div className="bg-white/15 rounded-lg p-6 w-full max-w-md mx-4">
         <h2 className="text-xl font-semibold mb-4 text-white">
           {task ? 'Edit' : 'Create'} Task
@@ -234,7 +253,7 @@ export const CreateOrUpdateTaskModal = ({
           <input
             type="date"
             id="date"
-            min={new Date().toISOString().split("T")[0]}
+            min={new Date().toISOString().split('T')[0]}
             className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white"
             value={formValue.dueDate}
             onClick={(e) => {
@@ -266,17 +285,20 @@ export const CreateOrUpdateTaskModal = ({
             </button>
           </div>
         </form>
-        <ConfirmDialog
-          heading="Confirm Invite"
-          isOpen={openDialog}
-          onConfirm={sendInvitation}
-          onCancel={() => {
-            setOpenDialog(false);
-            setFormValue((prev) => ({ ...prev, assigneeId: '' }));
-          }}
-          message="User is not the member of project. Send Invitation?"
-          btnText="Invite"
-        />
+        {openDialog && (
+          <ConfirmDialog
+            heading="Confirm Invite"
+            isOpen={openDialog}
+            onConfirm={sendInvitation}
+            onCancel={(e) => {
+              e.stopPropagation();
+              setOpenDialog(false);
+              setFormValue((prev) => ({ ...prev, assigneeId: '' }));
+            }}
+            message="User is not the member of project. Send Invitation?"
+            btnText="Invite"
+          />
+        )}
       </div>
     </div>
   );

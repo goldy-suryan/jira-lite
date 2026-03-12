@@ -1,7 +1,11 @@
+import crypto from 'node:crypto';
 import type { Transaction } from 'sequelize';
-import { ProjectModel } from './project.model';
-import { UserModel, UserProjectJunctionModel } from '../../models';
-import { TaskModel } from '../task/task.model';
+import { UserProjectJunctionModel } from '../../models/userProject.model.js';
+import { sendEmailInvitation } from '../../services/email.service.js';
+import { TaskModel } from '../task/task.model.js';
+import { UserModel } from '../user/user.model.js';
+import { ProjectModel } from './project.model.js';
+import { InvitationModel } from '../invitation/invitation.model.js';
 
 export class ProjectService {
   addProject = async (
@@ -93,5 +97,25 @@ export class ProjectService {
   getAllUsers = async () => {
     const userList = await UserModel.findAll({});
     return userList;
+  };
+
+  sendProjectInvitation = async (user, body) => {
+    const token = crypto.randomBytes(32).toString('hex');
+
+    const isInvitationSent = await InvitationModel.create({
+      projectId: body.projectId,
+      invitedBy: user.id,
+      email: body.email,
+      token,
+    });
+    const projectName = await this.findProjectByPK(body.projectId);
+    const invitationLink = `${process.env.FRONTEND_URL}/invite?token=${token}`;
+    sendEmailInvitation(
+      body.email,
+      projectName?.toJSON()?.name,
+      invitationLink,
+    );
+    console.log(isInvitationSent, 'isInvitationSent');
+    return true;
   };
 }

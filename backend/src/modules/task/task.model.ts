@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { DBConfig } from '../../config/sequelize.init';
+import { DBConfig } from '../../config/sequelize.init.js';
 
 export const TaskModel = DBConfig.sequelize.define(
   'task',
@@ -56,6 +56,7 @@ export const TaskModel = DBConfig.sequelize.define(
   },
   {
     paranoid: true,
+    tableName: 'tasks',
     defaultScope: {
       attributes: { exclude: ['deletedAt'] },
     },
