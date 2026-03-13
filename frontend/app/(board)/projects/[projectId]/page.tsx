@@ -46,7 +46,7 @@ const KanbanBoard = () => {
   const [taskMap, setTaskMap] = useState<Record<string, Task>>({});
   const [taskToUpdate, setTaskToUpdate] = useState<null | Task>(null);
 
-  const { data } = useQuery<{ getProjectById: { name: string; tasks: any[] } }>(
+  const { data, loading } = useQuery<{ getProjectById: { name: string; tasks: any[] } }>(
     GET_PROJECT_BY_ID,
     {
       variables: { projectId: params.projectId },
@@ -62,7 +62,7 @@ const KanbanBoard = () => {
   });
 
   useEffect(() => {
-    if (!data?.getProjectById) {
+    if (!data?.getProjectById && !loading) {
       router.replace('/dashboard');
       return;
     }
@@ -302,7 +302,7 @@ const KanbanBoard = () => {
         <h2 className="text-xl mb-6 -mt-1">Tasks</h2>
         <CreateButton btnText={'Add Member'} open="member" />
       </div>
-      <div className="flex gap-6 min-w-max">
+      <div className="flex gap-6 overflow-x-auto max-w-full">
         {columnsData.map((col) => (
           <div
             key={col.id}

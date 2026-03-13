@@ -39,7 +39,7 @@ const BoardLayout = ({ children }: { children: ReactNode }) => {
         <hr className="border-t border-white/20" />
 
         {/* Children container with horizontal scroll */}
-        <div className="flex-1 overflow-x-auto max-w-full">{children}</div>
+        <div className="flex-1 max-w-full">{children}</div>
       </section>
     </main>
   );

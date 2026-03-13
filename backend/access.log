@@ -1,3 +1,1 @@
-::1 - - [13/Mar/2026:11:15:06 +0000] "POST /graphql HTTP/1.1" 200 805 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
-::1 - - [13/Mar/2026:11:15:06 +0000] "POST /graphql HTTP/1.1" 200 599 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
-::1 - - [13/Mar/2026:11:28:40 +0000] "POST /graphql HTTP/1.1" 200 274 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+::1 - - [13/Mar/2026:14:31:35 +0000] "POST /graphql HTTP/1.1" 500 112 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 OPR/127.0.0.0"

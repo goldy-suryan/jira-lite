@@ -27,8 +27,8 @@ export const UserModel = DBConfig.sequelize.define(
     },
     role: {
       type: DataTypes.ENUM,
-      values: ['Admin', 'User', 'Viewer'],
-      defaultValue: 'User',
+      values: ['Admin', 'Member', 'Viewer'],
+      defaultValue: 'Member',
     },
   },
   {

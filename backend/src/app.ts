@@ -90,7 +90,7 @@ export class App {
             message: 'Validation failed',
             errors: err.errors.map((e) => ({
               field: e.path,
-              message: e.message,
+              error: e.message,
             })),
           });
         }

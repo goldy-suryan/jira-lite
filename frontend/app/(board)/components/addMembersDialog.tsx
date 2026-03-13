@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const InviteMembersModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('');
@@ -24,7 +24,10 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   function addMember() {
-    if (!email.trim()) return;
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) return;
+    if (members.some((mem) => mem.email == trimmedEmail && role == mem.role))
+      return;
     setMembers((prev) => [...prev, { email: email.trim(), role }]);
     setEmail('');
     setRole('Member');
@@ -38,7 +41,6 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm p-4"
       aria-modal="true"
-      role="dialog"
       aria-labelledby="invite-modal-title"
     >
       <div
@@ -55,15 +57,13 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           </h2>
         </header>
 
-        {/* Body */}
         <section className="p-6 flex flex-col gap-6 overflow-y-auto">
-          {/* Email input */}
           <div>
             <label
               htmlFor="email-input"
               className="block text-gray-400 uppercase text-xs font-semibold tracking-wide mb-1"
             >
-              Email Address
+              Email
             </label>
             <input
               id="email-input"
@@ -76,7 +76,6 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
             />
           </div>
 
-          {/* Role dropdown */}
           <div>
             <label
               htmlFor="role-select"
@@ -96,7 +95,6 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
             </select>
           </div>
 
-          {/* Add Member button */}
           <button
             type="button"
             onClick={addMember}
@@ -105,8 +103,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
             Add Member
           </button>
 
-          {/* Members list */}
-          <div className="max-h-48 overflow-y-auto border border-gray-700 rounded-lg p-4 bg-zinc-800">
+          <div className="max-h-48 overflow-y-auto border border-gray-700 rounded-lg p-2 bg-zinc-800">
             {members.length === 0 ? (
               <p className="text-gray-500 text-center select-none">
                 No members added
@@ -116,7 +113,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
                 {members.map(({ email, role }, i) => (
                   <li
                     key={i}
-                    className="flex justify-between items-center py-2 text-gray-300"
+                    className="flex justify-between items-center py-2 text-gray-300 text-sm"
                   >
                     <span className="truncate max-w-[60%]">{email}</span>
                     <span className="text-gray-400 italic">{role}</span>
@@ -134,7 +131,6 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           </div>
         </section>
 
-        {/* Footer */}
         <footer className="flex justify-end gap-4 p-6 border-t border-gray-700">
           <button
             type="button"
@@ -159,4 +155,4 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
       </div>
     </div>
   );
-}
+};

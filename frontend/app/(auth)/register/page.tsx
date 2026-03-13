@@ -51,15 +51,11 @@ export const Register = () => {
   }, [formValues.password]);
 
   const registerUser = async () => {
-    try {
-      if (!formValues.email || !formValues.password) {
-        return setError('Missing required fields');
-      }
-      await instance.post('/auth/register', formValues);
-      router.replace('/dashboard');
-    } catch (e: any) {
-      setError(e.message);
+    if (!formValues.email || !formValues.password) {
+      return setError('Missing required fields');
     }
+    await instance.post('/auth/register', formValues);
+    router.replace('/dashboard');
   };
 
   return (

@@ -3,17 +3,30 @@
 import {
   ApolloClient,
   ApolloLink,
+  CombinedGraphQLErrors,
+  CombinedProtocolErrors,
   HttpLink,
   InMemoryCache,
 } from '@apollo/client';
-import { SetContextLink } from '@apollo/client/link/context';
+import { ErrorLink } from '@apollo/client/link/error';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { OperationTypeNode } from 'graphql';
 import { createClient } from 'graphql-ws';
+import toast from 'react-hot-toast';
 
 const httpLink = new HttpLink({
   uri: 'http://localhost:5000/graphql',
   credentials: 'include',
+});
+
+const errorLink = new ErrorLink(({ error, operation }) => {
+  if (CombinedGraphQLErrors.is(error)) {
+    error.errors.forEach(({ message, locations, path }) => toast(`${message}`));
+  } else if (CombinedProtocolErrors.is(error)) {
+    error.errors.forEach(({ message, extensions }) => toast(message));
+  } else {
+    toast(`${error.message}`);
+  }
 });
 
 const wsLink = new GraphQLWsLink(
@@ -31,20 +44,6 @@ const wsLink = new GraphQLWsLink(
   }),
 );
 
-const authLink = new SetContextLink(({ headers }, operation) => {
-  let token: string | null = null;
-  const isBrowser = () => typeof globalThis !== 'undefined';
-  if (isBrowser()) {
-    token = localStorage.getItem('token');
-  }
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : null,
-    },
-  };
-});
-
 const splitLink = ApolloLink.split(
   ({ operationType }) => operationType == OperationTypeNode.SUBSCRIPTION,
   wsLink,
@@ -53,5 +52,5 @@ const splitLink = ApolloLink.split(
 
 export const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
-  link: authLink.concat(splitLink), // authLink.concat(httpLink) when not using subscription,
+  link: ApolloLink.from([errorLink, splitLink]), // authLink.concat(httpLink) when not using subscription,
 });

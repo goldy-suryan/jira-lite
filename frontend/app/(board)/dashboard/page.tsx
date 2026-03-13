@@ -22,11 +22,11 @@ export default function DashboardLayout() {
   return (
     <div className="flex-grow">
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-xl font-semibold mb-4">Your Projects</h2>
+        <h2 className="text-xl font-semibold mb-2">Your Projects</h2>
         <CreateButton btnText={'Create Project'} open="project" />
       </div>
 
-      <div className="flex justify-center mt-[5rem]">
+      <div className="flex justify-center mt-[2rem]">
         {!(myProjects?.projects ?? []).length && <span>No Projects yet</span>}
       </div>
       <div className="grid grid-cols-2 gap-8 max-w-xxl">
