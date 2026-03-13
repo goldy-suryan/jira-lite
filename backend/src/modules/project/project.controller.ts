@@ -56,4 +56,8 @@ export class ProjectController {
     const sendInvitation = await this.projectSrvc.sendProjectInvitation(user, body);
     return sendInvitation;
   };
+
+  getProjectUsers = async (projectId) => {
+    return await this.projectSrvc.getProjectUsers(projectId);
+  }
 }

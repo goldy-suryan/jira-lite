@@ -118,4 +118,17 @@ export class ProjectService {
     console.log(isInvitationSent, 'isInvitationSent');
     return true;
   };
+
+  getProjectUsers = async (projectId) => {
+    const projectUsers = await ProjectModel.findByPk(projectId, {
+      include: [
+        {
+          model: UserModel,
+          as: 'users',
+          through: { attributes: [] },
+        },
+      ],
+    });
+    return projectUsers;
+  };
 }

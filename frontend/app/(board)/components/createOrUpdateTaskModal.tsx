@@ -4,16 +4,16 @@ import {
   CREATE_TASK,
   UPDATE_TASK,
 } from '@/app/graphql/mutations/board.mutation';
+import { SEND_INVITATION } from '@/app/graphql/mutations/invitation.mutation';
 import {
-  GET_ALL_USERS,
   GET_PROJECT_BY_ID,
+  GET_PROJECT_USERS,
 } from '@/app/graphql/queries/board.query';
 import { useAppSelector } from '@/app/state/hooks';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ConfirmDialog } from './confirmDialog';
-import { SEND_INVITATION } from '@/app/graphql/mutations/invitation.mutation';
 
 const formInitialValue = {
   title: '',
@@ -47,7 +47,12 @@ export const CreateOrUpdateTaskModal = ({
     (state) => state.project.currentProject,
   );
 
-  const { data: userList } = useQuery<{ getAllUsers: any }>(GET_ALL_USERS);
+  const { data: projectUsers } = useQuery<any>(
+    GET_PROJECT_USERS,
+    {
+      variables: { projectId: params.projectId },
+    },
+  );
   const [createTask] = useMutation(CREATE_TASK, {
     refetchQueries: [queryToRefetch],
   });
@@ -124,7 +129,7 @@ export const CreateOrUpdateTaskModal = ({
 
   const sendInvitation = async () => {
     try {
-      const sendEmailTo = userList?.getAllUsers.find(
+      const sendEmailTo = projectUsers?.getProjectUsers.users?.find(
         (user) => user.id == formValue.assigneeId,
       );
       await sendProjectInvitation({
@@ -238,7 +243,7 @@ export const CreateOrUpdateTaskModal = ({
             }}
           >
             <option value="">Select</option>
-            {userList?.getAllUsers?.map((user: any) => {
+            {projectUsers?.getProjectUsers?.users?.map((user: any) => {
               return (
                 <option key={user?.id} value={user?.id}>
                   {user?.name} &nbsp;&nbsp;{getOwner(user)}

@@ -64,6 +64,21 @@ export const GET_ALL_USERS = gql`
   }
 `;
 
+export const GET_PROJECT_USERS = gql`
+  query GetProjectUsers($projectId: ID!) {
+    getProjectUsers(projectId: $projectId) {
+      name
+      key
+      description
+      users {
+        id
+        name
+        email
+      }
+    }
+  }
+`;
+
 export const GET_TASK = gql`
   query GetTask($taskId: ID!) {
     getTaskDetail(id: $taskId) {

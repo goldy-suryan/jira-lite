@@ -1,18 +1,35 @@
 'use client';
 
+import { SEND_INVITATION } from '@/app/graphql/mutations/invitation.mutation';
+import { GET_ALL_USERS } from '@/app/graphql/queries/board.query';
+import { useAppSelector } from '@/app/state/hooks';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 
 export const InviteMembersModal = ({ isOpen, onClose }) => {
+  const params = useParams();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const userSelector = useAppSelector((state) => state.user.user);
+
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('Member');
   const [members, setMembers] = useState<any>([]);
+  const [result, setResult] = useState([]);
   const modalRef = useRef<any>(null);
 
-  // Close modal on outside click
+  const { data: userList } = useQuery<{ getAllUsers: any }>(GET_ALL_USERS);
+  const [sendProjectInvitation] = useMutation(SEND_INVITATION);
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         onClose();
+      }
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setResult([]);
       }
     }
     if (isOpen) {
@@ -23,7 +40,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  function addMember() {
+  const addMember = () => {
     const trimmedEmail = email.trim();
     if (!trimmedEmail) return;
     if (members.some((mem) => mem.email == trimmedEmail && role == mem.role))
@@ -31,11 +48,45 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
     setMembers((prev) => [...prev, { email: email.trim(), role }]);
     setEmail('');
     setRole('Member');
-  }
+  };
 
-  function removeMember(index) {
+  const removeMember = (index) => {
     setMembers((prev) => prev.filter((_, i) => i !== index));
-  }
+  };
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    search(value);
+  };
+
+  const search = (term) => {
+    if (!term) return setResult([]);
+    const filteredResult = userList?.getAllUsers.filter(
+      (item) =>
+        (item.email.toLowerCase().includes(term.toLowerCase()) ||
+          item.name.toLowerCase().includes(term.toLowerCase())) &&
+        userSelector.id != item.id,
+    );
+    setResult(filteredResult);
+  };
+
+  const sendBulkInvitation = async () => {
+    try {
+      for (let mem of members) {
+        await sendProjectInvitation({
+          variables: {
+            projectId: params.projectId,
+            email: mem.email,
+          },
+        });
+      }
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      onClose();
+    }
+  };
 
   return (
     <div
@@ -58,7 +109,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
         </header>
 
         <section className="p-6 flex flex-col gap-6 overflow-y-auto">
-          <div>
+          <div className="relative" ref={dropdownRef}>
             <label
               htmlFor="email-input"
               className="block text-gray-400 uppercase text-xs font-semibold tracking-wide mb-1"
@@ -69,11 +120,29 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
               id="email-input"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               placeholder="name@example.com"
               className="w-full rounded-lg bg-zinc-800 border border-gray-700 p-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
+            {result?.length > 0 && (
+              <ul className="absolute z-10 max-h-48 w-full overflow-auto rounded-md bg-gray-500 border border-gray-700 shadow-lg">
+                {result.map((item: any) => {
+                  return (
+                    <li
+                      className="cursor-pointer px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
+                      key={item.id}
+                      onClick={() => {
+                        setEmail(item.email);
+                        setResult([]);
+                      }}
+                    >
+                      {item.name}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
 
           <div>
@@ -141,7 +210,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           </button>
           <button
             type="button"
-            onClick={() => alert(`Invited ${members.length} member(s)`)}
+            onClick={sendBulkInvitation}
             disabled={members.length === 0}
             className={`rounded-md px-6 py-2 font-semibold transition ${
               members.length === 0

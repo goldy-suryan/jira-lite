@@ -45,4 +45,11 @@ export const projectResolver = {
     }
     return projectCtrl.getUserProjects(user.id);
   },
+
+  getProjectUsers(parent: any, args: any, { user, projectCtrl}: {user: any, projectCtrl: ProjectController}) {
+    if(!user) {
+      throw unauthorizedError();
+    }
+    return projectCtrl.getProjectUsers(args.projectId);
+  }
 };

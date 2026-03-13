@@ -21,11 +21,13 @@ const httpLink = new HttpLink({
 
 const errorLink = new ErrorLink(({ error, operation }) => {
   if (CombinedGraphQLErrors.is(error)) {
-    error.errors.forEach(({ message, locations, path }) => toast(`${message}`));
+    error.errors.forEach(({ message, locations, path }) =>
+      toast.error(`${message}`),
+    );
   } else if (CombinedProtocolErrors.is(error)) {
-    error.errors.forEach(({ message, extensions }) => toast(message));
+    error.errors.forEach(({ message, extensions }) => toast.error(message));
   } else {
-    toast(`${error.message}`);
+    toast.error(`${error.message}`);
   }
 });
 
