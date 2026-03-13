@@ -11,9 +11,11 @@ export const UserProjectJunctionModel = DBConfig.sequelize.define(
     },
     userId: {
       type: DataTypes.UUID,
+      allowNull: false,
     },
     projectId: {
       type: DataTypes.UUID,
+      allowNull: false,
     },
   },
   {

@@ -26,19 +26,23 @@ export default function DashboardLayout() {
         <CreateProjectButton />
       </div>
 
+      <div className="flex justify-center mt-[5rem]">
+        {!(myProjects?.projects ?? []).length && <span>No Projects yet</span>}
+      </div>
       <div className="grid grid-cols-2 gap-8 max-w-xxl">
-        {myProjects?.projects?.map((proj: any) => {
-          return (
-            <ProjectCard
-              key={proj?.id}
-              title={proj?.name}
-              keyName={proj?.key}
-              tasks={proj?.tasks?.length}
-              members={proj?.users?.length}
-              id={proj.id}
-            />
-          );
-        })}
+        {(myProjects?.projects ?? []).length > 0 &&
+          myProjects?.projects?.map((proj: any) => {
+            return (
+              <ProjectCard
+                key={proj?.id}
+                title={proj?.name}
+                keyName={proj?.key}
+                tasks={proj?.tasks?.length}
+                members={proj?.users?.length}
+                id={proj.id}
+              />
+            );
+          })}
       </div>
     </div>
   );

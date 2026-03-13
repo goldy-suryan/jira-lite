@@ -7,7 +7,7 @@ export const SEND_INVITATION = gql`
 `;
 
 export const ACCEPT_INVITATION = gql`
-  mutation AcceptInvitation($userId: ID!, $token: String!, $status: String!) {
-    invitationResponse(userId: $userId, token: $token, status: $status)
+  mutation AcceptInvitation($token: String!, $status: String!) {
+    invitationResponse(token: $token, status: $status)
   }
 `;

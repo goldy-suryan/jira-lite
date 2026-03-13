@@ -35,9 +35,8 @@ const InvitePage = () => {
     try {
       await acceptProjectInvitation({
         variables: {
-          userId: userSelector.id,
           token: params?.get('token'),
-          status: resp,
+          status: resp.toUpperCase(),
         },
       });
       resp == 'accepted'

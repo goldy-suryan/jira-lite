@@ -21,30 +21,36 @@ export class InvitationService {
         },
       ],
     });
-    console.log(foundInvitation?.toJSON(), 'foundInvitation');
+
     return foundInvitation;
   };
 
-  respondToInvitation = async (body) => {
+  respondToInvitation = async (body, userId, transaction) => {
     const status = body.status?.toUpperCase();
     const query = {
       token: body.token,
     };
 
-    let invitation = await InvitationModel.findOne({
+    let invitation = await InvitationModel.findOne<any>({
       where: query,
+      transaction,
     });
-    
+
     if (!invitation) throw new GraphQLError('Invitation not found');
 
-    await InvitationModel.update({ status }, { where: query });
+    invitation.status = status;
+    await invitation.save({ transaction });
 
-    console.log(body.userId, 'userIc')
-    if (body.resp == 'accepted') {
-      await UserProjectJunctionModel.create({
-        userId: body.userId,
-        projectId: invitation.toJSON().projectId,
-      });
+    if (status == 'ACCEPTED') {
+      await UserProjectJunctionModel.create(
+        {
+          userId,
+          projectId: invitation.toJSON().projectId,
+        },
+        {
+          transaction,
+        },
+      );
     }
     return true;
   };

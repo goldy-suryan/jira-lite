@@ -20,7 +20,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { CreateOrUpdateTaskModal } from '../../components/createOrUpdateTaskModal';
 import { DroppableColumn } from '../../components/dropableColumn';
@@ -37,6 +37,7 @@ const columnsData = [
 const KanbanBoard = () => {
   const params = useParams();
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [taskGroup, setTaskGroup] = useState<Record<string, Task[]>>({});
@@ -60,6 +61,10 @@ const KanbanBoard = () => {
   });
 
   useEffect(() => {
+    if (!data?.getProjectById) {
+      router.replace('/dashboard');
+      return router.refresh();
+    }
     dispatch(addTitle(data?.getProjectById?.name ?? 'Projects'));
     dispatch(addCurrentProject(data?.getProjectById));
 

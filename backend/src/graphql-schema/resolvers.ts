@@ -93,7 +93,7 @@ export const resolvers = {
       if (!user) {
         throw unauthorizedError();
       }
-      return invitationCtrl.invitationResponse(args);
+      return invitationCtrl.invitationResponse(args, user.id);
     },
   },
 };

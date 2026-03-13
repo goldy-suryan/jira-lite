@@ -164,7 +164,7 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, title: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3"
             placeholder="Enter task title"
             autoFocus
           />
@@ -178,7 +178,7 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white h-32"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3 h-32"
             placeholder="Enter description"
             autoFocus
           />
@@ -192,7 +192,7 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, status: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3"
           >
             <option value="todo">Todo</option>
             <option value="in_progress">In Progress</option>
@@ -207,7 +207,7 @@ export const CreateOrUpdateTaskModal = ({
           </label>
           <select
             id="priority"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3"
             value={formValue.priority}
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, priority: e.target.value }))
@@ -224,7 +224,7 @@ export const CreateOrUpdateTaskModal = ({
           </label>
           <select
             id="assign"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3"
             value={formValue.assigneeId}
             onChange={(e) => {
               setFormValue((prev) => ({ ...prev, assigneeId: e.target.value }));
@@ -254,7 +254,7 @@ export const CreateOrUpdateTaskModal = ({
             type="date"
             id="date"
             min={new Date().toISOString().split('T')[0]}
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3"
             value={formValue.dueDate}
             onClick={(e) => {
               e.preventDefault();
