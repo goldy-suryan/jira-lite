@@ -6,17 +6,18 @@ import { GET_INVITATION } from '../graphql/queries/invitation.query';
 import { ACCEPT_INVITATION } from '../graphql/mutations/invitation.mutation';
 import { useAppSelector } from '../state/hooks';
 import { GET_USER_PROJECTS } from '../graphql/queries/board.query';
+import { useEffect } from 'react';
 
 const InvitePage = () => {
   const params = useSearchParams();
   const router = useRouter();
   const userSelector = useAppSelector((state) => state.user.user);
 
-  if (!params?.get('token')) {
-    router.replace('/dashboard');
-    router.refresh();
-    return;
-  }
+  useEffect(() => {
+    if (!params?.get('token')) {
+      router.replace('/dashboard');
+    }
+  }, [params?.get('token')]);
 
   const { data } = useQuery<any>(GET_INVITATION, {
     variables: { token: params?.get('token') },

@@ -256,7 +256,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                       setComment('');
                       onClose(e);
                     }}
-                    className="rounded-md border border-gray-700 px-4 py-2 text-gray-400 hover:text-white hover:border-gray-500 transition"
+                    className="rounded-md border border-gray-700 px-6 py-2 text-gray-400 hover:text-white hover:border-gray-500 transition"
                   >
                     Cancel
                   </button>

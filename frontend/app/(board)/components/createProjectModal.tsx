@@ -50,8 +50,8 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-transparent backdrop-blur-xl flex items-center justify-center z-50">
-      <div className="bg-white/15 rounded-lg p-6 w-full max-w-md mx-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm p-4">
+      <div className="bg-[#121212] rounded-lg p-6 w-full max-w-md mx-4">
         <h2 className="text-xl font-semibold mb-4 text-white">
           Create Project
         </h2>
@@ -104,7 +104,7 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
                 setFormValue(formInitialValue);
                 onClose();
               }}
-              className="px-4 py-2 rounded-md bg-white/10 text-white hover:bg-white/20 transition"
+              className="rounded-md border border-gray-700 px-6 py-2 text-gray-400 hover:text-white hover:border-gray-500 transition"
             >
               Cancel
             </button>

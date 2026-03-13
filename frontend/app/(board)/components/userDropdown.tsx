@@ -26,7 +26,6 @@ export const UserDropdown = () => {
       await instance.post('/auth/logout', {});
       localStorage.removeItem('user');
       router.replace('/');
-      router.refresh();
     } catch (e) {
       console.log(e);
     }

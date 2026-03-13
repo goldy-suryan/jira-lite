@@ -23,6 +23,7 @@ import {
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { CreateOrUpdateTaskModal } from '../../components/createOrUpdateTaskModal';
+import { CreateButton } from '../../components/createButton';
 import { DroppableColumn } from '../../components/dropableColumn';
 import { TaskCard } from '../../components/taskCard';
 
@@ -63,7 +64,7 @@ const KanbanBoard = () => {
   useEffect(() => {
     if (!data?.getProjectById) {
       router.replace('/dashboard');
-      return router.refresh();
+      return;
     }
     dispatch(addTitle(data?.getProjectById?.name ?? 'Projects'));
     dispatch(addCurrentProject(data?.getProjectById));
@@ -83,7 +84,7 @@ const KanbanBoard = () => {
       map[task.id] = task;
     });
     setTaskMap(map);
-  }, [data]);
+  }, [data, dispatch, router]);
 
   useEffect(() => {
     if (!taskToUpdate) return;
@@ -297,7 +298,10 @@ const KanbanBoard = () => {
         setActiveTask(null);
       }}
     >
-      <h2 className="text-xl mb-6 -mt-1">Tasks</h2>
+      <div className="flex space-betweenflex justify-between items-center mb-8">
+        <h2 className="text-xl mb-6 -mt-1">Tasks</h2>
+        <CreateButton btnText={'Add Member'} open="member" />
+      </div>
       <div className="flex gap-6 min-w-max">
         {columnsData.map((col) => (
           <div

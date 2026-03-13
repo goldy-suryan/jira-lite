@@ -143,18 +143,18 @@ export const CreateOrUpdateTaskModal = ({
 
   return (
     <div
-      className="fixed inset-0 bg-transparent backdrop-blur-xl flex items-center justify-center z-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm p-4"
       onPointerDown={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="bg-white/15 rounded-lg p-6 w-full max-w-md mx-4">
+      <div className="bg-[#121212] rounded-lg p-6 w-full max-w-md mx-4">
         <h2 className="text-xl font-semibold mb-4 text-white">
           {task ? 'Edit' : 'Create'} Task
         </h2>
         <form className="text-sm">
           {/* Title */}
-          <label htmlFor="taskTitle" className="block text-white/80">
+          <label htmlFor="taskTitle" className="block text-white/80 mb-2">
             Title
           </label>
           <input
@@ -164,12 +164,12 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, title: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4"
             placeholder="Enter task title"
             autoFocus
           />
           {/* Description */}
-          <label htmlFor="description" className="block text-white/80">
+          <label htmlFor="description" className="block text-white/80 mb-2">
             Description
           </label>
           <textarea
@@ -178,12 +178,12 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3 h-32"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4 h-32"
             placeholder="Enter description"
             autoFocus
           />
           {/* Status */}
-          <label htmlFor="status" className="block text-white/80">
+          <label htmlFor="status" className="block text-white/80 mb-2">
             Status
           </label>
           <select
@@ -192,7 +192,7 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, status: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4"
           >
             <option value="todo">Todo</option>
             <option value="in_progress">In Progress</option>
@@ -202,12 +202,12 @@ export const CreateOrUpdateTaskModal = ({
           </select>
 
           {/* Priority */}
-          <label htmlFor="priority" className="block text-white/80">
+          <label htmlFor="priority" className="block text-white/80 mb-2">
             Priority
           </label>
           <select
             id="priority"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4"
             value={formValue.priority}
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, priority: e.target.value }))
@@ -219,12 +219,12 @@ export const CreateOrUpdateTaskModal = ({
           </select>
 
           {/* Assign */}
-          <label htmlFor="assign" className="block text-white/80">
+          <label htmlFor="assign" className="block text-white/80 mb-2">
             Assign to
           </label>
           <select
             id="assign"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4"
             value={formValue.assigneeId}
             onChange={(e) => {
               setFormValue((prev) => ({ ...prev, assigneeId: e.target.value }));
@@ -247,14 +247,14 @@ export const CreateOrUpdateTaskModal = ({
             })}
           </select>
 
-          <label htmlFor="date" className="block text-white/80">
+          <label htmlFor="date" className="block text-white/80 mb-2">
             Due Date
           </label>
           <input
             type="date"
             id="date"
             min={new Date().toISOString().split('T')[0]}
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-3"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4"
             value={formValue.dueDate}
             onClick={(e) => {
               e.preventDefault();
@@ -272,7 +272,7 @@ export const CreateOrUpdateTaskModal = ({
                 setFormValue(formInitialValue);
                 onClose();
               }}
-              className="px-4 py-2 rounded-md bg-white/10 text-white hover:bg-white/20 transition cursor-pointer"
+              className="rounded-md border border-gray-700 px-6 py-2 text-gray-400 hover:text-white hover:border-gray-500 transition"
             >
               Cancel
             </button>
