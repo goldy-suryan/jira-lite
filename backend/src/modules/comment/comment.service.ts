@@ -9,7 +9,6 @@ export class CommentService {
       taskId: body.taskId,
       message: body.message,
     });
-
     const fullComment = await CommentModel.findByPk(comment.id, {
       include: [
         {
@@ -23,5 +22,16 @@ export class CommentService {
       commentAdded: fullComment,
     });
     return fullComment;
+  };
+
+  getAllTaskComments = async (taskId: string) => {
+    const commentList = await CommentModel.findAll({
+      where: {
+        taskId,
+      },
+      include: [{ model: UserModel, as: 'user' }],
+    });
+    console.log(commentList, 'comment list', taskId);
+    return commentList;
   };
 }

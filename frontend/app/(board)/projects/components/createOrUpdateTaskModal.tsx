@@ -13,7 +13,7 @@ import { useAppSelector } from '@/app/state/hooks';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { ConfirmDialog } from './confirmDialog';
+import { ConfirmDialog } from '../../components/confirmDialog';
 
 const formInitialValue = {
   title: '',

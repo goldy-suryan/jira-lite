@@ -5,7 +5,7 @@ import { GET_PROJECT_BY_ID } from '@/app/graphql/queries/board.query';
 import { useMutation } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { ConfirmDialog } from './confirmDialog';
+import { ConfirmDialog } from '../../components/confirmDialog';
 import { CreateOrUpdateTaskModal } from './createOrUpdateTaskModal';
 
 export const TaskCardKebabMenu = ({ card }) => {

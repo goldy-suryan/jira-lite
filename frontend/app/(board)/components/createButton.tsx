@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { CreateProjectModal } from './createProjectModal';
-import { InviteMembersModal } from './addMembersDialog';
+import { CreateProjectModal } from '../dashboard/components/createProjectModal';
+import { InviteMembersModal } from '../projects/components/addMembersDialog';
 
 export const CreateButton = ({ btnText, open }) => {
   const [projectModalOpen, setProjectModalOpen] = useState(false);

@@ -1,15 +1,14 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAppSelector } from '@/app/state/hooks';
-import { instance } from '@/app/utils/interceptors';
+
 import { UserIcon } from '@/app/(auth)/components/icons';
+import { instance } from '@/app/utils/interceptors';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
 export const UserDropdown = () => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const userSelector = useAppSelector((state: any) => state.user);
 
   useEffect(() => {
     function handleClickOutside(event: any) {

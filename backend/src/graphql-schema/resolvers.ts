@@ -4,6 +4,7 @@ import type { InvitationController } from '../modules/invitation/invitation.cont
 import type { ProjectController } from '../modules/project/project.controller.js';
 import type { TaskController } from '../modules/task/task.contoller.js';
 import { unauthorizedError } from '../utils/helperFunc.js';
+import { commentResolver } from './resolvers/comment-resolver.js';
 import { invitationResolver } from './resolvers/invitation-resolver.js';
 import { projectResolver } from './resolvers/project-resolver.js';
 import { taskResolver } from './resolvers/task-resolver.js';
@@ -15,6 +16,7 @@ export const resolvers = {
     ...taskResolver,
     ...userResolver,
     ...invitationResolver,
+    ...commentResolver,
   },
 
   Mutation: {

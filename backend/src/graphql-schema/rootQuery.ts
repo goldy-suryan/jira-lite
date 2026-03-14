@@ -8,5 +8,6 @@ export const RootQuery = `#graphql
         getUserProjects(id: ID!): User
         getProjectUsers(projectId: ID!): Project!
         getInvitation(token: String): Invitation
+        getAllTaskComments(taskId: ID!): [Comment]
     }
 `;

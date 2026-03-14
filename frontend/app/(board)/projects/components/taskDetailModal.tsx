@@ -2,49 +2,46 @@
 
 import { ADD_COMMENT } from '@/app/graphql/mutations/board.mutation';
 import { GET_TASK } from '@/app/graphql/queries/board.query';
-import { COMMENT_ADDED } from '@/app/graphql/subscriptions/board.subscriptions';
+import { GET_ALL_TASK_COMMENTS } from '@/app/graphql/queries/comment.query';
+import { COMMENT_ADDED } from '@/app/graphql/subscriptions/comment.subscriptions';
 import { formatDate, priorityBackground } from '@/app/utils/helperFunc';
 import { useMutation, useQuery, useSubscription } from '@apollo/client/react';
 import { useEffect, useRef, useState } from 'react';
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 
-// Example task data fallback
 const obj = {
   attachments: [
     { id: 1, name: 'screenshot1.png', type: 'PNG' },
     { id: 2, name: 'error-log.png', type: 'PNG' },
   ],
-  comments: [
-    {
-      id: 1,
-      author: 'John',
-      time: '2h ago',
-      text: 'I think this is related to bcrypt.',
-    },
-    {
-      id: 2,
-      author: 'Sarah',
-      time: 'Just now',
-      text: 'I reproduced it locally.',
-    },
-  ],
 };
 
 export const TaskDetailModal = ({ isOpen, onClose, task }) => {
-  const [comment, setComment] = useState('');
-  const modalRef = useRef<HTMLDivElement | null>(null);
-
   const { data, loading } = useQuery<any>(GET_TASK, {
     variables: { taskId: task.id },
   });
+  const { data: commentData, loading: commentLoading } = useQuery<any>(
+    GET_ALL_TASK_COMMENTS,
+    {
+      variables: {
+        taskId: task.id,
+      },
+    },
+  );
   const [addComment] = useMutation<any>(ADD_COMMENT);
-  const { data: subData } = useSubscription(COMMENT_ADDED, {
+  const { data: subData } = useSubscription<any>(COMMENT_ADDED, {
     variables: {
       taskId: task.id,
     },
   });
 
+  const commentsRef = useRef<HTMLDivElement | null>(null);
+  const [comment, setComment] = useState('');
+  const [commentState, setCommentState] = useState<any>([]);
+  const [tabIndex, setTabIndex] = useState(0);
+  const modalRef = useRef<HTMLDivElement>(null);
+
   const taskDetail = data?.getTaskDetail ?? null;
-  console.log(subData, 'subDAta');
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -58,6 +55,27 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    if (commentData?.getAllTaskComments && !commentLoading) {
+      setCommentState(commentData?.getAllTaskComments);
+    }
+  }, [commentData, commentLoading]);
+
+  useEffect(() => {
+    if (subData) {
+      setCommentState((prev) => [...prev, subData?.commentAdded]);
+    }
+  }, [subData]);
+
+  useEffect(() => {
+    if (commentsRef?.current) {
+      commentsRef.current.scrollTo({
+        top: commentsRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [commentState, tabIndex]);
+
   const addTaskComment = async (e) => {
     e.preventDefault();
     await addComment({
@@ -66,7 +84,6 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
         message: comment,
       },
     });
-    console.log(comment, 'comment');
     setComment('');
   };
 
@@ -86,7 +103,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
     >
       <div
         ref={modalRef}
-        className="bg-[#121212] rounded-2xl shadow-xl max-w-6xl w-full max-h-[86vh] overflow-hidden flex flex-col"
+        className="bg-[#121212] rounded-2xl shadow-xl max-w-6xl w-full min-h-[92vh] max-h-[92vh] overflow-hidden flex flex-col"
       >
         {/* Header */}
         <header className="flex justify-between items-start p-6 border-b border-gray-700">
@@ -124,10 +141,9 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
           </button>
         </header>
 
-        {/* Body */}
         <div className="flex flex-1 overflow-hidden">
           {/* Left Section */}
-          <section className="flex-1 overflow-y-auto p-6 border-r border-gray-700 flex flex-col gap-6">
+          <section className="flex-1 overflow-hidden p-6 border-r border-gray-700 flex flex-col gap-6">
             {/* Description */}
             <article>
               <h3 className="text-gray-400 uppercase text-xs font-semibold mb-2 tracking-wide">
@@ -222,65 +238,129 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
               </div>
             </article>
 
-            {/* Comments */}
-            <article className="flex flex-col gap-4">
-              <h3 className="text-gray-400 uppercase text-xs font-semibold tracking-wide">
-                Comments ({obj.comments.length})
-              </h3>
-              <div className="flex flex-col gap-3 max-h-48 overflow-y-auto pr-2">
-                {obj.comments.map(({ id, author, time, text }) => (
-                  <div
-                    key={id}
-                    className="bg-gray-800 rounded-lg p-3"
-                    aria-label={`Comment by ${author}`}
-                  >
-                    <div className="flex justify-between items-baseline mb-1">
-                      <span className="font-semibold text-gray-300">
-                        {author}
-                      </span>
-                      <time className="text-xs text-gray-500">{time}</time>
-                    </div>
-                    <p className="text-gray-300 text-sm">{text}</p>
-                  </div>
-                ))}
-              </div>
-
-              <form className="mt-2 flex flex-col gap-2">
-                <label
-                  htmlFor="comment-input"
-                  className="text-xs font-semibold text-gray-400 uppercase tracking-wide"
+            <Tabs
+              selectedIndex={tabIndex}
+              onSelect={(index) => setTabIndex(index)}
+            >
+              <TabList className="flex border-b border-gray-700">
+                <Tab
+                  className="cursor-pointer px-4 py-2 text-gray-400 font-semibold rounded-t-md hover:text-white focus:outline-none"
+                  selectedClassName="bg-[#1a1a1a] text-white border border-b-0 border-gray-600"
                 >
-                  Add a comment
-                </label>
-                <textarea
-                  id="comment-input"
-                  rows={4}
-                  className="resize-y rounded-lg bg-gray-900 border border-gray-700 p-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                  placeholder="Write a comment…"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                />
-                <div className="flex justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      setComment('');
-                      onClose(e);
-                    }}
-                    className="rounded-md border border-gray-700 px-6 py-2 text-gray-400 hover:text-white hover:border-gray-500 transition"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={addTaskComment}
-                    className="rounded-md bg-cyan-600 px-4 py-2 text-white font-semibold hover:bg-cyan-700 transition"
-                  >
-                    Post comment
-                  </button>
-                </div>
-              </form>
-            </article>
+                  Comments
+                </Tab>
+                <Tab
+                  className="cursor-pointer px-4 py-2 text-gray-400 font-semibold rounded-t-md hover:text-white focus:outline-none"
+                  selectedClassName="bg-[#1a1a1a] text-white border border-b-0 border-gray-600"
+                >
+                  Activity
+                </Tab>
+              </TabList>
+              <TabPanel className="bg-[#121212] p-6 rounded-b-md overflow-y-auto">
+                <article className="flex flex-col gap-4">
+                  {!commentLoading && (
+                    <div>
+                      <h3 className="text-gray-400 uppercase text-xs font-semibold tracking-wide mb-2">
+                        Comments ({commentState?.length})
+                      </h3>
+                      <div
+                        className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2"
+                        ref={commentsRef}
+                      >
+                        {commentState.map((cmt) => (
+                          <div
+                            key={cmt.id}
+                            className="bg-gray-800 rounded-lg p-3"
+                            aria-label={`Comment by ${cmt.user.name}`}
+                          >
+                            <div className="flex justify-between items-baseline mb-1">
+                              <span className="font-semibold text-sm text-gray-300">
+                                {cmt?.user?.name}
+                              </span>
+                              <time className="text-gray-400 text-xs">
+                                {formatDate(cmt.createdAt, true)}
+                              </time>
+                            </div>
+                            <p className="text-gray-300 text-sm">
+                              {cmt.message}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <form className="mt-2 flex flex-col gap-2">
+                    <label
+                      htmlFor="comment-input"
+                      className="text-xs font-semibold text-gray-400 uppercase tracking-wide"
+                    >
+                      Add a comment
+                    </label>
+                    <textarea
+                      id="comment-input"
+                      rows={2}
+                      className="resize-y rounded-lg bg-gray-900 border border-gray-700 p-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                      placeholder="Write a comment…"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    />
+                    <div className="flex justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          setComment('');
+                          onClose(e);
+                        }}
+                        className="rounded-md border border-gray-700 px-6 py-2 text-gray-400 hover:text-white hover:border-gray-500 transition"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={addTaskComment}
+                        disabled={!comment?.trim()}
+                        className="rounded-md bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-500 transition cursor:pointer"
+                      >
+                        Post comment
+                      </button>
+                    </div>
+                  </form>
+                </article>
+              </TabPanel>
+              <TabPanel className="bg-[#121212] p-6 rounded-b-md overflow-y-auto -mt-10">
+                <ul className="list-disc list-inside space-y-2 text-sm">
+                  <li>
+                    <span className="font-semibold text-white">Goldy</span>{' '}
+                    changed status{' '}
+                    <span className="font-mono bg-gray-800 px-1 rounded">
+                      TODO
+                    </span>{' '}
+                    →{' '}
+                    <span className="font-mono bg-gray-800 px-1 rounded">
+                      IN_PROGRESS
+                    </span>
+                  </li>
+                  <li>
+                    <span className="font-semibold text-white">Goldy</span>{' '}
+                    assigned task to{' '}
+                    <span className="font-semibold text-cyan-400">Rukhsar</span>
+                  </li>
+                  <li>
+                    <span className="font-semibold text-white">Goldy</span>{' '}
+                    changed priority{' '}
+                    <span className="font-mono bg-gray-800 px-1 rounded">
+                      LOW
+                    </span>{' '}
+                    →{' '}
+                    <span className="font-mono bg-gray-800 px-1 rounded">
+                      HIGH
+                    </span>
+                  </li>
+                </ul>
+              </TabPanel>
+            </Tabs>
+            {/* Comments */}
           </section>
 
           {/* Right Section */}

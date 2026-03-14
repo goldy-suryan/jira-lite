@@ -6,7 +6,7 @@ import { useAppSelector } from '@/app/state/hooks';
 import { useQuery } from '@apollo/client/react';
 import { useEffect, useState } from 'react';
 import { CreateButton } from '../components/createButton';
-import { ProjectCard } from '../components/projectCard';
+import { ProjectCard } from './components/projectCard';
 
 export default function DashboardLayout() {
   const userSelector = useAppSelector((state) => state.user);

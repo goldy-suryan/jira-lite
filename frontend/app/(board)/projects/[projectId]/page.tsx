@@ -22,10 +22,10 @@ import {
 } from '@dnd-kit/sortable';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { CreateOrUpdateTaskModal } from '../../components/createOrUpdateTaskModal';
+import { CreateOrUpdateTaskModal } from '../components/createOrUpdateTaskModal';
 import { CreateButton } from '../../components/createButton';
-import { DroppableColumn } from '../../components/dropableColumn';
-import { TaskCard } from '../../components/taskCard';
+import { DroppableColumn } from '../components/dropableColumn';
+import { TaskCard } from '../components/taskCard';
 
 const columnsData = [
   { id: 1, title: 'Todo', color: 'bg-cyan-700' },
