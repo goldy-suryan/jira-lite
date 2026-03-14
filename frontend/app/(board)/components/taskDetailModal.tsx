@@ -1,8 +1,10 @@
 'use client';
 
+import { ADD_COMMENT } from '@/app/graphql/mutations/board.mutation';
 import { GET_TASK } from '@/app/graphql/queries/board.query';
+import { COMMENT_ADDED } from '@/app/graphql/subscriptions/board.subscriptions';
 import { formatDate, priorityBackground } from '@/app/utils/helperFunc';
-import { useQuery } from '@apollo/client/react';
+import { useMutation, useQuery, useSubscription } from '@apollo/client/react';
 import { useEffect, useRef, useState } from 'react';
 
 // Example task data fallback
@@ -34,9 +36,16 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
   const { data, loading } = useQuery<any>(GET_TASK, {
     variables: { taskId: task.id },
   });
+  const [addComment] = useMutation<any>(ADD_COMMENT);
+  const { data: subData } = useSubscription(COMMENT_ADDED, {
+    variables: {
+      taskId: task.id,
+    },
+  });
+
   const taskDetail = data?.getTaskDetail ?? null;
-  console.log(data?.getTaskDetail, 'data', task.id);
-  // Close modal on outside click
+  console.log(subData, 'subDAta');
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -49,6 +58,18 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen, onClose]);
 
+  const addTaskComment = async (e) => {
+    e.preventDefault();
+    await addComment({
+      variables: {
+        taskId: task.id,
+        message: comment,
+      },
+    });
+    console.log(comment, 'comment');
+    setComment('');
+  };
+
   if (!isOpen) return null;
 
   if (loading) return <span className="text-xs">Loading...</span>;
@@ -57,7 +78,6 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm p-4"
       aria-modal="true"
-      role="dialog"
       aria-labelledby="task-modal-title"
       aria-describedby="task-modal-desc"
       onPointerDown={(e) => e.stopPropagation()}
@@ -212,7 +232,6 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                   <div
                     key={id}
                     className="bg-gray-800 rounded-lg p-3"
-                    role="article"
                     aria-label={`Comment by ${author}`}
                   >
                     <div className="flex justify-between items-baseline mb-1">
@@ -226,15 +245,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                 ))}
               </div>
 
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!comment.trim()) return;
-                  alert(`Posted comment: ${comment}`);
-                  setComment('');
-                }}
-                className="mt-2 flex flex-col gap-2"
-              >
+              <form className="mt-2 flex flex-col gap-2">
                 <label
                   htmlFor="comment-input"
                   className="text-xs font-semibold text-gray-400 uppercase tracking-wide"
@@ -261,7 +272,8 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                     Cancel
                   </button>
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={addTaskComment}
                     className="rounded-md bg-cyan-600 px-4 py-2 text-white font-semibold hover:bg-cyan-700 transition"
                   >
                     Post comment

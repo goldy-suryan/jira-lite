@@ -46,12 +46,11 @@ const KanbanBoard = () => {
   const [taskMap, setTaskMap] = useState<Record<string, Task>>({});
   const [taskToUpdate, setTaskToUpdate] = useState<null | Task>(null);
 
-  const { data, loading } = useQuery<{ getProjectById: { name: string; tasks: any[] } }>(
-    GET_PROJECT_BY_ID,
-    {
-      variables: { projectId: params.projectId },
-    },
-  );
+  const { data, loading } = useQuery<{
+    getProjectById: { name: string; tasks: any[] };
+  }>(GET_PROJECT_BY_ID, {
+    variables: { projectId: params.projectId },
+  });
   const [updateTaskStatusPosition] = useMutation(UPDATE_TASK_STATUS_POSITION, {
     refetchQueries: [
       {

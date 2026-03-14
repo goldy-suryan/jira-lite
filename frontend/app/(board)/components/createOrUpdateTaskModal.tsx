@@ -47,12 +47,9 @@ export const CreateOrUpdateTaskModal = ({
     (state) => state.project.currentProject,
   );
 
-  const { data: projectUsers } = useQuery<any>(
-    GET_PROJECT_USERS,
-    {
-      variables: { projectId: params.projectId },
-    },
-  );
+  const { data: projectUsers } = useQuery<any>(GET_PROJECT_USERS, {
+    variables: { projectId: params.projectId },
+  });
   const [createTask] = useMutation(CREATE_TASK, {
     refetchQueries: [queryToRefetch],
   });

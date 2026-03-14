@@ -1,8 +1,8 @@
 import cookie from 'cookie';
 import { useServer } from 'graphql-ws/use/ws';
 import { WebSocketServer } from 'ws';
-import { schema } from './graphql-schema/schema.js';
-import { authenticateToken } from './utils/validateToken.js';
+import { schema } from './../graphql-schema/schema.js';
+import { authenticateToken } from './../utils/validateToken.js';
 
 export const createWebSocketServer = (httpServer: any) => {
   const wsServer = new WebSocketServer({

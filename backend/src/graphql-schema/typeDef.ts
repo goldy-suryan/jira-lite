@@ -63,4 +63,12 @@ export const typeDefs = `#graphql
         project: Project
         invitedByUser: User
     }
+
+    type Comment {
+        id: ID!
+        taskId: ID!
+        message: String!
+        user: User!
+        createdAt: Date!
+    }
 `;

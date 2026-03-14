@@ -1,3 +1,5 @@
+import { COMMENT_ADDED, pubSub } from '../config/pubSub.config.js';
+import type { CommentController } from '../modules/comment/comment.controller.js';
 import type { InvitationController } from '../modules/invitation/invitation.controller.js';
 import type { ProjectController } from '../modules/project/project.controller.js';
 import type { TaskController } from '../modules/task/task.contoller.js';
@@ -94,6 +96,24 @@ export const resolvers = {
         throw unauthorizedError();
       }
       return invitationCtrl.invitationResponse(args, user.id);
+    },
+
+    addComment(
+      parent: any,
+      args: any,
+      { user, commentCtrl }: { user: any; commentCtrl: CommentController },
+    ) {
+      if (!user) {
+        throw unauthorizedError();
+      }
+      return commentCtrl.addComment(user, args);
+    },
+  },
+
+  Subscription: {
+    commentAdded: {
+      subscribe: (_, { taskId }) =>
+        pubSub.asyncIterator([`${COMMENT_ADDED}_${taskId}`]),
     },
   },
 };

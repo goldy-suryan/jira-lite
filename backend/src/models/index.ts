@@ -1,6 +1,7 @@
 import { DBConfig } from '../config/sequelize.init.js';
-import { ProjectModel } from '../modules/project/project.model.js';
+import { CommentModel } from '../modules/comment/comment.model.js';
 import { InvitationModel } from '../modules/invitation/invitation.model.js';
+import { ProjectModel } from '../modules/project/project.model.js';
 import { TaskModel } from '../modules/task/task.model.js';
 import { UserModel } from '../modules/user/user.model.js';
 import { UserProjectJunctionModel } from './userProject.model.js';
@@ -77,7 +78,7 @@ ProjectModel.hasMany(InvitationModel, {
 
 InvitationModel.belongsTo(ProjectModel, {
   foreignKey: 'projectId',
-  as: 'project'
+  as: 'project',
 });
 
 UserModel.hasMany(InvitationModel, {
@@ -87,8 +88,33 @@ UserModel.hasMany(InvitationModel, {
 
 InvitationModel.belongsTo(UserModel, {
   foreignKey: 'invitedBy',
-  as: 'invitedByUser'
-})
+  as: 'invitedByUser',
+});
+
+// =====================================================================
+
+// ================= TASK / USER COMMENT ASSOCIATION ===================
+
+TaskModel.hasMany(CommentModel, {
+  foreignKey: 'taskId',
+  as: 'comments',
+  onDelete: 'CASCADE',
+});
+
+CommentModel.belongsTo(TaskModel, {
+  foreignKey: 'taskId',
+  as: 'task',
+});
+
+UserModel.hasMany(CommentModel, {
+  foreignKey: 'userId',
+  as: 'comments',
+});
+
+CommentModel.belongsTo(UserModel, {
+  foreignKey: 'userId',
+  as: 'user',
+});
 
 // =====================================================================
 

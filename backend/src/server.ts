@@ -1,8 +1,8 @@
 import 'dotenv/config';
+import http from 'node:http';
 import { App } from './app.js';
 import { DBConfig } from './config/sequelize.init.js';
-import http from 'node:http';
-import { createWebSocketServer } from './webSocket.js';
+import { createWebSocketServer } from './config/webSocket.config.js';
 import './models/index.js';
 
 class Server {

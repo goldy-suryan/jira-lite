@@ -30,5 +30,6 @@ export const RootMutation = `#graphql
         updateTaskStatusPosition(id: ID!, input: taskStatusPositionInput): Boolean!
         sendProjectInvitation(projectId: ID!, email: String!): Boolean!
         invitationResponse(token: String!, status: String): Boolean!
+        addComment(taskId: ID!, message: String!): Comment
     }
 `;

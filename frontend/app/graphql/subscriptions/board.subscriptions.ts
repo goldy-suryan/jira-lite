@@ -1,12 +1,16 @@
 import { gql } from '@apollo/client';
 
-export const TASK_UPDATED = gql`
-  subscription {
-    taskUpdated {
+export const COMMENT_ADDED = gql`
+  subscription CommentAdded($taskId: ID!) {
+    commentAdded(taskId: $taskId) {
       id
-      title
+      message
+      createdAt
+      user {
+        id
+        name
+        email
+      }
     }
   }
 `;
-
-

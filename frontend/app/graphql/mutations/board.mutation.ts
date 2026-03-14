@@ -43,3 +43,18 @@ export const DELETE_TASK = gql`
     deleteTask(taskId: $taskId)
   }
 `;
+
+export const ADD_COMMENT = gql`
+  mutation AddComment($taskId: ID!, $message: String!) {
+    addComment(taskId: $taskId, message: $message) {
+      id
+      message
+      user {
+        id
+        name
+        email
+      }
+      createdAt
+    }
+  }
+`;
