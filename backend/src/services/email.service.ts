@@ -1,6 +1,10 @@
 import { transporter } from '../config/email.config.js';
 
-export const sendEmailInvitation = async (email: string, projectName: string, inviteLink: string) => {
+export const sendEmailInvitation = async (
+  email: string,
+  projectName: string,
+  inviteLink: string,
+) => {
   transporter.sendMail({
     from: `"JIRA LITE" ${process.env.MAIL_USER}`,
     to: email,
