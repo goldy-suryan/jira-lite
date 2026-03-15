@@ -15,7 +15,7 @@ import { createClient } from 'graphql-ws';
 import toast from 'react-hot-toast';
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:5000/graphql',
+  uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
   credentials: 'include',
 });
 

@@ -242,14 +242,14 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                 {taskDetail?.attachments.map(({ id, fileName, fileUrl }) => (
                   <div key={id} className="max-w-23">
                     <Image
-                      src={`https://d2rj6r6bdihsme.cloudfront.net/${fileName}`}
+                      src={`${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${fileName}`}
                       alt={fileName}
                       width={20}
                       height={20}
                       className="h-20 w-20 object-fill"
                       onClick={() =>
                         setExpandedImage(
-                          `https://d2rj6r6bdihsme.cloudfront.net/${fileName}`,
+                          `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${fileName}`,
                         )
                       }
                     />
