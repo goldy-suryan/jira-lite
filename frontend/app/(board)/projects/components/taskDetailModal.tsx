@@ -1,6 +1,6 @@
 'use client';
 
-import { CrossBtn } from '@/app/components/icons';
+import { CrossBtn, FileUploadIcon } from '@/app/components/icons';
 import {
   ADD_ATTACHMENT_METADATA,
   ADD_COMMENT,
@@ -276,25 +276,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                     htmlFor="file-upload"
                     className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-gray-600 bg-gray-800 px-4 py-2 text-sm font-semibold text-gray-300 hover:bg-gray-700 transition"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 16V4m0 0l-5 5m5-5l5 5"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M20 16v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"
-                      />
-                    </svg>
+                    <FileUploadIcon />
                     Upload file
                     <input
                       id="file-upload"
