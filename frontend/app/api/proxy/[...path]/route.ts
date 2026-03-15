@@ -1,31 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(
-  request: NextRequest,
-  context: { params: { path: string[] } },
-) {
-  return proxyRequest(request, context.params.path, 'GET');
-}
-
 export async function POST(
   request: NextRequest,
-  context: { params: { path: string[] } },
+  context: { params: Promise<{ path: string[] }> },
 ) {
-  return proxyRequest(request, context.params.path, 'POST');
-}
-
-export async function PUT(
-  request: NextRequest,
-  context: { params: { path: string[] } },
-) {
-  return proxyRequest(request, context.params.path, 'PUT');
-}
-
-export async function DELETE(
-  request: NextRequest,
-  context: { params: { path: string[] } },
-) {
-  return proxyRequest(request, context.params.path, 'DELETE');
+  const params = await context.params;
+  return proxyRequest(request, params.path, 'POST');
 }
 
 async function proxyRequest(
