@@ -19,20 +19,25 @@ function Login() {
   const dispatch = useAppDispatch();
 
   const login = async () => {
-    if (!formVal.email || !formVal.password) {
-      setError('Email and Password are required');
-      return;
+    try {
+      if (!formVal.email || !formVal.password) {
+        setError('Email and Password are required');
+        return;
+      }
+      const { data } = await instance.post<any>('/auth/login', formVal);
+      const dataToStore = {
+        id: data.data.id,
+        name: data.data.name,
+        role: data.data.role,
+        email: data.data.email,
+      };
+      localStorage.setItem('user', JSON.stringify(dataToStore));
+      dispatch(addUser(dataToStore));
+      console.log('now navigating to dashboard');
+      router.replace('/dashboard');
+    } catch (e) {
+      console.log(e, 'erro while logging');
     }
-    const { data } = await instance.post<any>('/auth/login', formVal);
-    const dataToStore = {
-      id: data.data.id,
-      name: data.data.name,
-      role: data.data.role,
-      email: data.data.email,
-    };
-    localStorage.setItem('user', JSON.stringify(dataToStore));
-    dispatch(addUser(dataToStore));
-    router.replace('/dashboard');
   };
 
   return (
