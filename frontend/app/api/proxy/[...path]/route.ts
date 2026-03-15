@@ -13,7 +13,7 @@ async function proxyRequest(
   path: string[],
   method: string,
 ) {
-  const apiBaseUrl = 'https://api.fantasicholidays.in';
+  const apiBaseUrl = 'https://api.fantasticholidays.in';
   const targetUrl = `${apiBaseUrl}/${path.join('/')}${request.nextUrl.search}`;
   const headers = new Headers(request.headers);
 
