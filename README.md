@@ -1,5 +1,5 @@
 # Jira Lite 🚀
-#### Node.js | GraphQL | PostgreSQL | Redis | Next.js
+#### Node.js | GraphQL | PostgreSQL | Redis | Next.js | AWS S3
 
 A lightweight Jira-inspired project management tool built with a modern **MERN + GraphQL** stack.
 It supports **real-time collaboration, task management, activity tracking, and team-based project workflows.**
