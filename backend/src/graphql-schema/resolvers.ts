@@ -53,7 +53,7 @@ export const resolvers = {
       if (!user) {
         throw unauthorizedError();
       }
-      return taskCtrl.updateTask(args?.id, args?.input);
+      return taskCtrl.updateTask(user, args?.id, args?.input);
     },
 
     updateTaskStatusPosition(
@@ -64,7 +64,7 @@ export const resolvers = {
       if (!user) {
         throw unauthorizedError();
       }
-      return taskCtrl.updateTaskStatusPosition(args?.id, args?.input);
+      return taskCtrl.updateTaskStatusPosition(user, args?.id, args?.input);
     },
 
     deleteTask(

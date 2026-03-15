@@ -55,7 +55,6 @@ export class TaskService {
       { transaction },
     );
 
-    console.log(user, 'user');
     await ActivityModel.create(
       {
         taskId: foundTask.id,
@@ -70,13 +69,44 @@ export class TaskService {
     return foundTask;
   };
 
-  updateTask = async (id: string, body: any) => {
-    const [result] = await TaskModel.update({ ...body }, { where: { id } });
+  updateTask = async (user, id: string, body: any, transaction) => {
+    const [result, updatedRows] = await TaskModel.update<any>(
+      { ...body },
+      { where: { id }, returning: true, transaction },
+    );
+
+    await ActivityModel.create(
+      {
+        taskId: id,
+        action: `${user.name} updated task ${updatedRows?.[0].title} at ${updatedRows?.[0].updatedAt}`,
+      },
+      {
+        transaction,
+      },
+    );
     return result > 0;
   };
 
-  updateTaskStatusPosition = async (id: string, body: any) => {
-    const [result] = await TaskModel.update({ ...body }, { where: { id } });
+  updateTaskStatusPosition = async (
+    user,
+    id: string,
+    body: any,
+    transaction,
+  ) => {
+    const [result, updatedRows] = await TaskModel.update<any>(
+      { ...body },
+      { where: { id }, returning: true, transaction },
+    );
+
+    await ActivityModel.create(
+      {
+        taskId: id,
+        action: `${user.name} updated task position and status to ${updatedRows?.[0].status} at ${updatedRows?.[0].updatedAt}`,
+      },
+      {
+        transaction,
+      },
+    );
     return result > 0;
   };
 
@@ -89,13 +119,26 @@ export class TaskService {
     return result > 0;
   };
 
-  addAttachment = async (user, { taskId, fileName, fileUrl }) => {
-    await AttachmentModel.create({
-      taskId,
-      fileName,
-      fileUrl: `https://jira-lite-s3.s3.ap-south-1.amazonaws.com/${fileName}`,
-      uploadedBy: user.id,
-    });
+  addAttachment = async (user, { taskId, fileName }, transaction) => {
+    const createdAttachment = await AttachmentModel.create<any>(
+      {
+        taskId,
+        fileName,
+        fileUrl: `https://jira-lite-s3.s3.ap-south-1.amazonaws.com/${fileName}`,
+        uploadedBy: user.id,
+      },
+      { transaction },
+    );
+
+    await ActivityModel.create(
+      {
+        taskId: taskId,
+        action: `${user.name} uploaded a file with ${fileName.split('_')[1]} at ${createdAttachment.createdAt}`,
+      },
+      {
+        transaction,
+      },
+    );
     return true;
   };
 }

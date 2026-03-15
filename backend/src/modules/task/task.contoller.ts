@@ -15,12 +15,21 @@ export class TaskController {
     });
   };
 
-  updateTask = async (id: string, body) => {
-    return await this.taskSrvc.updateTask(id, body);
+  updateTask = async (user, id: string, body) => {
+    return DBConfig.sequelize.transaction(async (transaction) => {
+      return await this.taskSrvc.updateTask(user, id, body, transaction);
+    });
   };
 
-  updateTaskStatusPosition = async (id: string, body) => {
-    return await this.taskSrvc.updateTaskStatusPosition(id, body);
+  updateTaskStatusPosition = async (user, id: string, body) => {
+    return DBConfig.sequelize.transaction(async (transaction) => {
+      return await this.taskSrvc.updateTaskStatusPosition(
+        user,
+        id,
+        body,
+        transaction,
+      );
+    });
   };
 
   removeTask = async (taskId: string) => {
@@ -28,6 +37,8 @@ export class TaskController {
   };
 
   addAttachment = async (user, body) => {
-    return await this.taskSrvc.addAttachment(user, body);
-  }
+    return DBConfig.sequelize.transaction(async (transaction) => {
+      return await this.taskSrvc.addAttachment(user, body, transaction);
+    });
+  };
 }
