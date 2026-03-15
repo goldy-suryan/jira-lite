@@ -48,7 +48,8 @@ export const typeDefs = `#graphql
         assignee: User
         reporter: User
         project: Project
-        activities: [Activity]
+        activities: [Activity]!
+        attachments: [Attachment]
     }
 
     enum InvitationStatus {
@@ -77,5 +78,15 @@ export const typeDefs = `#graphql
         id: ID!
         taskId: ID!
         action: String!
+    }
+
+    type SignedUrl {
+        url: String!
+    }
+
+    type Attachment {
+        id: ID!
+        fileName: String!
+        fileUrl: String!
     }
 `;

@@ -48,5 +48,5 @@
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true
   },
-  "exclude": ["node_modules", "eslint.config.ts"]
+  "exclude": ["node_modules", "eslint.config.ts", "./dist"]
 }

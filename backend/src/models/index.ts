@@ -5,6 +5,7 @@ import { InvitationModel } from '../modules/invitation/invitation.model.js';
 import { ProjectModel } from '../modules/project/project.model.js';
 import { TaskModel } from '../modules/task/task.model.js';
 import { UserModel } from '../modules/user/user.model.js';
+import { AttachmentModel } from './attachment.model.js';
 import { UserProjectJunctionModel } from './userProject.model.js';
 
 // ========== USER PROJECT ASSOCIATION (Membership / user member of projects)=================
@@ -127,6 +128,19 @@ TaskModel.hasMany(ActivityModel, {
 });
 
 ActivityModel.belongsTo(TaskModel, {
+  foreignKey: 'taskId',
+});
+
+// =====================================================================
+
+// ===================== TASK ATTACHMENT ASSOCIATION ===================
+
+TaskModel.hasMany(AttachmentModel, {
+  foreignKey: 'taskId',
+  as: 'attachments',
+});
+
+AttachmentModel.belongsTo(TaskModel, {
   foreignKey: 'taskId',
 });
 

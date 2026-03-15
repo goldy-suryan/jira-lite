@@ -31,5 +31,7 @@ export const RootMutation = `#graphql
         sendProjectInvitation(projectId: ID!, email: String!): Boolean!
         invitationResponse(token: String!, status: String): Boolean!
         addComment(taskId: ID!, message: String!): Comment
+        getSignedUrl(fileName: String!, fileType: String!, fileSize: Int!): Attachment
+        addAttachmentMetadata(taskId: ID!, fileName: String!): Boolean
     }
 `;

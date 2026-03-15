@@ -5,7 +5,7 @@ export const sendEmailInvitation = async (
   projectName: string,
   inviteLink: string,
 ) => {
-  transporter.sendMail({
+  await transporter.sendMail({
     from: `"JIRA LITE" ${process.env.MAIL_USER}`,
     to: email,
     subject: `Invitation to join ${projectName}`,

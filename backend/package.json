@@ -16,8 +16,9 @@
   "dependencies": {
     "@apollo/server": "^5.4.0",
     "@as-integrations/express5": "^1.1.2",
+    "@aws-sdk/client-s3": "^3.1009.0",
+    "@aws-sdk/s3-request-presigner": "^3.1009.0",
     "@graphql-tools/schema": "^10.0.31",
-    "@types/ioredis": "^4.28.10",
     "bcrypt": "^6.0.0",
     "cookie": "^1.1.1",
     "cookie-parser": "^1.4.7",
@@ -59,6 +60,7 @@
     "eslint": "^10.0.2",
     "globals": "^17.3.0",
     "jiti": "^2.6.1",
-    "typescript-eslint": "^8.56.1"
+    "typescript-eslint": "^8.56.1",
+    "@types/ioredis": "^4.28.10"
   }
 }

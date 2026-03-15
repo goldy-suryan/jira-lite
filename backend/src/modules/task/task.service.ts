@@ -3,6 +3,7 @@ import { ProjectModel } from '../project/project.model.js';
 import { UserModel } from '../user/user.model.js';
 import { TaskModel } from './task.model.js';
 import { ActivityModel } from '../activity/activity.model.js';
+import { AttachmentModel } from '../../models/attachment.model.js';
 
 export class TaskService {
   getTaskDetail = async (id: string) => {
@@ -22,8 +23,12 @@ export class TaskService {
         },
         {
           model: ActivityModel,
-          as: 'activities'
-        }
+          as: 'activities',
+        },
+        {
+          model: AttachmentModel,
+          as: 'attachments',
+        },
       ],
     });
   };
@@ -50,7 +55,7 @@ export class TaskService {
       { transaction },
     );
 
-    console.log(user, 'user')
+    console.log(user, 'user');
     await ActivityModel.create(
       {
         taskId: foundTask.id,
@@ -82,5 +87,15 @@ export class TaskService {
       },
     });
     return result > 0;
+  };
+
+  addAttachment = async (user, { taskId, fileName, fileUrl }) => {
+    await AttachmentModel.create({
+      taskId,
+      fileName,
+      fileUrl: `https://jira-lite-s3.s3.ap-south-1.amazonaws.com/${fileName}`,
+      uploadedBy: user.id,
+    });
+    return true;
   };
 }

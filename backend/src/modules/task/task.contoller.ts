@@ -26,4 +26,8 @@ export class TaskController {
   removeTask = async (taskId: string) => {
     return await this.taskSrvc.deleteTask(taskId);
   };
+
+  addAttachment = async (user, body) => {
+    return await this.taskSrvc.addAttachment(user, body);
+  }
 }
