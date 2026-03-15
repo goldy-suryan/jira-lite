@@ -21,6 +21,7 @@ function Login() {
   const login = async () => {
     if (!formVal.email || !formVal.password) {
       setError('Email and Password are required');
+      return;
     }
     const { data } = await instance.post<any>('/auth/login', formVal);
     const dataToStore = {
