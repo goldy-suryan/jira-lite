@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev_server": "npm run lint && tsx --watch src/server.ts",
-    "lint": "eslint src/*"
+    "build": "tsc",
+    "lint": "eslint src/*",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
