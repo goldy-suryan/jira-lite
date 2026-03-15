@@ -100,6 +100,11 @@ export const GET_TASK = gql`
       activities {
         action
       }
+      attachments {
+        id
+        fileName
+        fileUrl
+      }
     }
   }
 `;

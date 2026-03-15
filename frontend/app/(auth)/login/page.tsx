@@ -1,5 +1,6 @@
 'use client';
-import { LockIcon, MailIcon } from '@/app/(auth)/components/icons';
+
+import { LockIcon, MailIcon } from '@/app/components/icons';
 import { addUser } from '@/app/state/features/user.slice';
 import { useAppDispatch } from '@/app/state/hooks';
 import { instance } from '@/app/utils/interceptors';

@@ -1,35 +1,48 @@
 'use client';
 
-import { ADD_COMMENT } from '@/app/graphql/mutations/board.mutation';
+import { CrossBtn } from '@/app/components/icons';
+import {
+  ADD_ATTACHMENT_METADATA,
+  ADD_COMMENT,
+  GET_SIGNED_URL,
+} from '@/app/graphql/mutations/board.mutation';
 import { GET_TASK } from '@/app/graphql/queries/board.query';
 import { GET_ALL_TASK_COMMENTS } from '@/app/graphql/queries/comment.query';
 import { COMMENT_ADDED } from '@/app/graphql/subscriptions/comment.subscriptions';
 import { formatDate, priorityBackground } from '@/app/utils/helperFunc';
+import { instance } from '@/app/utils/interceptors';
 import { useMutation, useQuery, useSubscription } from '@apollo/client/react';
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import ImageModal from './imageModal';
 import { TaskActivity } from './taskActivity';
-
-const obj = {
-  attachments: [
-    { id: 1, name: 'screenshot1.png', type: 'PNG' },
-    { id: 2, name: 'error-log.png', type: 'PNG' },
-  ],
-};
 
 export const TaskDetailModal = ({ isOpen, onClose, task }) => {
   const { data, loading } = useQuery<any>(GET_TASK, {
     variables: { taskId: task.id },
   });
-  const { data: commentData, loading: commentLoading } = useQuery<any>(
-    GET_ALL_TASK_COMMENTS,
-    {
-      variables: {
-        taskId: task.id,
-      },
+  const {
+    data: commentData,
+    loading: commentLoading,
+    refetch: refetchComments,
+  } = useQuery<any>(GET_ALL_TASK_COMMENTS, {
+    variables: {
+      taskId: task.id,
     },
-  );
+  });
+
+  const [getSignedUrl, { data: urlData }] = useMutation<any>(GET_SIGNED_URL);
   const [addComment] = useMutation<any>(ADD_COMMENT);
+  const [addAttachmentMetadata] = useMutation(ADD_ATTACHMENT_METADATA, {
+    refetchQueries: [
+      {
+        query: GET_TASK,
+        variables: { taskId: task.id },
+      },
+    ],
+  });
   const { data: subData } = useSubscription<any>(COMMENT_ADDED, {
     variables: {
       taskId: task.id,
@@ -40,9 +53,15 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
   const [comment, setComment] = useState('');
   const [commentState, setCommentState] = useState<any>([]);
   const [tabIndex, setTabIndex] = useState(0);
+  const [file, setFile] = useState<any>(null);
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
   const taskDetail = data?.getTaskDetail ?? null;
+
+  useEffect(() => {
+    refetchComments();
+  }, [isOpen, refetchComments]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -77,6 +96,12 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
     }
   }, [commentState, tabIndex]);
 
+  useEffect(() => {
+    if (urlData?.getSignedUrl) {
+      uploadMetaData(urlData?.getSignedUrl);
+    }
+  }, [urlData]);
+
   const addTaskComment = async (e) => {
     e.preventDefault();
     await addComment({
@@ -86,6 +111,67 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
       },
     });
     setComment('');
+  };
+
+  const handleFileUpload = async (e) => {
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    const allowedTypes = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/webp',
+      'application/pdf',
+      'application/xml',
+      'text/xml',
+    ];
+
+    if (e.target?.files[0]?.name) {
+      const file = e.target?.files[0];
+
+      if (file?.size > MAX_FILE_SIZE) {
+        toast.error('File size must be less than 5MB');
+        return;
+      }
+      if (!allowedTypes.includes(file.type)) {
+        toast.error(
+          `Unsupported file type, Supported type ${allowedTypes.join(', ')}`,
+        );
+        return;
+      }
+
+      setFile(file);
+      const fileName = file?.name;
+      const fileType = file?.type;
+      const fileSize = file?.size;
+      await getSignedUrl({
+        variables: {
+          fileName,
+          fileType,
+          fileSize,
+        },
+      });
+    } else {
+      toast.error('Please upload a file');
+    }
+  };
+
+  const uploadMetaData = async (data) => {
+    try {
+      await instance.put(data.fileUrl, file, {
+        headers: {
+          'Content-Type': file.type || 'application/octet-stream',
+        },
+      });
+    } catch (e) {
+      console.log(e, 'error putting file to s3');
+    } finally {
+      await addAttachmentMetadata({
+        variables: {
+          taskId: task.id,
+          fileName: data.fileName,
+        },
+      });
+    }
   };
 
   if (!isOpen) return null;
@@ -117,7 +203,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
               className="text-white text-3xl font-semibold flex flex-wrap gap-2"
             >
               <span className="text-gray-400">{taskDetail?.project?.key}</span>
-              <span>{taskDetail.title}</span>
+              <span>{taskDetail?.title}</span>
             </h2>
           </div>
           <button
@@ -125,20 +211,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
             aria-label="Close modal"
             className="text-gray-400 hover:text-white transition"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-7 w-7"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <CrossBtn />
           </button>
         </header>
 
@@ -151,7 +224,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                 Description
               </h3>
               <p className="text-gray-300 whitespace-pre-wrap">
-                {taskDetail.description}
+                {taskDetail?.description}
               </p>
             </article>
 
@@ -162,19 +235,50 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                   Attachments
                 </h3>
                 <span className="text-gray-500 text-xs font-semibold">
-                  {obj.attachments.length} files
+                  {taskDetail?.attachments?.length ?? ''} files
                 </span>
               </div>
-              <div className="flex flex-wrap gap-3">
-                {obj.attachments.map(({ id, name, type }) => (
-                  <button
-                    key={id}
-                    className="flex items-center gap-2 bg-gray-800 rounded-lg px-3 py-2 text-gray-300 hover:bg-gray-700 transition max-w-xs truncate"
-                    aria-label={`Attachment: ${name}`}
+              <div className="flex flex-wrap gap-3 items-center">
+                {taskDetail?.attachments.map(({ id, fileName, fileUrl }) => (
+                  <div key={id} className="max-w-23">
+                    <Image
+                      src={`https://d2rj6r6bdihsme.cloudfront.net/${fileName}`}
+                      alt={fileName}
+                      width={20}
+                      height={20}
+                      className="h-20 w-20 object-fill"
+                      onClick={() =>
+                        setExpandedImage(
+                          `https://d2rj6r6bdihsme.cloudfront.net/${fileName}`,
+                        )
+                      }
+                    />
+                    <p className="text-xs truncate">
+                      {fileName?.split('_')?.[1]}
+                    </p>
+                    {/* <button
+                      key={id}
+                      className="flex items-center gap-2 bg-gray-800 rounded-lg text-gray-300 hover:bg-gray-700 transition max-w-xs truncate p-2"
+                      aria-label={`Attachment: ${fileName?.split('_')?.[1]}`}
+                      >
+                      <FileIcon />
+                      </button> */}
+                  </div>
+                ))}
+                {expandedImage && (
+                  <ImageModal
+                    expandedImage={expandedImage}
+                    closeImageModal={() => setExpandedImage(null)}
+                  />
+                )}
+                <span className="mt-3 flex items-center gap-3">
+                  <label
+                    htmlFor="file-upload"
+                    className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-gray-600 bg-gray-800 px-4 py-2 text-sm font-semibold text-gray-300 hover:bg-gray-700 transition"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 flex-shrink-0"
+                      className="h-5 w-5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -183,58 +287,23 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6z"
+                        d="M12 16V4m0 0l-5 5m5-5l5 5"
                       />
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        d="M14 3v6h6"
+                        d="M20 16v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"
                       />
                     </svg>
-                    <span className="truncate">{name}</span>
-                    <span className="text-xs text-gray-500 font-semibold">
-                      {type}
-                    </span>
-                  </button>
-                ))}
-              </div>
-              <div className="mt-3 flex items-center gap-3">
-                <label
-                  htmlFor="file-upload"
-                  className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-gray-600 bg-gray-800 px-4 py-2 text-sm font-semibold text-gray-300 hover:bg-gray-700 transition"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 16V4m0 0l-5 5m5-5l5 5"
+                    Upload file
+                    <input
+                      id="file-upload"
+                      type="file"
+                      className="hidden"
+                      aria-label="Upload file"
+                      onChange={handleFileUpload}
                     />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M20 16v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"
-                    />
-                  </svg>
-                  Upload file
-                  <input
-                    id="file-upload"
-                    type="file"
-                    className="hidden"
-                    aria-label="Upload file"
-                    onChange={(e) => {
-                      // handle file upload here
-                    }}
-                  />
-                </label>
-                <span className="text-xs text-gray-500">
-                  Drag & drop is optional
+                  </label>
                 </span>
               </div>
             </article>
@@ -345,7 +414,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                 </dt>
                 <dd>
                   <span className="inline-flex items-center gap-2 rounded-full bg-cyan-600 px-3 py-1 text-xs font-semibold text-white">
-                    {taskDetail.status.replaceAll('_', ' ')?.toUpperCase()}
+                    {taskDetail?.status?.replaceAll('_', ' ')?.toUpperCase()}
                   </span>
                 </dd>
               </div>
@@ -355,7 +424,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                   Assignee
                 </dt>
                 <dd className="text-gray-300 font-semibold">
-                  {taskDetail.assignee.name}
+                  {taskDetail?.assignee?.name}
                 </dd>
               </div>
 
@@ -367,7 +436,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                   <span
                     className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold text-white ${priorityBackground(taskDetail.priority).priorityColor}`}
                   >
-                    {taskDetail.priority}
+                    {taskDetail?.priority}
                   </span>
                 </dd>
               </div>
@@ -377,7 +446,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                   Due Date
                 </dt>
                 <dd className="text-gray-300 font-semibold">
-                  {formatDate(taskDetail.dueDate)}
+                  {formatDate(taskDetail?.dueDate)}
                 </dd>
               </div>
 
@@ -386,7 +455,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                   Reporter
                 </dt>
                 <dd className="text-gray-300 font-semibold">
-                  {taskDetail.reporter.name}
+                  {taskDetail?.reporter?.name}
                 </dd>
               </div>
 

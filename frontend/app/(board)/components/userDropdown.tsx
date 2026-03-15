@@ -1,6 +1,6 @@
 'use client';
 
-import { UserIcon } from '@/app/(auth)/components/icons';
+import { UserIcon } from '@/app/components/icons';
 import { instance } from '@/app/utils/interceptors';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';

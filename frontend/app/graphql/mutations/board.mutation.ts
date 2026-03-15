@@ -58,3 +58,25 @@ export const ADD_COMMENT = gql`
     }
   }
 `;
+
+export const GET_SIGNED_URL = gql`
+  mutation GetSignedUrl($fileName: String!, $fileType: String!, $fileSize: Int!) {
+    getSignedUrl(fileName: $fileName, fileType: $fileType, fileSize: $fileSize) {
+      fileName
+      fileUrl
+      fileSize
+    }
+  }
+`;
+
+export const ADD_ATTACHMENT_METADATA = gql`
+  mutation AddAttachmentMetadata(
+    $taskId: ID!
+    $fileName: String!
+  ) {
+    addAttachmentMetadata(
+      taskId: $taskId
+      fileName: $fileName
+    )
+  }
+`;
