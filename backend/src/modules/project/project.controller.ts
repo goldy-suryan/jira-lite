@@ -5,8 +5,7 @@ export class ProjectController {
   private readonly projectSrvc = new ProjectService();
 
   createProject = async (body: any, user: any) => {
-    const transaction = await DBConfig.sequelize.transaction();
-    try {
+    return DBConfig.sequelize.transaction(async (transaction) => {
       const savedproject = await this.projectSrvc.addProject(
         {
           ...body,
@@ -19,12 +18,8 @@ export class ProjectController {
         savedproject.toJSON().id,
         transaction,
       );
-      await transaction.commit();
       return savedproject;
-    } catch (e) {
-      await transaction.rollback();
-      throw e;
-    }
+    });
   };
 
   getAllProjects = async () => {
@@ -53,11 +48,14 @@ export class ProjectController {
   };
 
   sendProjectInvitation = async (user, body) => {
-    const sendInvitation = await this.projectSrvc.sendProjectInvitation(user, body);
+    const sendInvitation = await this.projectSrvc.sendProjectInvitation(
+      user,
+      body,
+    );
     return sendInvitation;
   };
 
   getProjectUsers = async (projectId) => {
     return await this.projectSrvc.getProjectUsers(projectId);
-  }
+  };
 }

@@ -31,7 +31,6 @@ export class CommentService {
       },
       include: [{ model: UserModel, as: 'user' }],
     });
-    console.log(commentList, 'comment list', taskId);
     return commentList;
   };
 }

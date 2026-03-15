@@ -30,7 +30,7 @@ export class UserController {
       if (!jwtSecret) {
         throw new Error('JWT SECRET not defined');
       }
-      const token = jwt.sign({ id, email, role }, jwtSecret, {
+      const token = jwt.sign({ id, name, email, role }, jwtSecret, {
         expiresIn: '3d',
       });
 

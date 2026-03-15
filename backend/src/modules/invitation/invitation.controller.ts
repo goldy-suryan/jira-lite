@@ -10,19 +10,13 @@ export class InvitationController {
   };
 
   invitationResponse = async (body, userId: string) => {
-    const transaction = await DBConfig.sequelize.transaction();
-    try {
+    return DBConfig.sequelize.transaction(async (transaction) => {
       const response = await this.invitationSrvc.respondToInvitation(
         body,
         userId,
         transaction,
       );
-      await transaction.commit();
       return response;
-    } catch (e: any) {
-      await transaction.rollback();
-      console.log(e, 'error on invitation response');
-      throw new GraphQLError(e.message);
-    }
+    });
   };
 }

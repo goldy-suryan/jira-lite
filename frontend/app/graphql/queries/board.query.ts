@@ -97,6 +97,9 @@ export const GET_TASK = gql`
       project {
         key
       }
+      activities {
+        action
+      }
     }
   }
 `;

@@ -48,6 +48,7 @@ export const typeDefs = `#graphql
         assignee: User
         reporter: User
         project: Project
+        activities: [Activity]
     }
 
     enum InvitationStatus {
@@ -70,5 +71,11 @@ export const typeDefs = `#graphql
         message: String!
         user: User!
         createdAt: Date!
+    }
+
+    type Activity {
+        id: ID!
+        taskId: ID!
+        action: String!
     }
 `;

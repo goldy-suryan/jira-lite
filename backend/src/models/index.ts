@@ -1,4 +1,5 @@
 import { DBConfig } from '../config/sequelize.init.js';
+import { ActivityModel } from '../modules/activity/activity.model.js';
 import { CommentModel } from '../modules/comment/comment.model.js';
 import { InvitationModel } from '../modules/invitation/invitation.model.js';
 import { ProjectModel } from '../modules/project/project.model.js';
@@ -114,6 +115,19 @@ UserModel.hasMany(CommentModel, {
 CommentModel.belongsTo(UserModel, {
   foreignKey: 'userId',
   as: 'user',
+});
+
+// =====================================================================
+
+// ================= TASK ACTIVITY ASSOCIATION =========================
+
+TaskModel.hasMany(ActivityModel, {
+  foreignKey: 'taskId',
+  as: 'activities',
+});
+
+ActivityModel.belongsTo(TaskModel, {
+  foreignKey: 'taskId',
 });
 
 // =====================================================================

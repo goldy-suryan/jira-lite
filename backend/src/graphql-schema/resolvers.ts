@@ -39,7 +39,7 @@ export const resolvers = {
       if (!user) {
         throw unauthorizedError();
       }
-      return taskCtrl.createTask(args?.input);
+      return taskCtrl.createTask(user, args?.input);
     },
 
     updateTask(

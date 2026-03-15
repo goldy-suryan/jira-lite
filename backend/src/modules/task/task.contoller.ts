@@ -1,3 +1,4 @@
+import { DBConfig } from '../../config/sequelize.init.js';
 import { TaskService } from './task.service.js';
 
 export class TaskController {
@@ -7,15 +8,18 @@ export class TaskController {
     return await this.taskSrvc.getTaskDetail(id);
   };
 
-  createTask = async (body: any) => {
-    return await this.taskSrvc.createTask(body);
+  createTask = async (user, body) => {
+    return DBConfig.sequelize.transaction(async (transaction) => {
+      const task = await this.taskSrvc.createTask(user, body, transaction);
+      return task;
+    });
   };
 
-  updateTask = async (id: string, body: any) => {
+  updateTask = async (id: string, body) => {
     return await this.taskSrvc.updateTask(id, body);
   };
 
-  updateTaskStatusPosition = async (id: string, body: any) => {
+  updateTaskStatusPosition = async (id: string, body) => {
     return await this.taskSrvc.updateTaskStatusPosition(id, body);
   };
 

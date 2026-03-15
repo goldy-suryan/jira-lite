@@ -22,6 +22,7 @@ import { TaskController } from './modules/task/task.contoller.js';
 import { UserRoute } from './modules/user/user.route.js';
 import { unauthorizedError } from './utils/helperFunc.js';
 import { authenticateToken } from './utils/validateToken.js';
+import { ActivityController } from './modules/activity/activity.controller.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -77,6 +78,7 @@ export class App {
               taskCtrl: new TaskController(),
               invitationCtrl: new InvitationController(),
               commentCtrl: new CommentController(),
+              activityCtrl: new ActivityController(),
             };
           }
           throw unauthorizedError();

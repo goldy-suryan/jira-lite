@@ -8,6 +8,7 @@ import { formatDate, priorityBackground } from '@/app/utils/helperFunc';
 import { useMutation, useQuery, useSubscription } from '@apollo/client/react';
 import { useEffect, useRef, useState } from 'react';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import { TaskActivity } from './taskActivity';
 
 const obj = {
   attachments: [
@@ -329,35 +330,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                 </article>
               </TabPanel>
               <TabPanel className="bg-[#121212] p-6 rounded-b-md overflow-y-auto -mt-10">
-                <ul className="list-disc list-inside space-y-2 text-sm">
-                  <li>
-                    <span className="font-semibold text-white">Goldy</span>{' '}
-                    changed status{' '}
-                    <span className="font-mono bg-gray-800 px-1 rounded">
-                      TODO
-                    </span>{' '}
-                    →{' '}
-                    <span className="font-mono bg-gray-800 px-1 rounded">
-                      IN_PROGRESS
-                    </span>
-                  </li>
-                  <li>
-                    <span className="font-semibold text-white">Goldy</span>{' '}
-                    assigned task to{' '}
-                    <span className="font-semibold text-cyan-400">Rukhsar</span>
-                  </li>
-                  <li>
-                    <span className="font-semibold text-white">Goldy</span>{' '}
-                    changed priority{' '}
-                    <span className="font-mono bg-gray-800 px-1 rounded">
-                      LOW
-                    </span>{' '}
-                    →{' '}
-                    <span className="font-mono bg-gray-800 px-1 rounded">
-                      HIGH
-                    </span>
-                  </li>
-                </ul>
+                <TaskActivity activities={taskDetail?.activities ?? []} />
               </TabPanel>
             </Tabs>
             {/* Comments */}

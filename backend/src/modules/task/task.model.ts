@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { DBConfig } from '../../config/sequelize.init.js';
+import { ActivityModel } from '../activity/activity.model.js';
 
 export const TaskModel = DBConfig.sequelize.define(
   'task',
@@ -67,3 +68,14 @@ export const TaskModel = DBConfig.sequelize.define(
     ],
   },
 );
+
+TaskModel.addHook('afterBulkDestroy', async (options: any) => {
+  const taskId = options.where.id;
+  if (!taskId) return;
+  await ActivityModel.destroy({
+    where: {
+      taskId,
+    },
+    transaction: options.transaction,
+  });
+});
