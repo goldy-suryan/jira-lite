@@ -102,7 +102,7 @@ export class TaskService {
     await ActivityModel.create(
       {
         taskId: id,
-        action: `${user.name} updated task position and status to ${updatedRows?.[0].status} at ${formatDate(updatedRows?.[0].updatedAt, true)}`,
+        action: `${user.name} updated task position and status to ${updatedRows?.[0].status?.replaceAll('_', ' ')} at ${formatDate(updatedRows?.[0].updatedAt, true)}`,
       },
       {
         transaction,
