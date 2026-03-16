@@ -33,7 +33,7 @@ const errorLink = new ErrorLink(({ error, operation }) => {
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: 'ws://localhost:5000/graphql',
+    url: process.env.NEXT_PUBLIC_WS_URL as string,
     connectionParams: () => {
       if (typeof document === 'undefined') return {};
       const token = globalThis.document.cookie

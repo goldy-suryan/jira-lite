@@ -20,7 +20,7 @@ import ImageModal from './imageModal';
 import { TaskActivity } from './taskActivity';
 
 export const TaskDetailModal = ({ isOpen, onClose, task }) => {
-  const { data, loading } = useQuery<any>(GET_TASK, {
+  const { data, loading, refetch: refetchTask } = useQuery<any>(GET_TASK, {
     variables: { taskId: task.id },
   });
   const {
@@ -61,7 +61,8 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
 
   useEffect(() => {
     refetchComments();
-  }, [isOpen, refetchComments]);
+    refetchTask();
+  }, [isOpen, refetchComments, refetchTask]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -94,7 +95,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
         behavior: 'smooth',
       });
     }
-  }, [commentState, tabIndex]);
+  }, [commentState, tabIndex, isOpen]);
 
   useEffect(() => {
     if (urlData?.getSignedUrl) {
