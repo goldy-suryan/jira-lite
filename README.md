@@ -1,14 +1,19 @@
 # Jira Lite 🚀
-#### Node.js | GraphQL | PostgreSQL | Redis | Next.js | AWS S3
+#### Node.js | GraphQL | PostgreSQL | Redis | Next.js | AWS (EC2 + S3 + CloudFront)
 
-A lightweight Jira-inspired project management tool built with a modern **MERN + GraphQL** stack.
+A lightweight Jira-inspired project management tool built with a modern **Next.js + GraphQL + Node.js + PostgreSQL** stack.
 It supports **real-time collaboration, task management, activity tracking, and team-based project workflows.**
 
 This project was built as a **full-stack system design practice**, focusing on scalable architecture, real-time communication, and production-ready backend patterns.
 
 ---
+## 🌐 Live Demo
 
-# ✨ Features
+🔗 **Frontend**: https://jira-lite-ten.vercel.app
+
+---
+
+## ✨ Features
 
 ### Project Management
 
@@ -38,7 +43,7 @@ This project was built as a **full-stack system design practice**, focusing on s
   * Status changes
   * Assignment changes
 
-### Attachments (S3 Integration - WIP)
+### Attachments (S3 Integration)
 
 * File attachments for tasks
 * Secure upload using signed URLs
@@ -51,7 +56,7 @@ This project was built as a **full-stack system design practice**, focusing on s
 
 ---
 
-# 🖼 Screenshots
+## 🖼 Screenshots
 
 ### Kanban Board
 
@@ -67,7 +72,7 @@ This project was built as a **full-stack system design practice**, focusing on s
 
 ---
 
-# 🏗 Architecture
+## 🏗 Architecture
 
 ```
 Frontend (Next.js + Apollo Client)
@@ -85,7 +90,45 @@ Backend (Node.js + Express + Apollo Server)
 ```
 
 ---
-# 🧩 System Design
+## 🚀 Deployment Architecture
+
+Frontend is deployed on Vercel while the backend runs on an AWS EC2 instance.
+
+File uploads are stored in AWS S3 and served via CloudFront CDN.
+
+#### Architecture:
+```
+Client (Browser)
+     │
+     ▼
+Next.js (Vercel)
+     │
+     │ API Proxy
+     ▼
+Node.js Backend (AWS EC2)
+     │
+     ├── PostgreSQL
+     ├── Redis
+     └── AWS S3 (File Storage)
+```
+
+---
+## API Proxy Layer
+
+To avoid cross-site cookie restrictions between the frontend and backend domains,
+a proxy layer is implemented using Next.js route handlers.
+
+Client requests are sent to `/api/proxy/*` which forwards them to the backend API.
+
+Benefits:
+
+• Same-origin requests for authentication cookies  
+• Cleaner API communication  
+• Improved security for session-based authentication
+
+---
+
+## 🧩 System Design
 
 This project was designed to mimic real-world project management tools like Jira while keeping the architecture modular and scalable.
 
@@ -214,8 +257,16 @@ These patterns allow the application to scale to multiple backend instances behi
 
 
 ---
+## ⚡ Performance Optimizations
 
-# 🧠 Technical Highlights
+• Fractional indexing to minimize database writes during drag-and-drop  
+• Redis-based pub/sub to support horizontal scaling of real-time features  
+• Direct S3 uploads using signed URLs to reduce backend load  
+• Service layer architecture to isolate business logic from GraphQL resolvers
+
+---
+
+## 🧠 Technical Highlights
 
 ### GraphQL Architecture
 
@@ -241,7 +292,7 @@ These patterns allow the application to scale to multiple backend instances behi
 
 ---
 
-# 🛠 Tech Stack
+## 🛠 Tech Stack
 
 Frontend
 
@@ -273,7 +324,7 @@ Storage
 
 ---
 
-# 📂 Project Structure
+## 📂 Project Structure
 
 ```
 backend
@@ -325,32 +376,31 @@ frontend
 │   │   │       └── page.tsx
 │   │   └── tasks
 |   |   ├── layout.tsx
-│   
-├── graphql
+│   ├── graphql
 │   ├── mutations
 │   ├── queries
 │   ├── subscriptions
 │   └── types
-├── invite
-├── lib
-│   ├── apollo-client.ts
-├── settings
-├── state
-│   ├── features
-│   ├── hooks.ts
-│   └── store.ts
-├── utils
-├── globals.css
-├── layout.tsx
-├── page.tsx
-├── storeProvider.tsx
-├── proxy.ts
+|   ├── invite
+|   ├── lib
+|   │   ├── apollo-client.ts
+|   ├── settings
+|   ├── state
+|   │   ├── features
+|   |   │   ├── hooks.ts
+|   |   │   └── store.ts
+|   ├── utils
+|   ├── globals.css
+|   ├── layout.tsx
+|   ├── page.tsx
+|   ├── storeProvider.tsx
+|   ├── proxy.ts
 
 ```
 
 ---
 
-# ⚙️ Installation
+## ⚙️ Installation
 
 #### Clone the repository
 
@@ -378,6 +428,18 @@ SEQUEL_PASSWORD=
 MAIL_USER=
 MAIL_PASS=
 FRONTEND_URL=
+AWS_REGION=
+BUCKET_NAME=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+```
+
+frontend/.env
+```
+NEXT_PUBLIC_GRAPHQL_URL=
+NEXT_PUBLIC_WS_URL=
+NEXT_PUBLIC_CLOUDFRONT_URL=
+NEXT_PUBLIC_API_URL=
 ```
 ---
 
@@ -404,9 +466,8 @@ npm run dev
 
 ---
 
-# 🔮 Upcoming Improvements
+## 🔮 Upcoming Improvements
 
-* File uploads with AWS S3
 * Notifications system
 * Role-based access controls (Admin / Member / Viewer)
 * Activity filtering
@@ -415,7 +476,7 @@ npm run dev
 
 ---
 
-# 🎯 Learning Goals
+## 🎯 Learning Goals
 
 This project focuses on:
 
@@ -427,7 +488,7 @@ This project focuses on:
 
 ---
 
-# 👨‍💻 Author
+## 👨‍💻 Author
 
 Goldy Suryan
 Senior Software Developer (MERN / MEAN)
