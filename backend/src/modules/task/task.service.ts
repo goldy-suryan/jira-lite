@@ -4,6 +4,7 @@ import { UserModel } from '../user/user.model.js';
 import { TaskModel } from './task.model.js';
 import { ActivityModel } from '../activity/activity.model.js';
 import { AttachmentModel } from '../../models/attachment.model.js';
+import { formatDate } from '../../utils/helperFunc.js';
 
 export class TaskService {
   getTaskDetail = async (id: string) => {
@@ -58,7 +59,7 @@ export class TaskService {
     await ActivityModel.create(
       {
         taskId: foundTask.id,
-        action: `${user.name} created task ${foundTask.title} at ${foundTask.createdAt}`,
+        action: `${user.name} created task ${foundTask.title} at ${formatDate(foundTask.createdAt, true)}`,
       },
       {
         transaction,
@@ -78,7 +79,7 @@ export class TaskService {
     await ActivityModel.create(
       {
         taskId: id,
-        action: `${user.name} updated task ${updatedRows?.[0].title} at ${updatedRows?.[0].updatedAt}`,
+        action: `${user.name} updated task ${updatedRows?.[0].title} at ${formatDate(updatedRows?.[0].updatedAt, true)}`,
       },
       {
         transaction,
@@ -101,7 +102,7 @@ export class TaskService {
     await ActivityModel.create(
       {
         taskId: id,
-        action: `${user.name} updated task position and status to ${updatedRows?.[0].status} at ${updatedRows?.[0].updatedAt}`,
+        action: `${user.name} updated task position and status to ${updatedRows?.[0].status} at ${formatDate(updatedRows?.[0].updatedAt, true)}`,
       },
       {
         transaction,
@@ -133,7 +134,7 @@ export class TaskService {
     await ActivityModel.create(
       {
         taskId: taskId,
-        action: `${user.name} uploaded a file with ${fileName.split('_')[1]} at ${createdAttachment.createdAt}`,
+        action: `${user.name} uploaded a file named ${fileName.split('_')[1]} at ${formatDate(createdAttachment.createdAt, true)}`,
       },
       {
         transaction,
