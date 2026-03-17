@@ -9,7 +9,7 @@ This project was built as a **full-stack system design practice**, focusing on s
 ---
 ## 🌐 Live Demo
 
-🔗 **Frontend**: https://jira-lite-ten.vercel.app
+🔗 **Frontend**: https://jira-lite-six.vercel.app
 
 ---
 
