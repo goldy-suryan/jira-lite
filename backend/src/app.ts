@@ -39,6 +39,7 @@ export class App {
     this.app = express();
     this.server = new ApolloServer({
       schema,
+      introspection: true,
       formatError: (formattedError, error) => {
         return { message: formattedError.message, error };
       },
