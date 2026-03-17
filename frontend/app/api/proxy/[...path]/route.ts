@@ -13,7 +13,7 @@ async function proxyRequest(
   path: string[],
   method: string,
 ) {
-  const apiBaseUrl = 'http://localhost:5000';
+  const apiBaseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const targetUrl = `${apiBaseUrl}/${path.join('/')}${request.nextUrl.search}`;
   const headers = new Headers(request.headers);
 
