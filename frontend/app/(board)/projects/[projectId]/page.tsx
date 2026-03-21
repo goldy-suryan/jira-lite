@@ -292,14 +292,14 @@ const KanbanBoard = () => {
       }}
     >
       <div className="w-full h-full">
-        <div className="flex justify-between items-center mb-8 px-4 relative">
-          <h2 className="text-xl -mt-1 font-semibold fixed top-30">
+        <div className="flex justify-between items-center mb-8 relative">
+          <h2 className="text-xl -mt-1 font-semibold fixed top-30 bg-black w-full pb-2 z-2">
             {project?.name?.toUpperCase()}
           </h2>
           <CreateButton open="member" />
         </div>
 
-        <div className="flex gap-8 min-w-max mt-[3rem] pr-[2rem]">
+        <div className="flex gap-8 min-w-max mt-[3rem] pr-[2rem] pb-[1rem]">
           {columnsData.map((col) => (
             <div
               key={col.id}

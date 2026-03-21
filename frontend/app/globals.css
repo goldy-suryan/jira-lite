@@ -2,8 +2,8 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #bebdbd;
-  --bodyColor: #000000;
+  --foreground: #d2d0d0;
+  --bodyColor: #000000 !important;
 }
 
 @theme inline {
@@ -84,7 +84,7 @@ select {
 .bg-dotted-pattern {
   background-image: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.15) 1px,
+    rgba(255, 255, 255, 0.15) 2px,
     transparent 1px
   );
   background-size: 10px 10px;
