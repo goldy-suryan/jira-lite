@@ -167,7 +167,7 @@ export const CreateOrUpdateTaskModal = ({
 
         <form className="text-sm mt-4">
           {/* Title */}
-          <label htmlFor="taskTitle" className="block mb-2">
+          <label htmlFor="taskTitle" className="block">
             Title
           </label>
           <input
@@ -182,7 +182,7 @@ export const CreateOrUpdateTaskModal = ({
             autoFocus
           />
           {/* Description */}
-          <label htmlFor="description" className="block mb-2">
+          <label htmlFor="description" className="block">
             Description
           </label>
           <textarea
@@ -196,7 +196,7 @@ export const CreateOrUpdateTaskModal = ({
             autoFocus
           />
           {/* Status */}
-          <label htmlFor="status" className="block mb-2">
+          <label htmlFor="status" className="block">
             Status
           </label>
           <select
@@ -215,7 +215,7 @@ export const CreateOrUpdateTaskModal = ({
           </select>
 
           {/* Priority */}
-          <label htmlFor="priority" className="block mb-2">
+          <label htmlFor="priority" className="block">
             Priority
           </label>
           <select
@@ -232,7 +232,7 @@ export const CreateOrUpdateTaskModal = ({
           </select>
 
           {/* Assign */}
-          <label htmlFor="assign" className="block mb-2">
+          <label htmlFor="assign" className="block">
             Assign to
           </label>
           <select
@@ -260,7 +260,7 @@ export const CreateOrUpdateTaskModal = ({
             })}
           </select>
 
-          <label htmlFor="date" className="block mb-2">
+          <label htmlFor="date" className="block">
             Due Date
           </label>
           <input
