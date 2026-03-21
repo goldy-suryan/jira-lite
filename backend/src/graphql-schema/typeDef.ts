@@ -17,6 +17,7 @@ export const typeDefs = `#graphql
         owner: User
         tasks: [Task]
         users: [User]
+        createdAt: Date
     }
 
     enum StatusType {
@@ -50,6 +51,9 @@ export const typeDefs = `#graphql
         project: Project
         activities: [Activity]!
         attachments: [Attachment]
+        comments: [Comment]
+        attachmentsCount: Int!
+        commentsCount: Int!
     }
 
     enum InvitationStatus {

@@ -6,6 +6,8 @@ import { TaskModel } from '../task/task.model.js';
 import { UserModel } from '../user/user.model.js';
 import { ProjectModel } from './project.model.js';
 import { InvitationModel } from '../invitation/invitation.model.js';
+import { AttachmentModel } from '../../models/attachment.model.js';
+import { CommentModel } from '../comment/comment.model.js';
 
 export class ProjectService {
   addProject = async (
@@ -51,7 +53,7 @@ export class ProjectService {
   };
 
   findProjectByPK = async (id: string) => {
-    const foundProject = await ProjectModel.findByPk(id, {
+    const foundProject = await ProjectModel.findByPk<any>(id, {
       include: [
         {
           model: UserModel,
@@ -62,12 +64,32 @@ export class ProjectService {
         {
           model: TaskModel,
           as: 'tasks',
-          order: [['position', 'asc']],
           separate: true,
+          order: [['position', 'asc']],
+          include: [
+            {
+              model: UserModel,
+              as: 'assignee',
+            },
+          ],
         },
       ],
     });
-    return foundProject;
+    if (foundProject.tasks) {
+      await Promise.all(
+        foundProject.tasks.map(async (task) => {
+          const attachmentsCount = await AttachmentModel.count({
+            where: { taskId: task.id },
+          });
+          const commentsCount = await CommentModel.count({
+            where: { taskId: task.id },
+          });
+          task.setDataValue('attachmentsCount', attachmentsCount ?? 0);
+          task.setDataValue('commentsCount', commentsCount ?? 0);
+        }),
+      );
+    }
+    return foundProject.toJSON();
   };
 
   findUserProjects = async (id: string) => {
@@ -82,6 +104,10 @@ export class ProjectService {
               model: UserModel,
               as: 'users',
               through: { attributes: [] },
+            },
+            {
+              model: UserModel,
+              as: 'owner',
             },
             {
               model: TaskModel,

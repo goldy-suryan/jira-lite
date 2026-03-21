@@ -50,7 +50,7 @@ export const TaskModel = DBConfig.sequelize.define(
       type: DataTypes.DATE,
     },
     position: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.DOUBLE,
       allowNull: false,
       defaultValue: 10000,
     },

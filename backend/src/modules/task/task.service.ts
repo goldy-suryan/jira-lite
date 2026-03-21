@@ -59,7 +59,7 @@ export class TaskService {
     await ActivityModel.create(
       {
         taskId: foundTask.id,
-        action: `${user.name} created task ${foundTask.title} at ${formatDate(foundTask.createdAt, true)}`,
+        action: `${user.name} created task ${foundTask.title} at ${formatDate(foundTask.createdAt)}`,
       },
       {
         transaction,

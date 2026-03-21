@@ -22,6 +22,11 @@ export const resolvers = {
     ...commentResolver,
   },
 
+  Task: {
+    attachmentsCount: (task) => task.attachmentsCount,
+    commentsCount: (task) => task.commentsCount,
+  },
+
   Mutation: {
     createProject(
       parent: any,
