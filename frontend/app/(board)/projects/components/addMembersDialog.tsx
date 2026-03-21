@@ -102,7 +102,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
         <header className="p-6 border-b border-gray-700">
           <h2
             id="invite-modal-title"
-            className="text-white text-2xl font-semibold select-none"
+            className="text-2xl font-semibold select-none"
           >
             Invite Members
           </h2>
@@ -112,7 +112,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           <div className="relative" ref={dropdownRef}>
             <label
               htmlFor="email-input"
-              className="block text-gray-400 uppercase text-xs font-semibold tracking-wide mb-1"
+              className="block uppercase text-xs font-semibold tracking-wide mb-1"
             >
               Email
             </label>
@@ -122,7 +122,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
               value={email}
               onChange={handleEmailChange}
               placeholder="name@example.com"
-              className="w-full rounded-lg bg-zinc-800 border border-gray-700 p-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-lg bg-zinc-800 border border-gray-700 p-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
             {result?.length > 0 && (
@@ -130,7 +130,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
                 {result.map((item: any) => {
                   return (
                     <li
-                      className="cursor-pointer px-4 py-2 text-gray-300 hover:bg-gray-600 hover:text-white"
+                      className="cursor-pointer px-4 py-2"
                       key={item.id}
                       onClick={() => {
                         setEmail(item.email);
@@ -148,7 +148,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           <div>
             <label
               htmlFor="role-select"
-              className="block text-gray-400 uppercase text-xs font-semibold tracking-wide mb-1"
+              className="block uppercase text-xs font-semibold tracking-wide mb-1"
             >
               Role (optional)
             </label>
@@ -156,7 +156,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
               id="role-select"
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-lg bg-zinc-800 border border-gray-700 p-3 text-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-lg bg-zinc-800 border border-gray-700 p-3 focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               <option>Member</option>
               <option>Admin</option>
@@ -167,14 +167,14 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           <button
             type="button"
             onClick={addMember}
-            className="self-start rounded-md bg-blue-600 px-5 py-2 text-white font-semibold hover:bg-blue-700 transition"
+            className="self-start rounded-md bg-blue-600 px-5 py-2 font-semibold hover:bg-blue-700 transition"
           >
             Add Member
           </button>
 
           <div className="max-h-48 overflow-y-auto border border-gray-700 rounded-lg p-2 bg-zinc-800">
             {members.length === 0 ? (
-              <p className="text-gray-500 text-center select-none">
+              <p className="text-center select-none text-sm">
                 No members added
               </p>
             ) : (
@@ -182,10 +182,10 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
                 {members.map(({ email, role }, i) => (
                   <li
                     key={i}
-                    className="flex justify-between items-center py-2 text-gray-300 text-sm"
+                    className="flex justify-between items-center py-2 text-sm"
                   >
                     <span className="truncate max-w-[60%]">{email}</span>
-                    <span className="text-gray-400 italic">{role}</span>
+                    <span className="italic">{role}</span>
                     <button
                       onClick={() => removeMember(i)}
                       aria-label={`Remove ${email}`}
@@ -204,7 +204,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-gray-700 px-6 py-2 text-gray-400 hover:text-white hover:border-gray-500 transition"
+            className="rounded-md border border-gray-700 px-6 py-2 hover:border-gray-500 transition"
           >
             Cancel
           </button>
@@ -214,8 +214,8 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
             disabled={members.length === 0}
             className={`rounded-md px-6 py-2 font-semibold transition ${
               members.length === 0
-                ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
+                ? 'bg-gray-700 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700'
             }`}
           >
             Send Invite

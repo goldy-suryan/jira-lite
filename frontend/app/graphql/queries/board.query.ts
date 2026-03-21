@@ -11,6 +11,10 @@ export const GET_USER_PROJECTS = gql`
         name
         key
         description
+        createdAt
+        owner {
+          name
+        }
         users {
           id
           name
@@ -49,6 +53,11 @@ export const GET_PROJECT_BY_ID = gql`
         assigneeId
         createdBy
         projectId
+        attachmentsCount
+        commentsCount
+        assignee {
+          name
+        }
       }
     }
   }
@@ -87,6 +96,7 @@ export const GET_TASK = gql`
       status
       priority
       dueDate
+      description
       createdAt
       assignee {
         name
@@ -98,6 +108,7 @@ export const GET_TASK = gql`
         key
       }
       activities {
+        id
         action
       }
       attachments {

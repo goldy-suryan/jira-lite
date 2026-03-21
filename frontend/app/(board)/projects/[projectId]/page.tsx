@@ -6,6 +6,7 @@ import { Task } from '@/app/graphql/types/interfaces';
 import { addTitle } from '@/app/state/features/pageTitle.slice';
 import { addCurrentProject } from '@/app/state/features/project.slice';
 import { useAppDispatch } from '@/app/state/hooks';
+import { columnsData } from '@/app/utils/constants';
 import { useMutation, useQuery } from '@apollo/client/react';
 import {
   closestCenter,
@@ -22,18 +23,10 @@ import {
 } from '@dnd-kit/sortable';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { CreateOrUpdateTaskModal } from '../components/createOrUpdateTaskModal';
 import { CreateButton } from '../../components/createButton';
+import { CreateOrUpdateTaskModal } from '../components/createOrUpdateTaskModal';
 import { DroppableColumn } from '../components/dropableColumn';
 import { TaskCard } from '../components/taskCard';
-
-const columnsData = [
-  { id: 1, title: 'Todo', color: 'bg-cyan-700' },
-  { id: 2, title: 'In_progress', color: 'bg-purple-700' },
-  { id: 3, title: 'Ready_for_review', color: 'bg-yellow-700' },
-  { id: 4, title: 'In_review', color: 'bg-teal-700' },
-  { id: 5, title: 'Done', color: 'bg-green-700' },
-];
 
 const KanbanBoard = () => {
   const params = useParams();
@@ -45,6 +38,7 @@ const KanbanBoard = () => {
   const [activeTask, setActiveTask] = useState<null | Task>(null);
   const [taskMap, setTaskMap] = useState<Record<string, Task>>({});
   const [taskToUpdate, setTaskToUpdate] = useState<null | Task>(null);
+  const [project, setProject] = useState<null | any>(null);
 
   const { data, loading } = useQuery<{
     getProjectById: { name: string; tasks: any[] };
@@ -67,7 +61,7 @@ const KanbanBoard = () => {
     }
     dispatch(addTitle(data?.getProjectById?.name ?? 'Projects'));
     dispatch(addCurrentProject(data?.getProjectById));
-
+    setProject(data?.getProjectById);
     const tasks = data?.getProjectById?.tasks ?? [];
     const grouped = Object.groupBy(
       tasks.map((task) => ({
@@ -297,61 +291,86 @@ const KanbanBoard = () => {
         setActiveTask(null);
       }}
     >
-      <div className="flex space-betweenflex justify-between items-center mb-8">
-        <h2 className="text-xl mb-6 -mt-1">Tasks</h2>
-        <CreateButton btnText={'Add Member'} open="member" />
-      </div>
-      <div className="flex gap-6 overflow-x-auto max-w-full">
-        {columnsData.map((col) => (
-          <div
-            key={col.id}
-            className="w-90 rounded-lg bg-white/5 flex-shrink-0 flex flex-col"
-          >
-            <div
-              className={`${col.color} text-white font-semibold px-4 py-3 rounded-t-lg`}
-            >
-              {col.title.replaceAll('_', ' ')}
-            </div>
+      <div className="w-full h-full">
+        <div className="flex justify-between items-center mb-8 px-4 relative">
+          <h2 className="text-xl -mt-1 font-semibold fixed top-30">
+            {project?.name?.toUpperCase()}
+          </h2>
+          <CreateButton open="member" />
+        </div>
 
-            <DroppableColumn id={col.title.toLowerCase()}>
-              <SortableContext
-                items={(taskGroup[col.title.toLowerCase()] || []).map(
-                  (t) => t.id,
-                )}
-                strategy={verticalListSortingStrategy}
-              >
-                <div className="p-4 overflow-y-auto flex-grow space-y-4 my-2 min-h-[600px] max-h-[600px]">
-                  <button
-                    className="text-blue-400 text-sm hover:underline cursor-pointer"
-                    onClick={() => setModalOpen(true)}
-                  >
-                    + Add Task
-                  </button>
-                  {modalOpen && (
-                    <CreateOrUpdateTaskModal
-                      isOpen={modalOpen}
-                      onClose={() => setModalOpen(false)}
-                    />
+        <div className="flex gap-8 min-w-max mt-[3rem] pr-[2rem]">
+          {columnsData.map((col) => (
+            <div
+              key={col.id}
+              className={`w-[320px] rounded-xl flex-shrink-0 flex flex-col bg-white/6 p-4 ${col.shadow}`}
+            >
+              <div className="font-semibold flex">
+                {col.title.replaceAll('_', ' ').toUpperCase()}
+                <span
+                  className={`ml-2 inline-block h-5 w-5 rounded-sm bg-blue-500 text-blue-100 text-center font-normal text-sm ${col.color}`}
+                >
+                  {taskGroup?.[col?.title?.toLowerCase()]?.length ?? 0}
+                </span>
+              </div>
+              <hr className={`mt-4 border-t border-white/20`} />
+              <DroppableColumn id={col.title.toLowerCase()}>
+                <SortableContext
+                  items={(taskGroup[col.title.toLowerCase()] || []).map(
+                    (t) => t.id,
                   )}
-                  {taskGroup[col?.title?.toLowerCase()]?.length ? (
-                    (taskGroup[col?.title?.toLowerCase()] || []).map((card) => (
-                      <TaskCard key={card.id} card={card} />
-                    ))
-                  ) : (
-                    <div className="flex items-center justify-center min-h-[30rem]">
-                      <p className="text-sm text-center align-middle">
-                        No Task assigned
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </SortableContext>
-            </DroppableColumn>
-          </div>
-        ))}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="pt-2 overflow-y-auto flex-grow space-y-4 my-2 min-h-[600px] max-h-[600px] [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+                    <button
+                      className="text-blue-400 text-sm hover:underline cursor-pointer"
+                      onClick={() => setModalOpen(true)}
+                    >
+                      Add Task
+                    </button>
+                    {modalOpen && (
+                      <CreateOrUpdateTaskModal
+                        isOpen={modalOpen}
+                        onClose={() => setModalOpen(false)}
+                      />
+                    )}
+                    {taskGroup[col?.title?.toLowerCase()]?.length ? (
+                      (taskGroup[col?.title?.toLowerCase()] || []).map(
+                        (card) => (
+                          <TaskCard
+                            key={card.id}
+                            card={card}
+                            owner={project.owner}
+                            border={col.border}
+                            color={col.color}
+                          />
+                        ),
+                      )
+                    ) : (
+                      <div className="flex items-center justify-center min-h-[30rem]">
+                        <p className="text-sm text-center align-middle">
+                          No Task assigned
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </SortableContext>
+              </DroppableColumn>
+            </div>
+          ))}
+        </div>
       </div>
+
       <DragOverlay>
-        {activeTask ? <TaskCard card={activeTask} overlay /> : null}
+        {activeTask ? (
+          <TaskCard
+            card={activeTask}
+            owner={project.owner}
+            border={''}
+            color={''}
+            overlay
+          />
+        ) : null}
       </DragOverlay>
     </DndContext>
   );

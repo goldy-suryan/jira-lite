@@ -1,16 +1,26 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-export const TaskActivity = ({ activities }) => {
+export const TaskActivity = ({ activities, tabIndex }) => {
   const [activityList, setActivityList] = useState([]);
+  const activityRef = useRef<any>(null);
 
   useEffect(() => {
     setActivityList(activities);
-  }, [activities]);
+    if (activityRef?.current) {
+      activityRef.current.scrollTo({
+        top: activityRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [activities, tabIndex, activityRef?.current]);
 
   return (
-    <ul className="list-disc list-inside space-y-2 text-sm">
+    <ul
+      className="list-disc list-inside space-y-2 text-sm overflow-y-auto max-h-[24rem]"
+      ref={activityRef}
+    >
       {!activityList?.length && (
         <div className="flex items-center justify-center">
           <p className="text-center">No activities yet</p>
@@ -19,7 +29,7 @@ export const TaskActivity = ({ activities }) => {
       {activityList?.length > 0 &&
         activityList?.map((act: any) => (
           <li key={act.id}>
-            <span className="text-white">{act.action}</span>
+            <span className="">{act.action}</span>
           </li>
         ))}
     </ul>

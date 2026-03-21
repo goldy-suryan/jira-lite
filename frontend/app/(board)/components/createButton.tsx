@@ -1,24 +1,27 @@
 'use client';
 
 import { useState } from 'react';
+import { FaPlus } from 'react-icons/fa6';
 import { CreateProjectModal } from '../dashboard/components/createProjectModal';
 import { InviteMembersModal } from '../projects/components/addMembersDialog';
 
-export const CreateButton = ({ btnText, open }) => {
+export const CreateButton = ({ open }) => {
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const [projectMemberOpen, setProjectMemberOpen] = useState(false);
 
   return (
     <>
       <button
-        className="mb-6 rounded-md bg-blue-600 px-3 py-1 font-semibold hover:bg-blue-700 transition cursor-pointer"
+        className="rounded-md font-semibold transition cursor-pointer fixed bottom-15 right-15 flex items-center gap-2"
         onClick={() => {
-          open == 'project'
+          open === 'project'
             ? setProjectModalOpen(true)
             : setProjectMemberOpen(true);
         }}
       >
-        + {btnText}
+        <div className="flex items-center justify-center w-[38px] h-[38px] rounded-full bg-blue-500 transition-transform duration-300 ease-in-out hover:scale-125">
+          <FaPlus className="text-white" size={20} />
+        </div>
       </button>
       {projectModalOpen && open == 'project' && (
         <CreateProjectModal

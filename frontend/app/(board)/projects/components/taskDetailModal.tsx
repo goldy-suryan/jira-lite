@@ -1,6 +1,6 @@
 'use client';
 
-import { CrossBtn, FileUploadIcon } from '@/app/components/icons';
+import { CrossBtn } from '@/app/components/icons';
 import {
   ADD_ATTACHMENT_METADATA,
   ADD_COMMENT,
@@ -15,12 +15,23 @@ import { useMutation, useQuery, useSubscription } from '@apollo/client/react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
+import { BsCloudUploadFill } from 'react-icons/bs';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import ImageModal from './imageModal';
 import { TaskActivity } from './taskActivity';
 
-export const TaskDetailModal = ({ isOpen, onClose, task }) => {
-  const { data, loading, refetch: refetchTask } = useQuery<any>(GET_TASK, {
+export const TaskDetailModal = ({
+  isOpen,
+  onClose,
+  task,
+  priorityIcon,
+  color,
+}) => {
+  const {
+    data,
+    loading,
+    refetch: refetchTask,
+  } = useQuery<any>(GET_TASK, {
     variables: { taskId: task.id },
   });
   const {
@@ -50,12 +61,13 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
   });
 
   const commentsRef = useRef<HTMLDivElement | null>(null);
+
+  const modalRef = useRef<HTMLDivElement>(null);
   const [comment, setComment] = useState('');
   const [commentState, setCommentState] = useState<any>([]);
   const [tabIndex, setTabIndex] = useState(0);
   const [file, setFile] = useState<any>(null);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
 
   const taskDetail = data?.getTaskDetail ?? null;
 
@@ -95,7 +107,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
         behavior: 'smooth',
       });
     }
-  }, [commentState, tabIndex, isOpen]);
+  }, [commentState, tabIndex, isOpen, commentsRef?.current]);
 
   useEffect(() => {
     if (urlData?.getSignedUrl) {
@@ -177,7 +189,7 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
 
   if (!isOpen) return null;
 
-  if (loading) return <span className="text-xs">Loading...</span>;
+  if (loading) return <span className="text-xs"></span>;
 
   return (
     <div
@@ -196,21 +208,19 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
         {/* Header */}
         <header className="flex justify-between items-start p-6 border-b border-gray-700">
           <div>
-            <div className="text-gray-400 uppercase text-xs tracking-widest mb-1 select-none">
-              Task
-            </div>
             <h2
               id="task-modal-title"
-              className="text-white text-3xl font-semibold flex flex-wrap gap-2"
+              className="text-3xl font-semibold flex flex-wrap gap-2"
             >
-              <span className="text-gray-400">{taskDetail?.project?.key}</span>
+              {priorityIcon(taskDetail?.priority?.toLowerCase())}
+              <span className="">{taskDetail?.project?.key}</span>
               <span>{taskDetail?.title}</span>
             </h2>
           </div>
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="text-gray-400 hover:text-white transition"
+            className="transition"
           >
             <CrossBtn />
           </button>
@@ -219,35 +229,198 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
         <div className="flex flex-1 overflow-hidden">
           {/* Left Section */}
           <section className="flex-1 overflow-hidden p-6 border-r border-gray-700 flex flex-col gap-6">
-            {/* Description */}
-            <article>
-              <h3 className="text-gray-400 uppercase text-xs font-semibold mb-2 tracking-wide">
+            <article className="mb-4">
+              <h3 className="uppercase text-sm font-semibold mb-2 tracking-wide">
                 Description
               </h3>
-              <p className="text-gray-300 whitespace-pre-wrap">
-                {taskDetail?.description}
-              </p>
+              <div className="max-h-45 overflow-y-auto">
+                <p className="whitespace-pre-wrap text-sm">
+                  {taskDetail?.description}
+                </p>
+              </div>
             </article>
 
+            <Tabs
+              selectedIndex={tabIndex}
+              onSelect={(index) => setTabIndex(index)}
+            >
+              <TabList className="flex border-b border-gray-700">
+                <Tab
+                  className="cursor-pointer px-4 py-2 font-semibold rounded-t-md focus:outline-none"
+                  selectedClassName="bg-[#1a1a1a] border border-b-0 border-gray-600"
+                >
+                  Comments{' '}
+                  <span className="text-sm inline-flex items-center gap-x-1 rounded-full bg-gray-200 ml-2 p-1 text-xs font-medium text-gray-900 min-w-[18px] h-[18px] text-center">
+                    {commentState?.length}
+                  </span>
+                </Tab>
+                <Tab
+                  className="cursor-pointer px-4 py-2 font-semibold rounded-t-md focus:outline-none"
+                  selectedClassName="bg-[#1a1a1a] border border-b-0 border-gray-600"
+                >
+                  Activity{' '}
+                  <span className="text-sm inline-flex items-center gap-x-1 rounded-full bg-gray-200 ml-2 p-1 text-xs font-medium text-gray-900 min-w-[18px] h-[18px] text-center">
+                    {taskDetail?.activities?.length}
+                  </span>
+                </Tab>
+              </TabList>
+              <TabPanel className="bg-[#121212] pt-6 rounded-b-md overflow-y-auto">
+                <article className="flex flex-col gap-4">
+                  {!commentLoading && (
+                    <div>
+                      <div
+                        className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2"
+                        ref={commentsRef}
+                      >
+                        {commentState.map((cmt) => (
+                          <div
+                            key={cmt.id}
+                            className="bg-gray-800 rounded-lg p-3"
+                            aria-label={`Comment by ${cmt.user.name}`}
+                          >
+                            <div className="flex justify-between items-baseline mb-1">
+                              <span className="font-semibold text-sm">
+                                {cmt?.user?.name}
+                              </span>
+                              <time className="text-xs">
+                                {formatDate(cmt.createdAt, true)}
+                              </time>
+                            </div>
+                            <p className="text-sm">{cmt.message}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <form className="mt-2 flex flex-col gap-3">
+                    <textarea
+                      id="comment-input"
+                      rows={1}
+                      className="resize-y rounded-lg bg-gray-900 border border-gray-700 p-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                      placeholder="Write a comment…"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    />
+                    <div className="flex justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          setComment('');
+                          onClose(e);
+                        }}
+                        className="rounded-md border border-gray-700 px-6 py-2 hover:border-gray-500 transition"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={addTaskComment}
+                        disabled={!comment?.trim()}
+                        className="rounded-md bg-blue-600 px-4 py-2 font-semibold hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-500 transition cursor:pointer"
+                      >
+                        Post comment
+                      </button>
+                    </div>
+                  </form>
+                </article>
+              </TabPanel>
+              <TabPanel className="bg-[#121212] mt-1 rounded-b-md -mt-10">
+                <TaskActivity
+                  activities={taskDetail?.activities ?? []}
+                  tabIndex={tabIndex}
+                />
+              </TabPanel>
+            </Tabs>
+            {/* Comments */}
+          </section>
+
+          {/* Right Section */}
+          <aside className="w-80 bg-[#1a1a1a] p-6 overflow-y-auto flex flex-col gap-6">
+            <dl className="flex flex-col gap-4">
+              <div className="flex justify-between items-center">
+                <dt className="uppercase text-xs font-semibold tracking-wide">
+                  Status
+                </dt>
+                <dd>
+                  <span
+                    className={`inline-flex items-center gap-2 rounded-full ${color} px-3 py-1 text-xs font-semibold`}
+                  >
+                    {taskDetail?.status?.replaceAll('_', ' ')?.toUpperCase()}
+                  </span>
+                </dd>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <dt className="uppercase text-xs font-semibold tracking-wide">
+                  Assignee
+                </dt>
+                <dd className="font-semibold">{taskDetail?.assignee?.name}</dd>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <dt className="uppercase text-xs font-semibold tracking-wide">
+                  Due Date
+                </dt>
+                <dd className="font-semibold">
+                  {formatDate(taskDetail?.dueDate)}
+                </dd>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <dt className="uppercase text-xs font-semibold tracking-wide">
+                  Reporter
+                </dt>
+                <dd className="font-semibold">{taskDetail?.reporter?.name}</dd>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <dt className="uppercase text-xs font-semibold tracking-wide">
+                  Created At
+                </dt>
+                <dd className="font-semibold">
+                  {formatDate(taskDetail?.createdAt)}
+                </dd>
+              </div>
+            </dl>
+
             {/* Attachments */}
-            <article>
+            <article className="mt-8">
               <div className="flex justify-between items-center mb-2">
-                <h3 className="text-gray-400 uppercase text-xs font-semibold tracking-wide">
-                  Attachments
+                <h3 className="uppercase text-sm font-semibold tracking-wide">
+                  Attachments{' '}
+                  <span className="font-semibold">
+                    ({taskDetail?.attachments?.length ?? ''})
+                  </span>
                 </h3>
-                <span className="text-gray-500 text-xs font-semibold">
-                  {taskDetail?.attachments?.length ?? ''} files
-                </span>
+                <div className="mb-4">
+                  <span className="mt-3 flex items-center gap-3">
+                    <label
+                      htmlFor="file-upload"
+                      className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-gray-600 bg-gray-800 px-4 py-2 text-sm font-semibold hover:bg-gray-700 transition"
+                    >
+                      <BsCloudUploadFill />
+                      Upload
+                      <input
+                        id="file-upload"
+                        type="file"
+                        className="hidden"
+                        aria-label="Upload file"
+                        onChange={handleFileUpload}
+                      />
+                    </label>
+                  </span>
+                </div>
               </div>
               <div className="flex flex-wrap gap-3 items-center">
                 {taskDetail?.attachments.map(({ id, fileName, fileUrl }) => (
-                  <div key={id} className="max-w-23">
+                  <div key={id} className="max-w-20">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${fileName}`}
                       alt={fileName}
-                      width={20}
-                      height={20}
-                      className="h-20 w-20 object-fill"
+                      width={19}
+                      height={19}
+                      className="h-19 w-19 object-fill"
                       onClick={() =>
                         setExpandedImage(
                           `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${fileName}`,
@@ -272,185 +445,8 @@ export const TaskDetailModal = ({ isOpen, onClose, task }) => {
                     closeImageModal={() => setExpandedImage(null)}
                   />
                 )}
-                <span className="mt-3 flex items-center gap-3">
-                  <label
-                    htmlFor="file-upload"
-                    className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-gray-600 bg-gray-800 px-4 py-2 text-sm font-semibold text-gray-300 hover:bg-gray-700 transition"
-                  >
-                    <FileUploadIcon />
-                    Upload file
-                    <input
-                      id="file-upload"
-                      type="file"
-                      className="hidden"
-                      aria-label="Upload file"
-                      onChange={handleFileUpload}
-                    />
-                  </label>
-                </span>
               </div>
             </article>
-
-            <Tabs
-              selectedIndex={tabIndex}
-              onSelect={(index) => setTabIndex(index)}
-            >
-              <TabList className="flex border-b border-gray-700">
-                <Tab
-                  className="cursor-pointer px-4 py-2 text-gray-400 font-semibold rounded-t-md hover:text-white focus:outline-none"
-                  selectedClassName="bg-[#1a1a1a] text-white border border-b-0 border-gray-600"
-                >
-                  Comments
-                </Tab>
-                <Tab
-                  className="cursor-pointer px-4 py-2 text-gray-400 font-semibold rounded-t-md hover:text-white focus:outline-none"
-                  selectedClassName="bg-[#1a1a1a] text-white border border-b-0 border-gray-600"
-                >
-                  Activity
-                </Tab>
-              </TabList>
-              <TabPanel className="bg-[#121212] p-6 rounded-b-md overflow-y-auto">
-                <article className="flex flex-col gap-4">
-                  {!commentLoading && (
-                    <div>
-                      <h3 className="text-gray-400 uppercase text-xs font-semibold tracking-wide mb-2">
-                        Comments ({commentState?.length})
-                      </h3>
-                      <div
-                        className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2"
-                        ref={commentsRef}
-                      >
-                        {commentState.map((cmt) => (
-                          <div
-                            key={cmt.id}
-                            className="bg-gray-800 rounded-lg p-3"
-                            aria-label={`Comment by ${cmt.user.name}`}
-                          >
-                            <div className="flex justify-between items-baseline mb-1">
-                              <span className="font-semibold text-sm text-gray-300">
-                                {cmt?.user?.name}
-                              </span>
-                              <time className="text-gray-400 text-xs">
-                                {formatDate(cmt.createdAt, true)}
-                              </time>
-                            </div>
-                            <p className="text-gray-300 text-sm">
-                              {cmt.message}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <form className="mt-2 flex flex-col gap-2">
-                    <label
-                      htmlFor="comment-input"
-                      className="text-xs font-semibold text-gray-400 uppercase tracking-wide"
-                    >
-                      Add a comment
-                    </label>
-                    <textarea
-                      id="comment-input"
-                      rows={2}
-                      className="resize-y rounded-lg bg-gray-900 border border-gray-700 p-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                      placeholder="Write a comment…"
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                    />
-                    <div className="flex justify-end gap-3">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          setComment('');
-                          onClose(e);
-                        }}
-                        className="rounded-md border border-gray-700 px-6 py-2 text-gray-400 hover:text-white hover:border-gray-500 transition"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="button"
-                        onClick={addTaskComment}
-                        disabled={!comment?.trim()}
-                        className="rounded-md bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-500 transition cursor:pointer"
-                      >
-                        Post comment
-                      </button>
-                    </div>
-                  </form>
-                </article>
-              </TabPanel>
-              <TabPanel className="bg-[#121212] p-6 rounded-b-md overflow-y-auto -mt-10">
-                <TaskActivity activities={taskDetail?.activities ?? []} />
-              </TabPanel>
-            </Tabs>
-            {/* Comments */}
-          </section>
-
-          {/* Right Section */}
-          <aside className="w-80 bg-[#1a1a1a] p-6 overflow-y-auto flex flex-col gap-6">
-            <dl className="flex flex-col gap-4">
-              <div className="flex justify-between items-center">
-                <dt className="text-gray-400 uppercase text-xs font-semibold tracking-wide">
-                  Status
-                </dt>
-                <dd>
-                  <span className="inline-flex items-center gap-2 rounded-full bg-cyan-600 px-3 py-1 text-xs font-semibold text-white">
-                    {taskDetail?.status?.replaceAll('_', ' ')?.toUpperCase()}
-                  </span>
-                </dd>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <dt className="text-gray-400 uppercase text-xs font-semibold tracking-wide">
-                  Assignee
-                </dt>
-                <dd className="text-gray-300 font-semibold">
-                  {taskDetail?.assignee?.name}
-                </dd>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <dt className="text-gray-400 uppercase text-xs font-semibold tracking-wide">
-                  Priority
-                </dt>
-                <dd>
-                  <span
-                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold text-white ${priorityBackground(taskDetail.priority).priorityColor}`}
-                  >
-                    {taskDetail?.priority}
-                  </span>
-                </dd>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <dt className="text-gray-400 uppercase text-xs font-semibold tracking-wide">
-                  Due Date
-                </dt>
-                <dd className="text-gray-300 font-semibold">
-                  {formatDate(taskDetail?.dueDate)}
-                </dd>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <dt className="text-gray-400 uppercase text-xs font-semibold tracking-wide">
-                  Reporter
-                </dt>
-                <dd className="text-gray-300 font-semibold">
-                  {taskDetail?.reporter?.name}
-                </dd>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <dt className="text-gray-400 uppercase text-xs font-semibold tracking-wide">
-                  Created At
-                </dt>
-                <dd className="text-gray-300 font-semibold">
-                  {formatDate(taskDetail?.createdAt)}
-                </dd>
-              </div>
-            </dl>
           </aside>
         </div>
       </div>

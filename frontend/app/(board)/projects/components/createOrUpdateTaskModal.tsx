@@ -14,6 +14,7 @@ import { useMutation, useQuery } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ConfirmDialog } from '../../components/confirmDialog';
+import { CrossBtn } from '@/app/components/icons';
 
 const formInitialValue = {
   title: '',
@@ -151,12 +152,22 @@ export const CreateOrUpdateTaskModal = ({
       onClick={(e) => e.stopPropagation()}
     >
       <div className="bg-[#121212] rounded-lg p-6 w-full max-w-md mx-4">
-        <h2 className="text-xl font-semibold mb-4 text-white">
-          {task ? 'Edit' : 'Create'} Task
-        </h2>
-        <form className="text-sm">
+        <header className="flex justify-between items-start  border-b border-gray-700">
+          <h2 className="text-xl font-semibold mb-4">
+            {task ? 'Edit' : 'Create'} Task
+          </h2>
+          <button
+            onClick={onClose}
+            aria-label="Close modal"
+            className="transition"
+          >
+            <CrossBtn />
+          </button>
+        </header>
+
+        <form className="text-sm mt-4">
           {/* Title */}
-          <label htmlFor="taskTitle" className="block text-white/80 mb-2">
+          <label htmlFor="taskTitle" className="block mb-2">
             Title
           </label>
           <input
@@ -166,12 +177,12 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, title: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4"
             placeholder="Enter task title"
             autoFocus
           />
           {/* Description */}
-          <label htmlFor="description" className="block text-white/80 mb-2">
+          <label htmlFor="description" className="block mb-2">
             Description
           </label>
           <textarea
@@ -180,12 +191,12 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4 h-32"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4 h-32"
             placeholder="Enter description"
             autoFocus
           />
           {/* Status */}
-          <label htmlFor="status" className="block text-white/80 mb-2">
+          <label htmlFor="status" className="block mb-2">
             Status
           </label>
           <select
@@ -194,7 +205,7 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, status: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4"
           >
             <option value="todo">Todo</option>
             <option value="in_progress">In Progress</option>
@@ -204,12 +215,12 @@ export const CreateOrUpdateTaskModal = ({
           </select>
 
           {/* Priority */}
-          <label htmlFor="priority" className="block text-white/80 mb-2">
+          <label htmlFor="priority" className="block mb-2">
             Priority
           </label>
           <select
             id="priority"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4"
             value={formValue.priority}
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, priority: e.target.value }))
@@ -221,12 +232,12 @@ export const CreateOrUpdateTaskModal = ({
           </select>
 
           {/* Assign */}
-          <label htmlFor="assign" className="block text-white/80 mb-2">
+          <label htmlFor="assign" className="block mb-2">
             Assign to
           </label>
           <select
             id="assign"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4"
             value={formValue.assigneeId}
             onChange={(e) => {
               setFormValue((prev) => ({ ...prev, assigneeId: e.target.value }));
@@ -249,14 +260,14 @@ export const CreateOrUpdateTaskModal = ({
             })}
           </select>
 
-          <label htmlFor="date" className="block text-white/80 mb-2">
+          <label htmlFor="date" className="block mb-2">
             Due Date
           </label>
           <input
             type="date"
             id="date"
             min={new Date().toISOString().split('T')[0]}
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 text-white mb-4"
+            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4"
             value={formValue.dueDate}
             onClick={(e) => {
               e.preventDefault();
@@ -267,21 +278,21 @@ export const CreateOrUpdateTaskModal = ({
             }
           ></input>
 
-          <div className="mt-6 flex justify-end gap-4">
+          <div className="mt-4 flex justify-end gap-4">
             <button
               type="button"
               onClick={() => {
                 setFormValue(formInitialValue);
                 onClose();
               }}
-              className="rounded-md border border-gray-700 px-6 py-2 text-gray-400 hover:text-white hover:border-gray-500 transition"
+              className="rounded-md border border-gray-700 px-6 py-2 transition"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={addOrEditTask}
-              className="px-4 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 transition cursor-pointer"
+              className="px-4 py-2 rounded-md bg-blue-600 font-semibold hover:bg-blue-700 transition cursor-pointer"
             >
               {task ? 'Save Changes' : 'Create'}
             </button>

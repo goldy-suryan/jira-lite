@@ -41,7 +41,7 @@ function Login() {
   };
 
   return (
-    <main className="min-h-screen px-6 py-12 grid place-items-center bg-zinc-950 text-white overflow-hidden">
+    <main className="min-h-screen px-6 py-12 grid place-items-center overflow-hidden">
       {/* Ambient background */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0">
         <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-violet-500/20 blur-3xl" />
@@ -64,13 +64,13 @@ function Login() {
               <div className="grid gap-2.5">
                 <label
                   htmlFor="email"
-                  className="text-sm font-medium text-white/80"
+                  className="text-sm font-medium"
                 >
                   Email
                 </label>
 
                 <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-white/70">
+                  <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
                     <MailIcon className="h-5 w-5" />
                   </div>
 
@@ -84,7 +84,7 @@ function Login() {
                     onChange={(e) =>
                       setFormVal({ ...formVal, email: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm text-white placeholder:text-white/40 outline-none transition"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm outline-none transition"
                     required
                   />
                 </div>
@@ -94,13 +94,13 @@ function Login() {
               <div className="grid gap-2.5">
                 <label
                   htmlFor="password"
-                  className="text-sm font-medium text-white/80"
+                  className="text-sm font-medium"
                 >
                   Password
                 </label>
 
                 <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-white/70">
+                  <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
                     <LockIcon className="h-5 w-5" />
                   </div>
 
@@ -114,7 +114,7 @@ function Login() {
                     onChange={(e) =>
                       setFormVal({ ...formVal, password: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-16 text-sm text-white placeholder:text-white/40 outline-none transition"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-16 text-sm outline-none transition"
                     required
                   />
 
@@ -124,7 +124,7 @@ function Login() {
                     aria-label={
                       showPassword ? 'Hide password' : 'Show password'
                     }
-                    className="absolute inset-y-0 right-0 px-3 text-xs font-semibold tracking-wide text-white/70 hover:text-white transition"
+                    className="absolute inset-y-0 right-0 px-3 text-xs font-semibold tracking-wide transition"
                   >
                     {showPassword ? 'HIDE' : 'SHOW'}
                   </button>
@@ -142,11 +142,11 @@ function Login() {
 
               <div className="h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
-              <p className="text-sm text-white/65">
+              <p className="text-sm">
                 Don&apos;t have an account?{' '}
                 <Link
                   href="/register"
-                  className="text-white/90 underline underline-offset-4 decoration-white/20 hover:decoration-white/50 transition"
+                  className="underline underline-offset-4 decoration-white/20 hover:decoration-white/50 transition"
                 >
                   Register
                 </Link>

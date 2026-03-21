@@ -1,20 +1,24 @@
 'use client';
 
 import { ApolloProvider } from '@apollo/client/react';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Inter, Manrope } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
 import { apolloClient } from './lib/apollo-client';
 import StoreProvider from './storeProvider';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const manrope = Manrope({
+  variable: '--font-manrope',
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  display: 'swap',
 });
 
 export default function RootLayout({
@@ -24,8 +28,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${manrope.variable} ${inter.variable} antialiased overflow-hidden`}
       >
         <Toaster
           position="bottom-right"
@@ -34,7 +44,7 @@ export default function RootLayout({
             error: {
               style: {
                 background: '#a90303',
-                color: '#fff'
+                color: '#fff',
               },
             },
           }}

@@ -17,7 +17,7 @@ const ImageModal = ({ expandedImage, closeImageModal }) => {
         <button
           onClick={closeImageModal}
           aria-label="Close image modal"
-          className="absolute top-3 right-3 text-gray-400 hover:text-white transition"
+          className="absolute top-3 right-3 transition"
         >
           <CrossBtn />
         </button>

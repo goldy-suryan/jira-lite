@@ -34,18 +34,18 @@ export const UserDropdown = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 text-white/80 hover:text-white transition cursor-pointer"
+        className="flex items-center gap-2 transition cursor-pointer"
         aria-haspopup="true"
         aria-expanded={open}
       >
         <span className="text-sm flex items-center">
-          <UserIcon className="w-5 h-5 rounded-full mx-auto block text-gray-700 border border-gray-500 mr-2" />{' '}
+          <UserIcon className="w-5 h-5 rounded-full mx-auto block border border-gray-500 mr-2" />{' '}
           <code>&#9660;</code>
         </span>
       </button>
 
       {open && (
-        <ul className="absolute right-0 mt-2 w-40 rounded-md bg-zinc-900 border border-white/20 shadow-lg py-2 text-white text-sm z-50">
+        <ul className="absolute right-0 mt-2 w-40 rounded-md bg-zinc-900 border border-white/20 shadow-lg py-2 text-sm z-50">
           <li>
             <a
               href="/profile"

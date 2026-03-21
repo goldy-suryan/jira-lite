@@ -5,6 +5,7 @@ import { GET_PROJECT_BY_ID } from '@/app/graphql/queries/board.query';
 import { useMutation } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { FaEllipsis } from 'react-icons/fa6';
 import { ConfirmDialog } from '../../components/confirmDialog';
 import { CreateOrUpdateTaskModal } from './createOrUpdateTaskModal';
 
@@ -55,20 +56,10 @@ export const TaskCardKebabMenu = ({ card }) => {
           e.stopPropagation();
           setMenuOpen((prev) => !prev);
         }}
-        className="absolute top-2 right-2 p-1 rounded hover:bg-white/5"
+        className="absolute top-2 right-2 p-1 rounded hover:bg-white/5 cursor-pointer"
         aria-label="Open task menu"
       >
-        {/* Simple three dots icon */}
-        <svg
-          className="w-5 h-5 text-white"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          aria-hidden="true"
-        >
-          <circle cx="3" cy="10" r="2" />
-          <circle cx="10" cy="10" r="2" />
-          <circle cx="17" cy="10" r="2" />
-        </svg>
+        <FaEllipsis size={20}/>
       </button>
       {menuOpen && (
         <div
@@ -76,7 +67,7 @@ export const TaskCardKebabMenu = ({ card }) => {
           className="absolute top-8 right-2 bg-zinc-900 rounded shadow-lg w-40 z-50"
         >
           <button
-            className="block w-full text-left px-4 py-2 text-white hover:bg-zinc-700 cursor-pointer"
+            className="block w-full text-left px-4 py-2 hover:bg-zinc-700 cursor-pointer"
             onClick={(e) => {
               e?.stopPropagation();
               setMenuOpen(false);
@@ -86,7 +77,7 @@ export const TaskCardKebabMenu = ({ card }) => {
             Edit Task
           </button>
           <button
-            className="block w-full text-left px-4 py-2 text-white hover:bg-zinc-700 cursor-pointer"
+            className="block w-full text-left px-4 py-2 hover:bg-zinc-700 cursor-pointer"
             onClick={(e) => {
               e?.stopPropagation();
               setMenuOpen(false);
