@@ -269,29 +269,27 @@ export const TaskDetailModal = ({
               <TabPanel className="bg-[#121212] pt-6 rounded-b-md overflow-y-auto">
                 <article className="flex flex-col gap-4">
                   {!commentLoading && (
-                    <div>
-                      <div
-                        className="flex flex-col gap-3 overflow-y-auto pr-2 max-h-[9rem] md:max-h-[10rem] lg:max-h-[10rem] xl:max-h-[20rem]"
-                        ref={commentsRef}
-                      >
-                        {commentState.map((cmt) => (
-                          <div
-                            key={cmt.id}
-                            className="bg-gray-800 rounded-lg p-3"
-                            aria-label={`Comment by ${cmt.user.name}`}
-                          >
-                            <div className="flex justify-between items-baseline mb-1">
-                              <span className="font-semibold text-sm">
-                                {cmt?.user?.name}
-                              </span>
-                              <time className="text-xs">
-                                {formatDate(cmt.createdAt, true)}
-                              </time>
-                            </div>
-                            <p className="text-sm">{cmt.message}</p>
+                    <div
+                      className="flex flex-col gap-3 overflow-y-auto pr-2 max-h-[9rem] xl:max-h-[20rem]"
+                      ref={commentsRef}
+                    >
+                      {commentState.map((cmt) => (
+                        <div
+                          key={cmt.id}
+                          className="bg-gray-800 rounded-lg p-3"
+                          aria-label={`Comment by ${cmt.user.name}`}
+                        >
+                          <div className="flex justify-between items-baseline mb-1">
+                            <span className="font-semibold text-sm">
+                              {cmt?.user?.name}
+                            </span>
+                            <time className="text-xs">
+                              {formatDate(cmt.createdAt, true)}
+                            </time>
                           </div>
-                        ))}
-                      </div>
+                          <p className="text-sm">{cmt.message}</p>
+                        </div>
+                      ))}
                     </div>
                   )}
 

@@ -64,7 +64,7 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
           </button>
         </header>
         <form className="text-sm mt-6">
-          <label htmlFor="projectName" className="block mb-2">
+          <label htmlFor="projectName" className="block">
             Project Name
           </label>
           <input
@@ -78,7 +78,7 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
             placeholder="Enter project name"
             autoFocus
           />
-          <label htmlFor="key" className="block mb-2">
+          <label htmlFor="key" className="block">
             Key
           </label>
           <input
@@ -92,7 +92,7 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
             placeholder="Enter key"
             autoFocus
           />
-          <label htmlFor="description" className="block mb-2">
+          <label htmlFor="description" className="block">
             Description
           </label>
           <textarea
