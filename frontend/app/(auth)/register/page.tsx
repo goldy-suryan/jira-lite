@@ -1,10 +1,10 @@
 'use client';
 
-import { LockIcon, MailIcon, UserIcon } from '@/app/components/icons';
 import { instance } from '@/app/utils/interceptors';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { FaLock, FaRegEnvelope, FaRegUser } from 'react-icons/fa6';
 
 export const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -89,7 +89,7 @@ export const Register = () => {
 
                 <div className="relative">
                   <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                    <UserIcon className="h-5 w-5" />
+                    <FaRegUser className="h-4 w-4" />
                   </div>
 
                   <input
@@ -123,7 +123,7 @@ export const Register = () => {
 
                 <div className="relative">
                   <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                    <MailIcon className="h-5 w-5" />
+                    <FaRegEnvelope className="h-4 w-4" />
                   </div>
 
                   <input
@@ -153,7 +153,7 @@ export const Register = () => {
 
                 <div className="relative">
                   <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                    <LockIcon className="h-5 w-5" />
+                    <FaLock className="h-4 w-4" />
                   </div>
 
                   <input

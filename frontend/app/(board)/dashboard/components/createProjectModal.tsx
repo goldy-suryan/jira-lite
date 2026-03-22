@@ -1,11 +1,11 @@
 'use client';
 
-import { CrossBtn } from '@/app/components/icons';
 import { CREATE_PROJECT } from '@/app/graphql/mutations/board.mutation';
 import { GET_USER_PROJECTS } from '@/app/graphql/queries/board.query';
 import { useAppSelector } from '@/app/state/hooks';
 import { useMutation } from '@apollo/client/react';
 import { useState } from 'react';
+import { FaX } from 'react-icons/fa6';
 
 const formInitialValue = {
   name: '',
@@ -60,7 +60,7 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
             aria-label="Close modal"
             className="transition"
           >
-            <CrossBtn />
+            <FaX />
           </button>
         </header>
         <form className="text-sm mt-6">

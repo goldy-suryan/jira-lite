@@ -1,6 +1,5 @@
-import { CrossBtn } from '@/app/components/icons';
 import Image from 'next/image';
-import React from 'react';
+import { FaX } from 'react-icons/fa6';
 
 const ImageModal = ({ expandedImage, closeImageModal }) => {
   return (
@@ -19,7 +18,7 @@ const ImageModal = ({ expandedImage, closeImageModal }) => {
           aria-label="Close image modal"
           className="absolute top-3 right-3 transition"
         >
-          <CrossBtn />
+          <FaX />
         </button>
         <Image
           src={expandedImage}

@@ -1,12 +1,12 @@
 'use client';
 
-import { LockIcon, MailIcon } from '@/app/components/icons';
 import { addUser } from '@/app/state/features/user.slice';
 import { useAppDispatch } from '@/app/state/hooks';
 import { instance } from '@/app/utils/interceptors';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { FaLock, FaRegEnvelope } from 'react-icons/fa6';
 
 function Login() {
   const [formVal, setFormVal] = useState({
@@ -62,16 +62,13 @@ function Login() {
             <form noValidate className="grid gap-6">
               {/* Email */}
               <div className="grid gap-2.5">
-                <label
-                  htmlFor="email"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="email" className="text-sm font-medium">
                   Email
                 </label>
 
                 <div className="relative">
                   <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                    <MailIcon className="h-5 w-5" />
+                    <FaRegEnvelope className="h-4 w-4" />
                   </div>
 
                   <input
@@ -92,16 +89,13 @@ function Login() {
 
               {/* Password */}
               <div className="grid gap-2.5">
-                <label
-                  htmlFor="password"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="password" className="text-sm font-medium">
                   Password
                 </label>
 
                 <div className="relative">
                   <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                    <LockIcon className="h-5 w-5" />
+                    <FaLock className="h-4 w-4" />
                   </div>
 
                   <input

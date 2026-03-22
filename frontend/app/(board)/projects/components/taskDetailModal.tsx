@@ -1,6 +1,5 @@
 'use client';
 
-import { CrossBtn } from '@/app/components/icons';
 import {
   ADD_ATTACHMENT_METADATA,
   ADD_COMMENT,
@@ -16,7 +15,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { BsCloudUploadFill } from 'react-icons/bs';
-import { FaPaperPlane } from 'react-icons/fa6';
+import { FaPaperPlane, FaX } from 'react-icons/fa6';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import ImageModal from './imageModal';
 import { TaskActivity } from './taskActivity';
@@ -224,7 +223,7 @@ export const TaskDetailModal = ({
             aria-label="Close modal"
             className="transition"
           >
-            <CrossBtn />
+            <FaX />
           </button>
         </header>
 
@@ -235,7 +234,7 @@ export const TaskDetailModal = ({
               <h3 className="uppercase text-sm font-semibold mb-2 tracking-wide">
                 Description
               </h3>
-              <div className="max-h-45 overflow-y-auto">
+              <div className="max-h-44 overflow-y-auto">
                 <p className="whitespace-pre-wrap text-sm">
                   {taskDetail?.description}
                 </p>
@@ -400,27 +399,16 @@ export const TaskDetailModal = ({
                 {taskDetail?.attachments.map(({ id, fileName, fileUrl }) => (
                   <div key={id} className="max-w-20">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${fileName}`}
+                      src={``}
                       alt={fileName}
                       width={19}
                       height={19}
                       className="h-19 w-19 object-fill"
-                      onClick={() =>
-                        setExpandedImage(
-                          `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${fileName}`,
-                        )
-                      }
+                      onClick={() => setExpandedImage(``)}
                     />
                     <p className="text-xs truncate">
                       {fileName?.split('_')?.[1]}
                     </p>
-                    {/* <button
-                      key={id}
-                      className="flex items-center gap-2 bg-gray-800 rounded-lg text-gray-300 hover:bg-gray-700 transition max-w-xs truncate p-2"
-                      aria-label={`Attachment: ${fileName?.split('_')?.[1]}`}
-                      >
-                      <FileIcon />
-                      </button> */}
                   </div>
                 ))}
                 {expandedImage && (

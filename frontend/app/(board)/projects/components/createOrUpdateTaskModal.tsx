@@ -13,8 +13,8 @@ import { useAppSelector } from '@/app/state/hooks';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { FaX } from 'react-icons/fa6';
 import { ConfirmDialog } from '../../components/confirmDialog';
-import { CrossBtn } from '@/app/components/icons';
 
 const formInitialValue = {
   title: '',
@@ -161,7 +161,7 @@ export const CreateOrUpdateTaskModal = ({
             aria-label="Close modal"
             className="transition"
           >
-            <CrossBtn />
+             <FaX />
           </button>
         </header>
 

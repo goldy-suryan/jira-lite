@@ -1,9 +1,9 @@
 'use client';
 
-import { UserIcon } from '@/app/components/icons';
 import { instance } from '@/app/utils/interceptors';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { FaRegUser } from 'react-icons/fa6';
 
 export const UserDropdown = () => {
   const [open, setOpen] = useState(false);
@@ -39,7 +39,7 @@ export const UserDropdown = () => {
         aria-expanded={open}
       >
         <span className="text-sm flex items-center">
-          <UserIcon className="w-5 h-5 rounded-full mx-auto block border border-gray-500 mr-2" />{' '}
+          <FaRegUser className="w-5 h-5 rounded-full mx-auto block border border-gray-500 mr-2" />{' '}
           <code>&#9660;</code>
         </span>
       </button>
