@@ -399,12 +399,12 @@ export const TaskDetailModal = ({
                 {taskDetail?.attachments.map(({ id, fileName, fileUrl }) => (
                   <div key={id} className="max-w-20">
                     <Image
-                      src={``}
+                      src={`${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${fileName}`}
                       alt={fileName}
                       width={19}
                       height={19}
                       className="h-19 w-19 object-fill"
-                      onClick={() => setExpandedImage(``)}
+                      onClick={() => setExpandedImage(`${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${fileName}`)}
                     />
                     <p className="text-xs truncate">
                       {fileName?.split('_')?.[1]}
