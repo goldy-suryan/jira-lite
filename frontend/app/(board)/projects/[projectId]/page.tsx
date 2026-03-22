@@ -300,7 +300,7 @@ const KanbanBoard = () => {
     >
       <div className="w-full h-full">
         <div className="flex justify-between items-center mb-8 relative">
-          <h2 className="text-xl -mt-1 font-semibold fixed top-30 bg-black w-full pb-2 z-2">
+          <h2 className="text-xl -mt-1 font-semibold fixed top-30 dark:bg-black w-full pb-2 z-2">
             {project?.name?.toUpperCase()}
           </h2>
           <CreateButton open="member" />
@@ -310,7 +310,7 @@ const KanbanBoard = () => {
           {columnsData.map((col) => (
             <div
               key={col.id}
-              className={`w-[320px] rounded-xl flex-shrink-0 flex flex-col bg-white/6 p-4 ${col.shadow}`}
+              className={`w-[320px] rounded-xl flex-shrink-0 flex flex-col bg-white/6 p-4 ${col.shadow} shadow-xl`}
             >
               <div className="font-semibold flex">
                 {col.title.replaceAll('_', ' ').toUpperCase()}
@@ -320,7 +320,7 @@ const KanbanBoard = () => {
                   {taskGroup?.[col?.title?.toLowerCase()]?.length ?? 0}
                 </span>
               </div>
-              <hr className={`mt-4 border-t border-white/20`} />
+              <hr className={`mt-4 border-t light:border-gray-200 dark:border-white/20`} />
               <DroppableColumn id={col.title.toLowerCase()}>
                 <SortableContext
                   items={(taskGroup[col.title.toLowerCase()] || []).map(

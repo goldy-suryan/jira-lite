@@ -19,7 +19,7 @@ export const Register = () => {
   const strength = useMemo(() => {
     const v = formValues.password;
     if (!v)
-      return { label: '—', tone: 'border-white/15 bg-white/5' };
+      return { label: '—', tone: 'dark:border-white/15 dark:bg-white/5' };
 
     let score = 0;
     if (v.length >= 8) score++;
@@ -32,21 +32,21 @@ export const Register = () => {
     if (s <= 1)
       return {
         label: 'Weak',
-        tone: 'text-rose-200 border-rose-400/30 bg-rose-500/10',
+        tone: 'light:text-red-100 light:border-red-400 light:bg-red-500 dark:text-rose-200 dark:border-rose-400/30 dark:bg-rose-500/10',
       };
     if (s === 2)
       return {
         label: 'Fair',
-        tone: 'text-amber-200 border-amber-400/30 bg-amber-500/10',
+        tone: 'light:text-amber-100 light:border-amber-400 light:bg-amber-500 dark:text-amber-200 dark:border-amber-400/30 dark:bg-amber-500/10',
       };
     if (s === 3)
       return {
         label: 'Good',
-        tone: 'text-cyan-200 border-cyan-400/30 bg-cyan-500/10',
+        tone: 'light:text-cyan-100 light:border-cyan-400 light:bg-cyan-500 dark:text-cyan-200 dark:border-cyan-400/30 dark:bg-cyan-500/10',
       };
     return {
       label: 'Strong',
-      tone: 'text-emerald-200 border-emerald-400/30 bg-emerald-500/10',
+      tone: 'light:text-emerald-100 light:border-emerald-400 light:bg-emerald-500 dark:text-emerald-200 dark:border-emerald-400/30 dark:bg-emerald-500/10',
     };
   }, [formValues.password]);
 
@@ -59,7 +59,7 @@ export const Register = () => {
   };
 
   return (
-    <main className="min-h-screen px-6 py-12 grid place-items-center bg-zinc-950 overflow-hidden">
+    <main className="min-h-screen px-6 py-12 grid place-items-center dark:bg-zinc-950 overflow-hidden">
       {/* Ambient background */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0">
         <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-violet-500/20 blur-3xl" />
@@ -102,7 +102,7 @@ export const Register = () => {
                     onChange={(e) =>
                       setformValues({ ...formValues, name: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm outline-none transition"
+                    className="h-11 w-full rounded-xl light:bg-gray-200 border border-white/10 dark:bg-white/5 pl-11 pr-4 text-sm outline-none transition"
                     required
                   />
                 </div>
@@ -136,7 +136,7 @@ export const Register = () => {
                     onChange={(e) =>
                       setformValues({ ...formValues, email: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm outline-none transition"
+                    className="h-11 w-full rounded-xl light:bg-gray-200 border border-white/10 dark:bg-white/5 pl-11 pr-4 text-sm outline-none transition"
                     required
                   />
                 </div>
@@ -167,7 +167,7 @@ export const Register = () => {
                       setformValues({ ...formValues, password: e.target.value })
                     }
                     minLength={8}
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-16 text-sm outline-none transition"
+                    className="h-11 w-full rounded-xl light:bg-gray-200 border border-white/10 dark:bg-white/5 pl-11 pr-16 text-sm outline-none transition"
                     required
                   />
 
@@ -202,7 +202,7 @@ export const Register = () => {
               <button
                 type="button"
                 onClick={registerUser}
-                className="h-11 w-full rounded-xl border text-sm font-semibold tracking-tight transition shadow-[0_10px_30px_rgba(0,0,0,0.35)] active:scale-[0.99] border-violet-300/30 bg-gradient-to-b from-violet-400/25 to-violet-400/10 hover:from-violet-400/30 hover:to-violet-400/12 cursor-pointer"
+                className="h-11 w-full rounded-xl border text-sm font-semibold tracking-tight transition shadow-[0_10px_30px_rgba(0,0,0,0.35)] active:scale-[0.99] border-violet-300/30 light:bg-blue-600 light:text-white dark:bg-gradient-to-b from-violet-400/25 to-violet-400/10 hover:from-violet-400/30 hover:to-violet-400/12 cursor-pointer"
               >
                 Register
               </button>

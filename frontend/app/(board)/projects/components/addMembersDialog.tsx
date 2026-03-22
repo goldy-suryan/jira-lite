@@ -90,13 +90,13 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center light:bg-white dark:bg-black bg-opacity-70 backdrop-blur-sm"
       aria-modal="true"
       aria-labelledby="invite-modal-title"
     >
       <div
         ref={modalRef}
-        className="bg-[#121212] rounded-2xl shadow-xl max-w-md w-full max-h-[80vh] overflow-hidden flex flex-col"
+        className="dark:bg-[#121212] light:shadow-lg light:border light:border-gray-200 rounded-2xl shadow-xl max-w-md w-full max-h-[80vh] overflow-hidden flex flex-col"
       >
         {/* Header */}
         <header className="p-6 border-b border-gray-700">
@@ -122,11 +122,11 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
               value={email}
               onChange={handleEmailChange}
               placeholder="name@example.com"
-              className="w-full rounded-lg bg-zinc-800 border border-gray-700 p-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-lg light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 p-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
             {result?.length > 0 && (
-              <ul className="absolute z-10 max-h-48 w-full overflow-auto rounded-md bg-gray-500 border border-gray-700 shadow-lg">
+              <ul className="absolute z-10 max-h-48 w-full overflow-auto rounded-md light:bg-white dark:bg-gray-500 dark:border dark:border-gray-700 shadow-lg">
                 {result.map((item: any) => {
                   return (
                     <li
@@ -156,7 +156,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
               id="role-select"
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-lg bg-zinc-800 border border-gray-700 p-3 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-lg light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 p-3 focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               <option>Member</option>
               <option>Admin</option>
@@ -167,12 +167,12 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           <button
             type="button"
             onClick={addMember}
-            className="self-start rounded-md bg-blue-600 px-5 py-2 font-semibold hover:bg-blue-700 transition"
+            className="self-start rounded-md light:text-white bg-blue-600 px-5 py-2 font-semibold hover:bg-blue-700 transition"
           >
             Add Member
           </button>
 
-          <div className="max-h-48 overflow-y-auto border border-gray-700 rounded-lg p-2 bg-zinc-800">
+          <div className="max-h-48 overflow-y-auto border dark:border-gray-700 rounded-lg p-2 dark:bg-zinc-800">
             {members.length === 0 ? (
               <p className="text-center select-none text-sm">
                 No members added
@@ -214,8 +214,8 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
             disabled={members.length === 0}
             className={`rounded-md px-6 py-2 font-semibold transition ${
               members.length === 0
-                ? 'bg-gray-700 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
+                ? 'bg-gray-700 light:text-white cursor-not-allowed'
+                : 'bg-blue-600 light:text-white hover:bg-blue-700'
             }`}
           >
             Send Invite

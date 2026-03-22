@@ -1,6 +1,7 @@
 'use client';
 
 import { instance } from '@/app/utils/interceptors';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { FaRegUser } from 'react-icons/fa6';
@@ -39,35 +40,35 @@ export const UserDropdown = () => {
         aria-expanded={open}
       >
         <span className="text-sm flex items-center">
-          <FaRegUser className="w-5 h-5 rounded-full mx-auto block border border-gray-500 mr-2" />{' '}
+          <FaRegUser className="w-5 h-5 rounded-full mx-auto block border dark:border-gray-500 mr-2" />{' '}
           <code>&#9660;</code>
         </span>
       </button>
 
       {open && (
-        <ul className="absolute right-0 mt-2 w-40 rounded-md bg-zinc-900 border border-white/20 shadow-lg py-2 text-sm z-50">
+        <ul className="absolute right-0 mt-2 w-40 rounded-md light:bg-white dark:bg-zinc-900 border border-white/20 shadow-lg text-sm z-50">
           <li>
-            <a
+            <Link
               href="/profile"
-              className="block px-4 py-2 hover:bg-white/10 transition"
+              className="block px-4 py-2 light:hover:bg-gray-300 dark:hover:bg-white/10 transition"
               onClick={() => setOpen(false)}
             >
               Profile
-            </a>
+            </Link>
           </li>
           <li>
-            <a
+            <Link
               href="/settings"
-              className="block px-4 py-2 hover:bg-white/10 transition"
+              className="block px-4 py-2 light:hover:bg-gray-300 dark:hover:bg-white/10 transition"
               onClick={() => setOpen(false)}
             >
               Settings
-            </a>
+            </Link>
           </li>
           <li>
             <button
               onClick={logout}
-              className="w-full text-left px-4 py-2 hover:bg-white/10 transition"
+              className="w-full text-left px-4 py-2 light:hover:bg-gray-300 dark:hover:bg-white/10 transition"
             >
               Logout
             </button>

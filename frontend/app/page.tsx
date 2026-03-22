@@ -2,8 +2,8 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-zinc-950 flex flex-col px-10">
-      <nav className="flex justify-between items-center py-6 shadow mb-16">
+    <main className="min-h-screen dark:bg-zinc-950 flex flex-col ">
+      <nav className="flex justify-between items-center py-6 shadow mb-16 px-10">
         <h1 className="text-xl font-bold text-blue-500">JiraLite</h1>
 
         <div className="space-x-6">
@@ -16,7 +16,7 @@ export default function Home() {
 
           <Link
             href="/register"
-            className="rounded-xl bg-blue-600 px-4 py-2 font-semibold shadow-lg hover:bg-blue-700 transition"
+            className="rounded-xl light:text-white bg-blue-600 px-4 py-2 font-semibold shadow-lg hover:bg-blue-700 transition"
           >
             Get Started
           </Link>
@@ -36,7 +36,7 @@ export default function Home() {
         <div className="mt-10 flex justify-center gap-6">
           <Link
             href="/register"
-            className="rounded-xl bg-blue-600 px-6 py-3 font-semibold shadow-lg hover:bg-blue-700 transition"
+            className="rounded-xl light:text-white bg-blue-600 px-6 py-3 font-semibold shadow-lg hover:bg-blue-700 transition"
           >
             Start Free
           </Link>

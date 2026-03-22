@@ -51,9 +51,9 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm">
-      <div className="bg-[#121212] rounded-lg p-6 w-full max-w-md mx-4">
-        <header className="flex justify-between items-start  border-b border-gray-700">
+    <div className="fixed inset-0 z-50 flex items-center justify-center light:bg-white dark:bg-black bg-opacity-70 backdrop-blur-sm">
+      <div className="dark:bg-[#121212] light:border light:border-gray-200 light:shadow-lg rounded-lg p-6 w-full max-w-md mx-4">
+        <header className="flex justify-between items-start border-b border-gray-700">
           <h2 className="text-xl font-semibold mb-4">Create Project</h2>
           <button
             onClick={onClose}
@@ -74,7 +74,7 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, name: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-6"
+            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-6"
             placeholder="Enter project name"
             autoFocus
           />
@@ -88,7 +88,7 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, key: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-6"
+            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-6"
             placeholder="Enter key"
             autoFocus
           />
@@ -101,7 +101,7 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-6 h-32"
+            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-6 h-32"
             placeholder="Enter description"
             autoFocus
           />
@@ -112,14 +112,14 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
                 setFormValue(formInitialValue);
                 onClose();
               }}
-              className="rounded-md border border-gray-700 px-6 py-2 hover:border-gray-500 transition"
+              className="rounded-md border border-gray-700 px-6 py-2 hover:border-gray-500 transition cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={addProject}
-              className="px-4 py-2 rounded-md bg-blue-600 font-semibold hover:bg-blue-700 transition"
+              className="px-4 py-2 rounded-md light:text-white bg-blue-600 font-semibold hover:bg-blue-700 transition cursor-pointer"
             >
               Create
             </button>

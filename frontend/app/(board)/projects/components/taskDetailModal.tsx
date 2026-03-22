@@ -194,7 +194,7 @@ export const TaskDetailModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center light:bg-white dark:bg-black bg-opacity-70 backdrop-blur-sm px-4"
       aria-modal="true"
       aria-labelledby="task-modal-title"
       aria-describedby="task-modal-desc"
@@ -204,10 +204,10 @@ export const TaskDetailModal = ({
     >
       <div
         ref={modalRef}
-        className="bg-[#121212] rounded-2xl shadow-xl max-w-6xl w-full min-h-[92vh] max-h-[92vh] overflow-hidden flex flex-col"
+        className="dark:bg-[#121212] rounded-2xl shadow-xl max-w-6xl w-full min-h-[92vh] max-h-[92vh] overflow-hidden flex flex-col"
       >
         {/* Header */}
-        <header className="flex justify-between items-start p-4 border-b border-gray-700">
+        <header className="flex justify-between items-start p-4 border-b dark:border-gray-700">
           <div>
             <h2
               id="task-modal-title"
@@ -229,7 +229,7 @@ export const TaskDetailModal = ({
 
         <div className="flex flex-1 overflow-hidden">
           {/* Left Section */}
-          <section className="flex-1 overflow-hidden p-6 border-r border-gray-700 flex flex-col gap-6">
+          <section className="flex-1 overflow-hidden p-6 border-r dark:border-gray-700 flex flex-col gap-6">
             <article className="mb-4">
               <h3 className="uppercase text-sm font-semibold mb-2 tracking-wide">
                 Description
@@ -245,27 +245,27 @@ export const TaskDetailModal = ({
               selectedIndex={tabIndex}
               onSelect={(index) => setTabIndex(index)}
             >
-              <TabList className="flex border-b border-gray-700">
+              <TabList className="flex border-b dark:border-gray-700">
                 <Tab
                   className="cursor-pointer px-4 py-2 font-semibold rounded-t-md focus:outline-none"
-                  selectedClassName="bg-[#1a1a1a] border border-b-0 border-gray-600"
+                  selectedClassName="dark:bg-[#1a1a1a] border border-b-0 dark:border-gray-600"
                 >
                   Comments{' '}
-                  <span className="text-sm inline-flex items-center gap-x-1 rounded-full bg-gray-200 ml-2 p-1 text-xs font-medium text-gray-900 min-w-[18px] h-[18px] text-center">
+                  <span className="text-sm inline-flex items-center gap-x-1 rounded-full light:bg-gray-500 light:text-white dark:bg-gray-200 ml-2 p-1 text-xs font-medium dark:text-gray-900 min-w-[18px] h-[18px] text-center">
                     {commentState?.length}
                   </span>
                 </Tab>
                 <Tab
                   className="cursor-pointer px-4 py-2 font-semibold rounded-t-md focus:outline-none"
-                  selectedClassName="bg-[#1a1a1a] border border-b-0 border-gray-600"
+                  selectedClassName="dark:bg-[#1a1a1a] border border-b-0 dark:border-gray-600"
                 >
                   Activity{' '}
-                  <span className="text-sm inline-flex items-center gap-x-1 rounded-full bg-gray-200 ml-2 p-1 text-xs font-medium text-gray-900 min-w-[18px] h-[18px] text-center">
+                  <span className="text-sm inline-flex items-center gap-x-1 rounded-full light:bg-gray-500 light:text-white dark:bg-gray-200 ml-2 p-1 text-xs font-medium dark:text-gray-900 min-w-[18px] h-[18px] text-center">
                     {taskDetail?.activities?.length}
                   </span>
                 </Tab>
               </TabList>
-              <TabPanel className="bg-[#121212] pt-6 rounded-b-md overflow-y-auto">
+              <TabPanel className="dark:bg-[#121212] pt-6 rounded-b-md overflow-y-auto">
                 <article className="flex flex-col gap-4">
                   {!commentLoading && (
                     <div
@@ -275,7 +275,7 @@ export const TaskDetailModal = ({
                       {commentState.map((cmt) => (
                         <div
                           key={cmt.id}
-                          className="bg-gray-800 rounded-lg p-3"
+                          className="light:bg-gray-500 light:text-white dark:bg-gray-800 rounded-lg p-3"
                           aria-label={`Comment by ${cmt.user.name}`}
                         >
                           <div className="flex justify-between items-baseline mb-1">
@@ -296,7 +296,7 @@ export const TaskDetailModal = ({
                     <textarea
                       id="comment-input"
                       rows={1}
-                      className="resize-y rounded-lg bg-gray-900 border border-gray-700 p-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                      className="resize-y rounded-lg light:bg-gray-200 dark:bg-gray-900 border dark:border-gray-700 p-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                       placeholder="Write a comment…"
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
@@ -308,7 +308,7 @@ export const TaskDetailModal = ({
                   </form>
                 </article>
               </TabPanel>
-              <TabPanel className="bg-[#121212] mt-1 rounded-b-md -mt-10">
+              <TabPanel className="dark:bg-[#121212] mt-1 rounded-b-md -mt-10">
                 <TaskActivity
                   activities={taskDetail?.activities ?? []}
                   tabIndex={tabIndex}
@@ -319,7 +319,7 @@ export const TaskDetailModal = ({
           </section>
 
           {/* Right Section */}
-          <aside className="w-80 bg-[#1a1a1a] p-6 overflow-y-auto flex flex-col gap-6">
+          <aside className="w-80 dark:bg-[#1a1a1a] p-6 overflow-y-auto flex flex-col gap-6">
             <dl className="flex flex-col gap-4">
               <div className="flex justify-between items-center">
                 <dt className="uppercase text-xs font-semibold tracking-wide">
@@ -380,7 +380,7 @@ export const TaskDetailModal = ({
                   <span className="mt-3 flex items-center gap-3">
                     <label
                       htmlFor="file-upload"
-                      className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-gray-600 bg-gray-800 px-4 py-2 text-sm font-semibold hover:bg-gray-700 transition"
+                      className="cursor-pointer inline-flex items-center gap-2 rounded-full border dark:border-gray-600 dark:bg-gray-800 px-4 py-2 text-sm font-semibold hover:bg-gray-700 transition"
                     >
                       <BsCloudUploadFill />
                       Upload

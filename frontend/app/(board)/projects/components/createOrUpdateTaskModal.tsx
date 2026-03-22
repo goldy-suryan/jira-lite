@@ -15,6 +15,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaX } from 'react-icons/fa6';
 import { ConfirmDialog } from '../../components/confirmDialog';
+import { useTheme } from 'next-themes';
 
 const formInitialValue = {
   title: '',
@@ -34,7 +35,7 @@ export const CreateOrUpdateTaskModal = ({
   task = null,
 }: any) => {
   const params = useParams();
-
+  const { theme } = useTheme();
   const [formValue, setFormValue] = useState(formInitialValue);
   const [error, setError] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
@@ -146,13 +147,13 @@ export const CreateOrUpdateTaskModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm mb-0"
+      className="fixed inset-0 z-50 flex items-center justify-center light:bg-white dark:bg-black bg-opacity-70 backdrop-blur-sm mb-0"
       onPointerDown={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="bg-[#121212] rounded-lg p-6 w-full max-w-md mx-4">
-        <header className="flex justify-between items-start  border-b border-gray-700">
+      <div className="dark:bg-[#121212] light:shadow-lg light:border light:border-gray-200 rounded-lg p-6 w-full max-w-md mx-4">
+        <header className="flex justify-between items-start border-b border-gray-700">
           <h2 className="text-xl font-semibold mb-4">
             {task ? 'Edit' : 'Create'} Task
           </h2>
@@ -161,7 +162,7 @@ export const CreateOrUpdateTaskModal = ({
             aria-label="Close modal"
             className="transition"
           >
-             <FaX />
+            <FaX />
           </button>
         </header>
 
@@ -177,7 +178,7 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, title: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4"
+            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4"
             placeholder="Enter task title"
             autoFocus
           />
@@ -191,7 +192,7 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4 h-32"
+            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4 h-32"
             placeholder="Enter description"
             autoFocus
           />
@@ -205,7 +206,7 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, status: e.target.value }))
             }
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4"
+            className={`w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4 ${theme == 'light' ? 'light_theme' : ''}`}
           >
             <option value="todo">Todo</option>
             <option value="in_progress">In Progress</option>
@@ -220,7 +221,7 @@ export const CreateOrUpdateTaskModal = ({
           </label>
           <select
             id="priority"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4"
+            className={`w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4 ${theme == 'light' ? 'light_theme' : ''}`}
             value={formValue.priority}
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, priority: e.target.value }))
@@ -237,7 +238,7 @@ export const CreateOrUpdateTaskModal = ({
           </label>
           <select
             id="assign"
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4"
+            className={`w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4 ${theme == 'light' ? 'light_theme' : ''}`}
             value={formValue.assigneeId}
             onChange={(e) => {
               setFormValue((prev) => ({ ...prev, assigneeId: e.target.value }));
@@ -267,15 +268,16 @@ export const CreateOrUpdateTaskModal = ({
             type="date"
             id="date"
             min={new Date().toISOString().split('T')[0]}
-            className="w-full rounded-md bg-zinc-800 border border-white/20 px-3 py-2 mb-4"
+            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4"
             value={formValue.dueDate}
             onClick={(e) => {
               e.preventDefault();
               (e.currentTarget as HTMLInputElement).showPicker();
             }}
-            onChange={(e) =>
-              setFormValue((prev) => ({ ...prev, dueDate: e.target.value }))
-            }
+            onChange={(e) => {
+              e.preventDefault();
+              setFormValue((prev) => ({ ...prev, dueDate: e.target.value }));
+            }}
           ></input>
 
           <div className="mt-4 flex justify-end gap-4">
@@ -292,7 +294,7 @@ export const CreateOrUpdateTaskModal = ({
             <button
               type="button"
               onClick={addOrEditTask}
-              className="px-4 py-2 rounded-md bg-blue-600 font-semibold hover:bg-blue-700 transition cursor-pointer"
+              className="px-4 py-2 rounded-md light:text-white bg-blue-600 font-semibold hover:bg-blue-700 transition cursor-pointer"
             >
               {task ? 'Save Changes' : 'Create'}
             </button>

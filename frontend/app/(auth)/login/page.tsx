@@ -81,7 +81,7 @@ function Login() {
                     onChange={(e) =>
                       setFormVal({ ...formVal, email: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 text-sm outline-none transition"
+                    className="h-11 w-full rounded-xl light:bg-gray-200 border border-white/10 dark:bg-white/5 pl-11 pr-4 text-sm outline-none transition"
                     required
                   />
                 </div>
@@ -108,7 +108,7 @@ function Login() {
                     onChange={(e) =>
                       setFormVal({ ...formVal, password: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-16 text-sm outline-none transition"
+                    className="h-11 w-full rounded-xl light:bg-gray-200 border border-white/10 dark:bg-white/5 pl-11 pr-16 text-sm outline-none transition"
                     required
                   />
 
@@ -129,7 +129,7 @@ function Login() {
               <button
                 type="button"
                 onClick={login}
-                className="h-11 w-full rounded-xl border text-sm font-semibold tracking-tight transition shadow-[0_10px_30px_rgba(0,0,0,0.35)] active:scale-[0.99] border-violet-300/30 bg-gradient-to-b from-violet-400/25 to-violet-400/10 hover:from-violet-400/30 hover:to-violet-400/12 cursor-pointer"
+                className="h-11 w-full rounded-xl border text-sm font-semibold tracking-tight transition shadow-[0_10px_30px_rgba(0,0,0,0.35)] active:scale-[0.99] border-violet-300/30 light:bg-blue-500 light:text-white dark:bg-gradient-to-b from-violet-400/25 to-violet-400/10 hover:from-violet-400/30 hover:to-violet-400/12 cursor-pointer"
               >
                 Sign in
               </button>

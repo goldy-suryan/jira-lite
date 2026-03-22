@@ -10,15 +10,15 @@ export const ConfirmDialog = ({
 
   return (
     <div
-      className="fixed inset-0 bg-zinc-900 bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed inset-0 light:bg-white dark:bg-zinc-900 bg-opacity-50 flex items-center justify-center z-50"
       onPointerDown={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="bg-white/10 rounded-lg p-6 w-full max-w-md mx-4">
-        <h2 className="text-lg font-semibold mb-4">{heading}</h2>
-        <p className="mb-6">{message}</p>
-        <div className="flex justify-end space-x-4">
+      <div className="dark:bg-white/10 light:border light:border-gray-200 light:shadow-lg rounded-lg w-full max-w-md mx-4">
+        <h2 className="text-lg font-semibold px-6 pt-6">{heading}</h2>
+        <p className="px-6 py-3">{message}</p>
+        <div className="flex justify-end space-x-4 border-t border-gray-400 p-4">
           <button
             onClick={onCancel}
             className="rounded-md border border-gray-700 px-6 py-2 hover:border-gray-500 transition"
@@ -27,7 +27,7 @@ export const ConfirmDialog = ({
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 rounded bg-green-600 hover:bg-green-700  cursor-pointer"
+            className="px-4 py-2 rounded text-white font-semibold bg-blue-500 hover:bg-blue-700  cursor-pointer"
           >
             {btnText}
           </button>

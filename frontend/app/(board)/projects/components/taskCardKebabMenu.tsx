@@ -64,10 +64,10 @@ export const TaskCardKebabMenu = ({ card }) => {
       {menuOpen && (
         <div
           ref={menuRef}
-          className="absolute top-8 right-2 bg-zinc-900 rounded shadow-lg w-40 z-50"
+          className="absolute top-8 right-2 light:bg-white dark:bg-zinc-900 rounded shadow-lg w-40 z-50"
         >
           <button
-            className="block w-full text-left px-4 py-2 hover:bg-zinc-700 cursor-pointer"
+            className="block w-full text-left px-4 py-2 dark:hover:bg-zinc-700 light:hover:bg-gray-200 cursor-pointer"
             onClick={(e) => {
               e?.stopPropagation();
               setMenuOpen(false);
@@ -77,7 +77,7 @@ export const TaskCardKebabMenu = ({ card }) => {
             Edit Task
           </button>
           <button
-            className="block w-full text-left px-4 py-2 hover:bg-zinc-700 cursor-pointer"
+            className="block w-full text-left px-4 py-2 dark:hover:bg-zinc-700 light:hover:bg-gray-200 cursor-pointer"
             onClick={(e) => {
               e?.stopPropagation();
               setMenuOpen(false);

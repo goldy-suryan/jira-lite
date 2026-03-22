@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import './globals.css';
 import { apolloClient } from './lib/apollo-client';
 import StoreProvider from './storeProvider';
+import { ThemeProvider } from './ui/theme-provider';
 
 const manrope = Manrope({
   variable: '--font-manrope',
@@ -27,7 +28,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className="light"
+      style={{ colorScheme: 'light' }}
+      suppressHydrationWarning
+    >
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
@@ -50,7 +56,16 @@ export default function RootLayout({
           }}
         />
         <StoreProvider>
-          <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
+          <ApolloProvider client={apolloClient}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </ApolloProvider>
         </StoreProvider>
       </body>
     </html>

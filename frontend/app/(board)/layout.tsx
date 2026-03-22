@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { LeftNav } from './components/leftNav';
 import { UserDropdown } from './components/userDropdown';
+import { ThemeSwitcher } from '../ui/theme-switcher';
 
 const BoardLayout = ({ children }: { children: ReactNode }) => {
   return (
@@ -17,14 +18,15 @@ const BoardLayout = ({ children }: { children: ReactNode }) => {
               placeholder="Search"
               name="search"
               id="search"
-              className="rounded-lg bg-white/10 border border-white/10 px-4 py-1 mr-8 min-w-[35rem]"
+              className="rounded-lg light:bg-gray-200 dark:bg-white/10 border light:border-gray-200 dark:border-white/10 px-4 py-1 mr-8 min-w-[35rem]"
             />
           </div>
           <div className="flex items-center gap-5">
+            <ThemeSwitcher />
             <UserDropdown />
           </div>
         </header>
-        <hr className="border-t border-white/20" />
+        <hr className="border-t light:border-gray-400 dark:border-white/20" />
         <div className="flex-1 max-w-full overflow-auto px-6">{children}</div>
       </section>
     </main>

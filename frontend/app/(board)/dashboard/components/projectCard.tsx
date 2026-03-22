@@ -16,24 +16,24 @@ export const ProjectCard = ({
   return (
     <Link
       href={`/projects/${id}`}
-      className="glass-card overflow-hidden border border-white/20 rounded-lg bg-white/5 shadow-md cursor-pointer"
+      className="glass-card overflow-hidden border light:border-gray-300 dark:border-white/20 rounded-lg dark:bg-white/5 shadow-lg hover:shadow-xl cursor-pointer"
     >
       <div className={`h-30 ${colorClass} p-4 flex items-end`}>
-        <span className="text-[10px] font-bold text-white uppercase bg-white/20 px-2 py-1 rounded">
+        <span className="text-[10px] font-bold uppercase bg-white/20 px-2 py-1 rounded">
           {tag}
         </span>
       </div>
-      <div className="p-5">
+      <div className="p-5 light:bg-white">
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-bold text-lg">{title}</h3>
           <button
             className="text-gray-200 cursor-pointer"
             onClick={(e) => e.preventDefault()}
           >
-            <FaEllipsis size={20} />
+            <FaEllipsis size={20} className='light:text-gray-500 dark:text-white'/>
           </button>
         </div>
-        <p className="text-sm text-gray-200 line-clamp-2 mb-6">{description}</p>
+        <p className="text-sm dark:text-gray-200 line-clamp-2 mb-6">{description}</p>
 
         <div className="flex items-center justify-between mt-4">
           <div className="flex -space-x-2">
@@ -47,20 +47,20 @@ export const ProjectCard = ({
             ))}
           </div>
           <span
-            className={`text-xs px-3 py-1 rounded-full font-medium bg-blue-500 text-white`}
+            className={`text-xs px-3 py-1 rounded-full font-medium bg-blue-500 light:text-white`}
           >
             Tasks: {tasks}
           </span>
         </div>
 
-        <hr className="my-6 border-t border-white/15" />
+        <hr className="my-6 border-t light:border-gray-200 dark:border-white/15" />
 
         <div className="flex justify-between text-[11px] text-slate-400">
           <span className="flex items-center gap-2">
-            <BsClockFill size={15} color="white"/> {time}
+            <BsClockFill size={15} /> {time}
           </span>
           <span className="flex items-center gap-2">
-            <BsFillPersonFill size={15} color="white"/> {lead}
+            <BsFillPersonFill size={15} /> {lead}
           </span>
         </div>
       </div>

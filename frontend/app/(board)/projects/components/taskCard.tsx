@@ -49,7 +49,7 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
 
   return (
     <div
-      className={`bg-white/10 rounded-md cursor-pointer hover:bg-white/12 transition relative border-l-4 ${border} min-h-[160px] flex flex-col`}
+      className={`dark:bg-white/10 light:bg-white shadow-lg hover:shadow-xl rounded-md cursor-pointer hover:bg-white/12 transition relative border-l-4 ${border} min-h-[160px] flex flex-col`}
       ref={setNodeRef}
       style={style}
       {...listeners}
@@ -59,7 +59,7 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
         setTaskDetailDialogOpen(true);
       }}
     >
-      <div className="flex flex-col h-full p-5 pb-3 bg-gray-1000 rounded-lg text-white flex-1">
+      <div className="flex flex-col h-full p-5 pb-3 rounded-lg flex-1">
         <TaskCardKebabMenu card={card} />
         <h3 className="flex items-center text-md font-semibold">
           <span className="mr-2">
