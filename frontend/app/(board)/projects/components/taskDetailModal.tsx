@@ -207,7 +207,7 @@ export const TaskDetailModal = ({
         className="bg-[#121212] rounded-2xl shadow-xl max-w-6xl w-full min-h-[92vh] max-h-[92vh] overflow-hidden flex flex-col"
       >
         {/* Header */}
-        <header className="flex justify-between items-start p-6 border-b border-gray-700">
+        <header className="flex justify-between items-start p-4 border-b border-gray-700">
           <div>
             <h2
               id="task-modal-title"
