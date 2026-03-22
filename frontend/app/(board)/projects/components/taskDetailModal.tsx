@@ -211,10 +211,10 @@ export const TaskDetailModal = ({
           <div>
             <h2
               id="task-modal-title"
-              className="text-3xl font-semibold flex flex-wrap gap-2"
+              className="text-xl font-semibold flex flex-wrap gap-2 items-center"
             >
               {priorityIcon(taskDetail?.priority?.toLowerCase())}
-              <span className="">{taskDetail?.project?.key}</span>
+              <span>{taskDetail?.project?.key}:</span>
               <span>{taskDetail?.title}</span>
             </h2>
           </div>
