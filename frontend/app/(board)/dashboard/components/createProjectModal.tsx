@@ -51,7 +51,7 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm">
       <div className="bg-[#121212] rounded-lg p-6 w-full max-w-md mx-4">
         <header className="flex justify-between items-start  border-b border-gray-700">
           <h2 className="text-xl font-semibold mb-4">Create Project</h2>

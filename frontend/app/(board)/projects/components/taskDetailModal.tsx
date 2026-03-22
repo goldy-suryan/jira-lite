@@ -9,13 +9,14 @@ import {
 import { GET_TASK } from '@/app/graphql/queries/board.query';
 import { GET_ALL_TASK_COMMENTS } from '@/app/graphql/queries/comment.query';
 import { COMMENT_ADDED } from '@/app/graphql/subscriptions/comment.subscriptions';
-import { formatDate, priorityBackground } from '@/app/utils/helperFunc';
+import { formatDate } from '@/app/utils/helperFunc';
 import { instance } from '@/app/utils/interceptors';
 import { useMutation, useQuery, useSubscription } from '@apollo/client/react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { BsCloudUploadFill } from 'react-icons/bs';
+import { FaPaperPlane } from 'react-icons/fa6';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import ImageModal from './imageModal';
 import { TaskActivity } from './taskActivity';
@@ -117,6 +118,7 @@ export const TaskDetailModal = ({
 
   const addTaskComment = async (e) => {
     e.preventDefault();
+    if (!comment?.trim()) return;
     await addComment({
       variables: {
         taskId: task.id,
@@ -193,7 +195,7 @@ export const TaskDetailModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm px-4"
       aria-modal="true"
       aria-labelledby="task-modal-title"
       aria-describedby="task-modal-desc"
@@ -269,7 +271,7 @@ export const TaskDetailModal = ({
                   {!commentLoading && (
                     <div>
                       <div
-                        className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2"
+                        className="flex flex-col gap-3 overflow-y-auto pr-2 max-h-[9rem] md:max-h-[10rem] lg:max-h-[10rem] xl:max-h-[20rem]"
                         ref={commentsRef}
                       >
                         {commentState.map((cmt) => (
@@ -293,7 +295,7 @@ export const TaskDetailModal = ({
                     </div>
                   )}
 
-                  <form className="mt-2 flex flex-col gap-3">
+                  <form className="mt-2 flex flex-col gap-3 relative">
                     <textarea
                       id="comment-input"
                       rows={1}
@@ -302,26 +304,10 @@ export const TaskDetailModal = ({
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
                     />
-                    <div className="flex justify-end gap-3">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          setComment('');
-                          onClose(e);
-                        }}
-                        className="rounded-md border border-gray-700 px-6 py-2 hover:border-gray-500 transition"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="button"
-                        onClick={addTaskComment}
-                        disabled={!comment?.trim()}
-                        className="rounded-md bg-blue-600 px-4 py-2 font-semibold hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-500 transition cursor:pointer"
-                      >
-                        Post comment
-                      </button>
-                    </div>
+                    <FaPaperPlane
+                      className="absolute right-5 top-5"
+                      onClick={addTaskComment}
+                    />
                   </form>
                 </article>
               </TabPanel>
