@@ -10,8 +10,10 @@ import { useEffect, useState } from 'react';
 import { CraeteProjectCard } from './components/createProjectCard';
 import { CreateProjectModal } from './components/createProjectModal';
 import { ProjectCard } from './components/projectCard';
+import { useAuthCheck } from '@/app/hooks/useAuthCheck';
 
 export default function DashboardLayout() {
+  useAuthCheck();
   const userSelector = useAppSelector((state) => state.user);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const { data, loading } = useQuery<IGetUserProjects>(GET_USER_PROJECTS, {

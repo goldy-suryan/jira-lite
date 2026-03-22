@@ -6,7 +6,6 @@ import { FaToggleOff, FaToggleOn } from 'react-icons/fa6';
 export const ThemeSwitcher = () => {
   const { theme, setTheme } = useTheme();
 
-  console.log(theme, 'theme');
   return (
     <main className="flex items-center gap-2">
       {theme == 'dark' ? (

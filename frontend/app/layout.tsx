@@ -30,8 +30,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="light"
-      style={{ colorScheme: 'light' }}
+      className="dark"
+      style={{ colorScheme: 'dark' }}
       suppressHydrationWarning
     >
       <head>
@@ -59,7 +59,7 @@ export default function RootLayout({
           <ApolloProvider client={apolloClient}>
             <ThemeProvider
               attribute="class"
-              defaultTheme="light"
+              defaultTheme="dark"
               enableSystem
               disableTransitionOnChange
             >
