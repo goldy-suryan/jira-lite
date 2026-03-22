@@ -207,7 +207,7 @@ export const Register = () => {
                 Register
               </button>
 
-              <div className="h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+              <div className="h-px w-full bg-gradient-to-r from-transparent dark:via-white/15 light:via-gray-500 to-transparent" />
 
               <p className="text-sm">
                 Already have an account?{' '}
