@@ -12,8 +12,10 @@ export const CreateButton = ({ open }) => {
   return (
     <>
       <button
-        className="rounded-md font-semibold transition cursor-pointer fixed bottom-15 right-15 flex items-center gap-2"
-        onClick={() => {
+        className="rounded-md font-semibold transition cursor-pointer fixed bottom-15 right-15 flex items-center gap-2 z-50"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
           open === 'project'
             ? setProjectModalOpen(true)
             : setProjectMemberOpen(true);

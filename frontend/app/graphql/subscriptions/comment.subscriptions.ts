@@ -14,3 +14,21 @@ export const COMMENT_ADDED = gql`
     }
   }
 `;
+
+export const TASK_ASSIGNED = gql`
+  subscription TaskAssigned($userId: ID!) {
+    taskAssigned(userId: $userId) {
+      id
+      user {
+        id
+        name
+      }
+      type
+      title
+      message
+      isRead
+      metadata
+      createdAt
+    }
+  }
+`;

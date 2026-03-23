@@ -1,12 +1,38 @@
 'use client';
 
+import { Mark_AS_READ } from '@/app/graphql/mutations/notification.mutation';
+import { GET_USER_NOTIFICATIONS } from '@/app/graphql/queries/notification.query';
+import { TASK_ASSIGNED } from '@/app/graphql/subscriptions/comment.subscriptions';
+import { useAppSelector } from '@/app/state/hooks';
+import { useMutation, useQuery, useSubscription } from '@apollo/client/react';
 import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import { FaBell } from 'react-icons/fa6';
 import { NotificationPanel } from './notificationPanel';
 
 const Notification = () => {
-  const [openNotification, setOpenNotification] = useState(false);
   const notiRef = useRef<HTMLDivElement | null>(null);
+  const userSelector = useAppSelector((state) => state.user.user);
+
+  const [openNotification, setOpenNotification] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+
+  const { data: notificationSubData } = useSubscription<{ taskAssigned: any }>(
+    TASK_ASSIGNED,
+    {
+      variables: {
+        userId: userSelector?.id,
+      },
+    },
+  );
+  const { data: notificationData } = useQuery<any>(GET_USER_NOTIFICATIONS);
+  const [markAsRead] = useMutation(Mark_AS_READ, {
+    refetchQueries: [
+      {
+        query: GET_USER_NOTIFICATIONS,
+      },
+    ],
+  });
 
   useEffect(() => {
     function handleClickOutside(event: any) {
@@ -18,8 +44,29 @@ const Notification = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [notiRef.current]);
 
+  useEffect(() => {
+    if (notificationData) {
+      setNotifications((prev) => notificationData?.getAllUserNotification);
+    }
+    if (notificationSubData) {
+      setNotifications((prev) => [notificationSubData.taskAssigned, ...prev]);
+    }
+  }, [notificationData, setNotifications, notificationSubData]);
+
   const hideNotiPanel = () => {
     setOpenNotification(false);
+  };
+
+  const markRead = async (notiId) => {
+    try {
+      await markAsRead({
+        variables: {
+          notiId,
+        },
+      });
+    } catch (e: any) {
+      toast.error(e.message);
+    }
   };
 
   return (
@@ -44,8 +91,9 @@ const Notification = () => {
         {openNotification && (
           <div ref={notiRef}>
             <NotificationPanel
-              isOpen={openNotification}
               setIsOpen={hideNotiPanel}
+              notifications={notifications}
+              markRead={markRead}
             />
           </div>
         )}
