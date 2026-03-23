@@ -1,5 +1,6 @@
 export const typeDefs = `#graphql
     scalar Date
+    scalar JSON
 
     type User {
         id: ID!
@@ -92,5 +93,16 @@ export const typeDefs = `#graphql
         id: ID!
         fileName: String!
         fileUrl: String!
+    }
+
+    type Notification {
+        id: ID!
+        user: User!
+        type: String!
+        title: String!
+        message: String!
+        isRead: Boolean!
+        metadata: JSON
+        createdAt: Date!
     }
 `;

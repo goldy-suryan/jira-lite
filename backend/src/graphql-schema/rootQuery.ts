@@ -10,5 +10,6 @@ export const RootQuery = `#graphql
         getInvitation(token: String): Invitation
         getAllTaskComments(taskId: ID!): [Comment]
         getAllTaskActivity(taskId: ID!): [Activity]
+        getAllUserNotification: [Notification]
     }
 `;

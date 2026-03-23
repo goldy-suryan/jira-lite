@@ -1,13 +1,13 @@
 import crypto from 'node:crypto';
 import type { Transaction } from 'sequelize';
+import { AttachmentModel } from '../../models/attachment.model.js';
 import { UserProjectJunctionModel } from '../../models/userProject.model.js';
 import { sendEmailInvitation } from '../../services/email.service.js';
+import { CommentModel } from '../comment/comment.model.js';
+import { InvitationModel } from '../invitation/invitation.model.js';
 import { TaskModel } from '../task/task.model.js';
 import { UserModel } from '../user/user.model.js';
 import { ProjectModel } from './project.model.js';
-import { InvitationModel } from '../invitation/invitation.model.js';
-import { AttachmentModel } from '../../models/attachment.model.js';
-import { CommentModel } from '../comment/comment.model.js';
 
 export class ProjectService {
   addProject = async (
@@ -128,7 +128,7 @@ export class ProjectService {
   sendProjectInvitation = async (user, body) => {
     const token = crypto.randomBytes(32).toString('hex');
 
-    const isInvitationSent = await InvitationModel.create({
+    await InvitationModel.create({
       projectId: body.projectId,
       invitedBy: user.id,
       email: body.email,
@@ -138,10 +138,9 @@ export class ProjectService {
     const invitationLink = `${process.env.FRONTEND_URL}/invite?token=${token}`;
     sendEmailInvitation(
       body.email,
-      projectName?.toJSON()?.name,
+      projectName?.name,
       invitationLink,
     );
-    console.log(isInvitationSent, 'isInvitationSent');
     return true;
   };
 

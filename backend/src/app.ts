@@ -15,14 +15,15 @@ import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ValidationError } from 'sequelize';
 import { schema } from './graphql-schema/schema.js';
+import { ActivityController } from './modules/activity/activity.controller.js';
 import { CommentController } from './modules/comment/comment.controller.js';
 import { InvitationController } from './modules/invitation/invitation.controller.js';
+import { NotificationController } from './modules/notification/notification.controller.js';
 import { ProjectController } from './modules/project/project.controller.js';
 import { TaskController } from './modules/task/task.contoller.js';
 import { UserRoute } from './modules/user/user.route.js';
 import { unauthorizedError } from './utils/helperFunc.js';
 import { authenticateToken } from './utils/validateToken.js';
-import { ActivityController } from './modules/activity/activity.controller.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -80,6 +81,7 @@ export class App {
               invitationCtrl: new InvitationController(),
               commentCtrl: new CommentController(),
               activityCtrl: new ActivityController(),
+              notificationCtrl: new NotificationController(),
             };
           }
           throw unauthorizedError();

@@ -1,17 +1,24 @@
+import { GraphQLError } from 'graphql';
 import crypto from 'node:crypto';
-import { COMMENT_ADDED, pubSub } from '../config/pubSub.config.js';
+import {
+  COMMENT_ADDED,
+  pubSub,
+  TASK_ASSIGNED,
+} from '../config/pubSub.config.js';
 import type { CommentController } from '../modules/comment/comment.controller.js';
 import type { InvitationController } from '../modules/invitation/invitation.controller.js';
+import type { NotificationController } from '../modules/notification/notification.controller.js';
 import type { ProjectController } from '../modules/project/project.controller.js';
 import type { TaskController } from '../modules/task/task.contoller.js';
+import { UserModel } from '../modules/user/user.model.js';
 import { getSignedS3Url } from '../services/aws-s3.service.js';
 import { unauthorizedError } from '../utils/helperFunc.js';
 import { commentResolver } from './resolvers/comment-resolver.js';
 import { invitationResolver } from './resolvers/invitation-resolver.js';
+import { notificationResolver } from './resolvers/notificaiton-resolver.js';
 import { projectResolver } from './resolvers/project-resolver.js';
 import { taskResolver } from './resolvers/task-resolver.js';
 import { userResolver } from './resolvers/user-resolver.js';
-import { GraphQLError } from 'graphql';
 
 export const resolvers = {
   Query: {
@@ -20,6 +27,7 @@ export const resolvers = {
     ...userResolver,
     ...invitationResolver,
     ...commentResolver,
+    ...notificationResolver,
   },
 
   Task: {
@@ -27,6 +35,13 @@ export const resolvers = {
     commentsCount: (task) => task.commentsCount,
   },
 
+  Notification: {
+    user: (notification) => {
+      return UserModel.findByPk(notification.userId);
+    },
+  },
+
+  // ===================== MUTATIONS ==========================
   Mutation: {
     createProject(
       parent: any,
@@ -160,12 +175,33 @@ export const resolvers = {
       }
       return taskCtrl.addAttachment(user, args);
     },
+
+    markAsRead(
+      parent,
+      args,
+      {
+        user,
+        notificationCtrl,
+      }: { user: any; notificationCtrl: NotificationController },
+    ) {
+      if (!user) {
+        throw unauthorizedError();
+      }
+      return notificationCtrl.markAsRead(args.notiId);
+    },
   },
 
+  // ================= SUBSCRIPTIONS =======================
   Subscription: {
     commentAdded: {
       subscribe: (_, { taskId }) =>
         pubSub.asyncIterator([`${COMMENT_ADDED}_${taskId}`]),
+    },
+    taskAssigned: {
+      subscribe: (_, { userId }) => {
+        console.log(userId, 'hello wuslkdjfksdjfjsalkfjklsadjfksadjklf;a');
+        return pubSub.asyncIterator([`${TASK_ASSIGNED}_${userId}`]);
+      },
     },
   },
 };

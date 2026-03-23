@@ -1,10 +1,12 @@
 import { Sequelize } from 'sequelize';
+import { pubSub, TASK_ASSIGNED } from '../../config/pubSub.config.js';
+import { AttachmentModel } from '../../models/attachment.model.js';
+import { formatDate } from '../../utils/helperFunc.js';
+import { ActivityModel } from '../activity/activity.model.js';
+import { NotificationModel } from '../notification/notification.model.js';
 import { ProjectModel } from '../project/project.model.js';
 import { UserModel } from '../user/user.model.js';
 import { TaskModel } from './task.model.js';
-import { ActivityModel } from '../activity/activity.model.js';
-import { AttachmentModel } from '../../models/attachment.model.js';
-import { formatDate } from '../../utils/helperFunc.js';
 
 export class TaskService {
   getTaskDetail = async (id: string) => {
@@ -48,7 +50,7 @@ export class TaskService {
     });
     const nextPosition = (Number(result?.toJSON()?.maxPosition) || 0) + 10000;
 
-    const foundTask = await TaskModel.create<any>(
+    const createdTask = await TaskModel.create<any>(
       {
         ...body,
         position: nextPosition,
@@ -58,16 +60,38 @@ export class TaskService {
 
     await ActivityModel.create(
       {
-        taskId: foundTask.id,
-        action: `${user.name} created task ${foundTask.title} at ${formatDate(foundTask.createdAt)}`,
+        taskId: createdTask.id,
+        action: `${user.name} created task ${createdTask.title} at ${formatDate(createdTask.createdAt)}`,
       },
       {
         transaction,
       },
     );
-    // publish new activity new to the taskId
 
-    return foundTask;
+    if (body.assigneeId != user.id) {
+      const metadata = {
+        userId: body.assigneeId,
+        projectId: body.projectId,
+        createdBy: body.createdBy,
+        taskId: createdTask.id,
+      };
+      await pubSub.publish(`${TASK_ASSIGNED}_${metadata.userId}`, metadata);
+
+      await NotificationModel.create(
+        {
+          userId: metadata.userId,
+          type: TASK_ASSIGNED,
+          title: 'Task assigned',
+          message: `${user.name} assigned "${createdTask.title}" task to you`,
+          metadata,
+        },
+        {
+          transaction,
+        },
+      );
+    }
+
+    return createdTask;
   };
 
   updateTask = async (user, id: string, body: any, transaction) => {
@@ -85,6 +109,31 @@ export class TaskService {
         transaction,
       },
     );
+
+    if (body.assigneeId != user.id) {
+      const metadata = {
+        userId: body.assigneeId,
+        projectId: body.projectId,
+        createdBy: body.createdBy,
+        taskId: updatedRows?.[0]?.id,
+      };
+
+      const createdNotification = await NotificationModel.create(
+        {
+          userId: metadata.userId,
+          type: TASK_ASSIGNED,
+          title: 'Task assigned',
+          message: `${user.name} assigned "${updatedRows?.[0]?.title}" task to you`,
+          metadata,
+        },
+        {
+          transaction,
+        },
+      );
+      await pubSub.publish(`${TASK_ASSIGNED}_${metadata.userId}`, {
+        taskAssigned: createdNotification,
+      });
+    }
     return result > 0;
   };
 

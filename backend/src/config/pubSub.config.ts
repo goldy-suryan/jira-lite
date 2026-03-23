@@ -12,3 +12,4 @@ export const pubSub = new RedisPubSub({
 });
 
 export const COMMENT_ADDED = 'COMMENT_ADDED';
+export const TASK_ASSIGNED = 'TASK_ASSIGNED';

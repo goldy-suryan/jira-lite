@@ -2,6 +2,7 @@ import { DBConfig } from '../config/sequelize.init.js';
 import { ActivityModel } from '../modules/activity/activity.model.js';
 import { CommentModel } from '../modules/comment/comment.model.js';
 import { InvitationModel } from '../modules/invitation/invitation.model.js';
+import { NotificationModel } from '../modules/notification/notification.model.js';
 import { ProjectModel } from '../modules/project/project.model.js';
 import { TaskModel } from '../modules/task/task.model.js';
 import { UserModel } from '../modules/user/user.model.js';
@@ -142,6 +143,20 @@ TaskModel.hasMany(AttachmentModel, {
 
 AttachmentModel.belongsTo(TaskModel, {
   foreignKey: 'taskId',
+});
+
+// =====================================================================
+
+// =================== USER NOTIFICATION ASSOCIATION ===================
+
+UserModel.hasMany(NotificationModel, {
+  foreignKey: 'userId',
+  as: 'notifications',
+});
+
+NotificationModel.belongsTo(UserModel, {
+  foreignKey: 'userId',
+  as: 'user'
 });
 
 // =====================================================================

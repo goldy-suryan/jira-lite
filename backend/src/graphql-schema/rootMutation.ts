@@ -33,5 +33,6 @@ export const RootMutation = `#graphql
         addComment(taskId: ID!, message: String!): Comment
         getSignedUrl(fileName: String!, fileType: String!, fileSize: Int!): Attachment
         addAttachmentMetadata(taskId: ID!, fileName: String!): Boolean
+        markAsRead(notiId: ID!): Boolean!
     }
 `;
