@@ -20,6 +20,7 @@ node_modules
 # production
 /build
 /backend/dist
+/backend/access.log
 
 # misc
 .DS_Store

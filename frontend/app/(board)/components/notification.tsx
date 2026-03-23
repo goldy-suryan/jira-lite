@@ -86,7 +86,7 @@ const Notification = () => {
           shadow-xl
           dark:bg-black light:bg-white
           `}
-        style={{ boxShadow: '-5px 0 20px -3px rgba(0, 0, 0, 0.5)' }}
+        style={{ boxShadow: '-4px 0 6px -1px rgba(92, 92, 92, 0.5)' }}
       >
         {openNotification && (
           <div ref={notiRef}>
