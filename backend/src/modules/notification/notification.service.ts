@@ -15,7 +15,7 @@ export class NotificationService {
   };
 
   markAsRead = async (id: string) => {
-    let [updated] = await NotificationModel.update(
+    const [updated] = await NotificationModel.update(
       {
         isRead: true,
       },

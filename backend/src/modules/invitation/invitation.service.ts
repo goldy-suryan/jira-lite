@@ -31,7 +31,7 @@ export class InvitationService {
       token: body.token,
     };
 
-    let invitation = await InvitationModel.findOne<any>({
+    const invitation = await InvitationModel.findOne<any>({
       where: query,
       transaction,
     });

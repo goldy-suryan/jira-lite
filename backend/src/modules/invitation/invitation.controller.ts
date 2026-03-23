@@ -1,4 +1,3 @@
-import { GraphQLError } from 'graphql';
 import { DBConfig } from '../../config/sequelize.init.js';
 import { InvitationService } from './invitation.service.js';
 

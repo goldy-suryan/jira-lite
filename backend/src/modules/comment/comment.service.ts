@@ -4,7 +4,7 @@ import { CommentModel } from './comment.model.js';
 
 export class CommentService {
   addComment = async (user, body) => {
-    let comment = await CommentModel.create<any>({
+    const comment = await CommentModel.create<any>({
       userId: user.id,
       taskId: body.taskId,
       message: body.message,
