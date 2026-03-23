@@ -194,7 +194,7 @@ export const TaskDetailModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center light:bg-white dark:bg-black bg-opacity-70 backdrop-blur-sm px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center light:bg-white dark:bg-black bg-opacity-70 backdrop-blur-sm px-4 cursor-default"
       aria-modal="true"
       aria-labelledby="task-modal-title"
       aria-describedby="task-modal-desc"
@@ -223,7 +223,7 @@ export const TaskDetailModal = ({
             aria-label="Close modal"
             className="transition"
           >
-            <FaX />
+            <FaX className='cursor-pointer'/>
           </button>
         </header>
 

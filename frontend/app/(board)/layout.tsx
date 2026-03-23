@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
-import { LeftNav } from './components/leftNav';
-import { UserDropdown } from './components/userDropdown';
 import { ThemeSwitcher } from '../ui/theme-switcher';
+import { LeftNav } from './components/leftNav';
+import Notification from './components/notification';
+import { UserDropdown } from './components/userDropdown';
 
 const BoardLayout = ({ children }: { children: ReactNode }) => {
   return (
@@ -21,7 +22,8 @@ const BoardLayout = ({ children }: { children: ReactNode }) => {
               className="rounded-lg light:bg-gray-200 dark:bg-white/10 border light:border-gray-200 dark:border-white/10 px-4 py-1 mr-8 min-w-[35rem]"
             />
           </div>
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-8">
+            <Notification />
             <ThemeSwitcher />
             <UserDropdown />
           </div>

@@ -40,8 +40,8 @@ export const UserDropdown = () => {
         aria-expanded={open}
       >
         <span className="text-sm flex items-center">
-          <FaRegUser className="w-5 h-5 rounded-full mx-auto block border dark:border-gray-500 mr-2" />{' '}
-          <code>&#9660;</code>
+          <FaRegUser className="w-7 h-7 rounded-lg mx-auto block border dark:border-gray-500 mr-2" />{' '}
+          {/* <code className='text-lg'>&#9660;</code> */}
         </span>
       </button>
 
