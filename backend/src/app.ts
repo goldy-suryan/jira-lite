@@ -9,11 +9,10 @@ import express, {
   type Response,
 } from 'express';
 import helmet from 'helmet';
-import morgan from 'morgan';
-import fs from 'node:fs';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ValidationError } from 'sequelize';
+import winston from 'winston';
 import { schema } from './graphql-schema/schema.js';
 import { ActivityController } from './modules/activity/activity.controller.js';
 import { CommentController } from './modules/comment/comment.controller.js';
@@ -31,12 +30,17 @@ const __dirname = dirname(__filename);
 export class App {
   app: Application;
   server: ApolloServer;
-  private readonly loggingFile = fs.createWriteStream(
-    path.join(__dirname, '..', 'access.log'),
-  );
+  private readonly logger = winston.createLogger({
+    transports: [
+      new winston.transports.File({
+        filename: path.join(__dirname, '..', 'access.log'),
+      }),
+    ],
+  });
   private readonly userRoute: UserRoute;
 
   constructor() {
+    const logger = this.logger;
     this.app = express();
     this.server = new ApolloServer({
       schema,
@@ -44,6 +48,26 @@ export class App {
       formatError: (formattedError, error) => {
         return { message: formattedError.message, error };
       },
+      plugins: [
+        {
+          async requestDidStart(requestContext) {
+            const { request } = requestContext;
+            logger.info({
+              type: 'GRAPHQL_REQUEST',
+              query: request.query,
+              variables: request.variables,
+            });
+            return {
+              async didEncounterErrors(ctx) {
+                logger.error({
+                  type: 'GRAPHQL_ERROR',
+                  errors: ctx.errors,
+                });
+              },
+            };
+          },
+        },
+      ],
     });
     this.userRoute = new UserRoute();
   }
@@ -57,7 +81,6 @@ export class App {
       }),
     );
     this.app.use(helmet({ contentSecurityPolicy: false }));
-    this.app.use(morgan('combined', { stream: this.loggingFile }));
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cookieParser());

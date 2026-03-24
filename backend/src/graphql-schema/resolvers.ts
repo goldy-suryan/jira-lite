@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 import {
   COMMENT_ADDED,
   pubSub,
-  TASK_ASSIGNED,
+  TASK_ASSIGNED
 } from '../config/pubSub.config.js';
 import type { CommentController } from '../modules/comment/comment.controller.js';
 import type { InvitationController } from '../modules/invitation/invitation.controller.js';
@@ -37,7 +37,7 @@ export const resolvers = {
 
   Notification: {
     user: (notification) => {
-      return UserModel.findByPk(notification.userId);
+      return UserModel.findByPk(notification.receiverId);
     },
   },
 
@@ -57,23 +57,39 @@ export const resolvers = {
     createTask(
       parent: any,
       args: any,
-      { user, taskCtrl }: { user: any; taskCtrl: TaskController },
+      {
+        user,
+        taskCtrl,
+        notificationCtrl,
+      }: {
+        user: any;
+        taskCtrl: TaskController;
+        notificationCtrl: NotificationController;
+      },
     ) {
       if (!user) {
         throw unauthorizedError();
       }
-      return taskCtrl.createTask(user, args?.input);
+      return taskCtrl.createTask(user, args?.input, notificationCtrl);
     },
 
     updateTask(
       parent: any,
       args: any,
-      { user, taskCtrl }: { user: any; taskCtrl: TaskController },
+      {
+        user,
+        taskCtrl,
+        notificationCtrl,
+      }: {
+        user: any;
+        taskCtrl: TaskController;
+        notificationCtrl: NotificationController;
+      },
     ) {
       if (!user) {
         throw unauthorizedError();
       }
-      return taskCtrl.updateTask(user, args?.id, args?.input);
+      return taskCtrl.updateTask(user, args?.id, args?.input, notificationCtrl);
     },
 
     updateTaskStatusPosition(
@@ -126,12 +142,20 @@ export const resolvers = {
     addComment(
       parent: any,
       args: any,
-      { user, commentCtrl }: { user: any; commentCtrl: CommentController },
+      {
+        user,
+        commentCtrl,
+        notificationCtrl,
+      }: {
+        user: any;
+        commentCtrl: CommentController;
+        notificationCtrl: NotificationController;
+      },
     ) {
       if (!user) {
         throw unauthorizedError();
       }
-      return commentCtrl.addComment(user, args);
+      return commentCtrl.addComment(user, args, notificationCtrl);
     },
 
     async getSignedUrl(parent, args, { user }: { user: any }) {
@@ -199,8 +223,12 @@ export const resolvers = {
     },
     taskAssigned: {
       subscribe: (_, { userId }) => {
-        console.log(userId, 'hello wuslkdjfksdjfjsalkfjklsadjfksadjklf;a');
         return pubSub.asyncIterator([`${TASK_ASSIGNED}_${userId}`]);
+      },
+    },
+    commentNotification: {
+      subscribe: (_, { userId }) => {
+        return pubSub.asyncIterator(`${COMMENT_ADDED}_${userId}`);
       },
     },
   },

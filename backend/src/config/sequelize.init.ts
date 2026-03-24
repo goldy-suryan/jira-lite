@@ -1,7 +1,5 @@
 import { Sequelize } from 'sequelize';
 
-console.log(process.env.SEQUEL_DATABASE);
-
 export class DBConfig {
   static readonly sequelize = new Sequelize({
     username: process.env.SEQUEL_USERNAME!,

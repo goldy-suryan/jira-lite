@@ -9,7 +9,7 @@ export const NotificationModel = DBConfig.sequelize.define(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    userId: {
+    receiverId: {
       type: DataTypes.UUID,
       allowNull: false,
     },

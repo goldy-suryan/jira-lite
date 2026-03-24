@@ -8,16 +8,16 @@ export class TaskController {
     return await this.taskSrvc.getTaskDetail(id);
   };
 
-  createTask = async (user, body) => {
+  createTask = async (user, body, notificationCtrl) => {
     return DBConfig.sequelize.transaction(async (transaction) => {
-      const task = await this.taskSrvc.createTask(user, body, transaction);
+      const task = await this.taskSrvc.createTask(user, body, notificationCtrl, transaction);
       return task;
     });
   };
 
-  updateTask = async (user, id: string, body) => {
+  updateTask = async (user, id: string, body, notificationCtrl) => {
     return DBConfig.sequelize.transaction(async (transaction) => {
-      return await this.taskSrvc.updateTask(user, id, body, transaction);
+      return await this.taskSrvc.updateTask(user, id, body, notificationCtrl, transaction);
     });
   };
 

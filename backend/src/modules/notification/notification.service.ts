@@ -2,9 +2,14 @@ import { UserModel } from '../user/user.model.js';
 import { NotificationModel } from './notification.model.js';
 
 export class NotificationService {
+  createNotification = async (body, transaction = null) => {
+    return await NotificationModel.create(body, { transaction });
+  }
+
+
   getAllUserNotificaton = async (userId: string) => {
     return await NotificationModel.findAll({
-      where: { userId },
+      where: { receiverId: userId },
       include: [
         {
           model: UserModel,

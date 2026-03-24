@@ -156,9 +156,9 @@ UserModel.hasMany(NotificationModel, {
 
 NotificationModel.belongsTo(UserModel, {
   foreignKey: 'userId',
-  as: 'user'
+  as: 'user',
 });
 
 // =====================================================================
 
-await DBConfig.sequelize.sync({ alter: true });
+await DBConfig.sequelize.sync({ alter: true }); // comment this in production use migration instead

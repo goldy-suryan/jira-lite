@@ -1,14 +1,15 @@
 import { Sequelize } from 'sequelize';
-import { pubSub, TASK_ASSIGNED } from '../../config/pubSub.config.js';
+import { TASK_ASSIGNED } from '../../config/pubSub.config.js';
 import { AttachmentModel } from '../../models/attachment.model.js';
 import { formatDate } from '../../utils/helperFunc.js';
 import { ActivityModel } from '../activity/activity.model.js';
-import { NotificationModel } from '../notification/notification.model.js';
+import type { NotificationController } from '../notification/notification.controller.js';
 import { ProjectModel } from '../project/project.model.js';
+import { Shared } from '../shared/shared.js';
 import { UserModel } from '../user/user.model.js';
 import { TaskModel } from './task.model.js';
 
-export class TaskService {
+export class TaskService extends Shared {
   getTaskDetail = async (id: string) => {
     return await TaskModel.findByPk(id, {
       include: [
@@ -36,7 +37,12 @@ export class TaskService {
     });
   };
 
-  createTask = async (user, body, transaction) => {
+  createTask = async (
+    user,
+    body,
+    notificationCtrl: NotificationController,
+    transaction,
+  ) => {
     const result = await TaskModel.findOne({
       attributes: [
         [Sequelize.fn('Max', Sequelize.col('position')), 'maxPosition'],
@@ -69,32 +75,37 @@ export class TaskService {
     );
 
     if (body.assigneeId != user.id) {
-      const metadata = {
-        userId: body.assigneeId,
-        projectId: body.projectId,
-        createdBy: body.createdBy,
-        taskId: createdTask.id,
+      const payload = {
+        receiverId: body.assigneeId,
+        type: TASK_ASSIGNED,
+        title: 'Task assigned',
+        message: `${user.name} assigned "${createdTask.title}" task to you`,
+        subId: body.assigneeId,
+        subProp: 'taskAssigned',
+        metadata: {
+          userId: body.assigneeId,
+          projectId: body.projectId,
+          createdBy: body.createdBy,
+          taskId: createdTask.id,
+        },
       };
-      await pubSub.publish(`${TASK_ASSIGNED}_${metadata.userId}`, metadata);
-
-      await NotificationModel.create(
-        {
-          userId: metadata.userId,
-          type: TASK_ASSIGNED,
-          title: 'Task assigned',
-          message: `${user.name} assigned "${createdTask.title}" task to you`,
-          metadata,
-        },
-        {
-          transaction,
-        },
+      await this.createAndPublishNotification(
+        notificationCtrl,
+        payload,
+        transaction,
       );
     }
 
     return createdTask;
   };
 
-  updateTask = async (user, id: string, body: any, transaction) => {
+  updateTask = async (
+    user,
+    id: string,
+    body: any,
+    notificationCtrl,
+    transaction,
+  ) => {
     const [result, updatedRows] = await TaskModel.update<any>(
       { ...body },
       { where: { id }, returning: true, transaction },
@@ -111,28 +122,24 @@ export class TaskService {
     );
 
     if (body.assigneeId != user.id) {
-      const metadata = {
-        userId: body.assigneeId,
-        projectId: body.projectId,
-        createdBy: body.createdBy,
-        taskId: updatedRows?.[0]?.id,
+      const payload = {
+        receiverId: body.assigneeId,
+        type: TASK_ASSIGNED,
+        title: 'Task assigned',
+        message: `${user.name} assigned "${updatedRows?.[0]?.title}" task to you`,
+        subProp: 'taskAssigned',
+        metadata: {
+          userId: body.assigneeId,
+          projectId: body.projectId,
+          createdBy: body.createdBy,
+          taskId: updatedRows?.[0]?.id,
+        },
       };
-
-      const createdNotification = await NotificationModel.create(
-        {
-          userId: metadata.userId,
-          type: TASK_ASSIGNED,
-          title: 'Task assigned',
-          message: `${user.name} assigned "${updatedRows?.[0]?.title}" task to you`,
-          metadata,
-        },
-        {
-          transaction,
-        },
+      await this.createAndPublishNotification(
+        notificationCtrl,
+        payload,
+        transaction,
       );
-      await pubSub.publish(`${TASK_ASSIGNED}_${metadata.userId}`, {
-        taskAssigned: createdNotification,
-      });
     }
     return result > 0;
   };
