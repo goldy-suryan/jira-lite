@@ -1,5 +1,6 @@
 'use client';
 
+import { useAppSelector } from '@/app/state/hooks';
 import { instance } from '@/app/utils/interceptors';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -10,6 +11,7 @@ export const UserDropdown = () => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const userSelector = useAppSelector((state) => state.user.user);
 
   useEffect(() => {
     function handleClickOutside(event: any) {
@@ -50,10 +52,13 @@ export const UserDropdown = () => {
           <li>
             <Link
               href="/profile"
-              className="block px-4 py-2 light:hover:bg-gray-300 dark:hover:bg-white/10 transition"
+              className="block px-4 py-2 light:hover:bg-gray-300 flex justify-between items-center dark:hover:bg-white/10 transition"
               onClick={() => setOpen(false)}
             >
-              Profile
+              <span>Profile</span>{' '}
+              <span className="text-[10px] px-2 py-1 rounded-full bg-blue-500 light:text-white">
+                {userSelector?.name?.split(' ')[0]}
+              </span>
             </Link>
           </li>
           <li>

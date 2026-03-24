@@ -3,7 +3,7 @@ import { FaBell, FaCircle, FaX } from 'react-icons/fa6';
 
 export const NotificationPanel = ({ setIsOpen, notifications, markRead }) => {
   return (
-    <aside className="h-full">
+    <aside className="fixed top-0 bottom-0 right-0 w-[15vw] min-w-[25rem] max-w-[30rem] flex flex-col h-full shadow-xl dark:bg-black light:bg-white z-40">
       <div className="flex items-center justify-between mt-1 px-6 py-8 border-b dark:border-gray-500 light:border-gray-400">
         <div className="flex items-center gap-2">
           <FaBell className="text-blue-500" />
@@ -27,7 +27,7 @@ export const NotificationPanel = ({ setIsOpen, notifications, markRead }) => {
                 markRead(noti.id);
               }}
               key={noti.id}
-              className="flex items-center border-b-2 dark:border-gray-700 light:border-gray-400 px-4 py-2 light:hover:border-l-4 light:hover:border-green-800 dark:hover:border-l-4 dark:hover:border-green-800 cursor-pointer"
+              className="flex items-center border-b-2 dark:border-gray-700 light:border-gray-400 px-4 py-2 light:hover:border-green-800 dark:hover:border-green-800 cursor-pointer"
             >
               {!noti.isRead && (
                 <div className="mr-4">
@@ -54,7 +54,7 @@ export const NotificationPanel = ({ setIsOpen, notifications, markRead }) => {
       </div>
 
       {notifications?.length > 0 && (
-        <div className="p-4 border-t border-gray-700 dark:bg-black light:bg-gray-100 text-center sticky bottom-0 w-full">
+        <div className="p-4 border-t border-gray-700 dark:bg-black light:bg-gray-100 text-center flex-shrink-0">
           <button className="text-blue-500 hover:underline">
             MARK ALL AS READ
           </button>

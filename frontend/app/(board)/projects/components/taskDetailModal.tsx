@@ -229,7 +229,7 @@ export const TaskDetailModal = ({
 
         <div className="flex flex-1 overflow-hidden">
           {/* Left Section */}
-          <section className="flex-1 overflow-hidden p-6 border-r dark:border-gray-700 flex flex-col gap-6">
+          <section className="flex-1 overflow-auto p-6 border-r dark:border-gray-700 flex flex-col gap-6">
             <article className="mb-4">
               <h3 className="uppercase text-sm font-semibold mb-2 tracking-wide">
                 Description
