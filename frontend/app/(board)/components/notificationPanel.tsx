@@ -2,7 +2,6 @@ import { formatDate } from '@/app/utils/helperFunc';
 import { FaBell, FaCircle, FaX } from 'react-icons/fa6';
 
 export const NotificationPanel = ({ setIsOpen, notifications, markRead }) => {
-  console.log(notifications, 'hello notifications');
   return (
     <aside className="h-full">
       <div className="flex items-center justify-between mt-1 px-6 py-8 border-b dark:border-gray-500 light:border-gray-400">
@@ -54,11 +53,13 @@ export const NotificationPanel = ({ setIsOpen, notifications, markRead }) => {
         )}
       </div>
 
-      {notifications?.length > 0 && <div className="p-4 border-t border-gray-700 text-center fixed bottom-0 w-full">
-        <button className="text-blue-500 hover:underline">
-          MARK ALL AS READ
-        </button>
-      </div>}
+      {notifications?.length > 0 && (
+        <div className="p-4 border-t border-gray-700 dark:bg-black light:bg-gray-100 text-center sticky bottom-0 w-full">
+          <button className="text-blue-500 hover:underline">
+            MARK ALL AS READ
+          </button>
+        </div>
+      )}
     </aside>
   );
 };

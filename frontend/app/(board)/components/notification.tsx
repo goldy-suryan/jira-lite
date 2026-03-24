@@ -2,7 +2,10 @@
 
 import { Mark_AS_READ } from '@/app/graphql/mutations/notification.mutation';
 import { GET_USER_NOTIFICATIONS } from '@/app/graphql/queries/notification.query';
-import { TASK_ASSIGNED } from '@/app/graphql/subscriptions/comment.subscriptions';
+import {
+  COMMENT_NOTIFICATION,
+  TASK_ASSIGNED,
+} from '@/app/graphql/subscriptions/comment.subscriptions';
 import { useAppSelector } from '@/app/state/hooks';
 import { useMutation, useQuery, useSubscription } from '@apollo/client/react';
 import { useEffect, useRef, useState } from 'react';
@@ -17,14 +20,6 @@ const Notification = () => {
   const [openNotification, setOpenNotification] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
 
-  const { data: notificationSubData } = useSubscription<{ taskAssigned: any }>(
-    TASK_ASSIGNED,
-    {
-      variables: {
-        userId: userSelector?.id,
-      },
-    },
-  );
   const { data: notificationData } = useQuery<any>(GET_USER_NOTIFICATIONS);
   const [markAsRead] = useMutation(Mark_AS_READ, {
     refetchQueries: [
@@ -32,6 +27,18 @@ const Notification = () => {
         query: GET_USER_NOTIFICATIONS,
       },
     ],
+  });
+
+  // ===== subscriptions
+  const { data: notificationSubData } = useSubscription<any>(TASK_ASSIGNED, {
+    variables: {
+      userId: userSelector?.id,
+    },
+  });
+  const { data: commentSubData } = useSubscription<any>(COMMENT_NOTIFICATION, {
+    variables: {
+      userId: userSelector?.id,
+    },
   });
 
   useEffect(() => {
@@ -46,12 +53,21 @@ const Notification = () => {
 
   useEffect(() => {
     if (notificationData) {
-      setNotifications((prev) => notificationData?.getAllUserNotification);
+      setNotifications(notificationData?.getAllUserNotification);
     }
+  }, [notificationData]);
+
+  useEffect(() => {
     if (notificationSubData) {
       setNotifications((prev) => [notificationSubData.taskAssigned, ...prev]);
     }
-  }, [notificationData, setNotifications, notificationSubData]);
+  }, [notificationSubData]);
+
+  useEffect(() => {
+    if (commentSubData) {
+      setNotifications((prev) => [commentSubData.commentNotification, ...prev]);
+    }
+  }, [commentSubData]);
 
   const hideNotiPanel = () => {
     setOpenNotification(false);
@@ -84,6 +100,7 @@ const Notification = () => {
           z-40
           flex flex-col
           shadow-xl
+          overflow-auto
           dark:bg-black light:bg-white
           `}
         style={{ boxShadow: '-4px 0 6px -1px rgba(92, 92, 92, 0.5)' }}

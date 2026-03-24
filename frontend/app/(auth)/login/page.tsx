@@ -33,7 +33,6 @@ function Login() {
       };
       localStorage.setItem('user', JSON.stringify(dataToStore));
       dispatch(addUser(dataToStore));
-      console.log('now navigating to dashboard');
       router.replace('/dashboard');
     } catch (e) {
       console.log(e, 'erro while logging');

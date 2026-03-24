@@ -20,6 +20,7 @@ const httpLink = new HttpLink({
 });
 
 const errorLink = new ErrorLink(({ error, operation }) => {
+  console.error(error, operation)
   if (CombinedGraphQLErrors.is(error)) {
     error.errors.forEach(({ message, locations, path }) =>
       toast.error(`${message}`),

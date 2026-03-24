@@ -32,3 +32,21 @@ export const TASK_ASSIGNED = gql`
     }
   }
 `;
+
+export const COMMENT_NOTIFICATION = gql`
+  subscription CommentNotification($userId: ID!) {
+    commentNotification(userId: $userId) {
+      id
+      user {
+        id
+        name
+      }
+      type
+      title
+      message
+      isRead
+      metadata
+      createdAt
+    }
+  }
+`;
