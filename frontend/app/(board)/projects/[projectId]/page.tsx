@@ -300,7 +300,7 @@ const KanbanBoard = () => {
     >
       <div className="w-full h-full">
         <div className="flex justify-between items-center mb-4 relative">
-          <h2 className="text-xl font-semibold dark:bg-black w-full h-12 flex justify-between">
+          <h2 className="text-xl font-semibold dark:bg-black w-full h-12 flex items-center justify-between">
             {project?.name}
             <CreateButton open="member" />
           </h2>
