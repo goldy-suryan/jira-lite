@@ -47,7 +47,7 @@ export const ProjectCard = ({
             ))}
           </div>
           <span
-            className={`text-xs px-3 py-1 rounded-full font-medium bg-blue-500 light:text-white`}
+            className={`text-xs px-3 py-1 rounded-full font-medium bg-cyan-600 light:text-white`}
           >
             Tasks: {tasks}
           </span>

@@ -15,9 +15,9 @@ export const columnsData = [
   {
     id: 1,
     title: 'Todo',
-    color: 'bg-cyan-700 light:text-white',
-    border: 'border-l-[2px] border-l-cyan-600',
-    shadow: 'inset-shadow-sm inset-shadow-cyan-600',
+    color: 'bg-blue-700 light:text-white',
+    border: 'border-l-[2px] border-l-blue-600',
+    shadow: 'inset-shadow-sm inset-shadow-blue-600',
   },
   {
     id: 2,

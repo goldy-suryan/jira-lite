@@ -24,10 +24,12 @@ import {
 } from '@dnd-kit/sortable';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { FaFilter, FaPlus } from 'react-icons/fa6';
 import { CreateButton } from '../../components/createButton';
 import { CreateOrUpdateTaskModal } from '../components/createOrUpdateTaskModal';
 import { DroppableColumn } from '../components/dropableColumn';
 import { TaskCard } from '../components/taskCard';
+import FilterOverlay from '../components/filterOverlay';
 
 const KanbanBoard = () => {
   const params = useParams();
@@ -39,7 +41,8 @@ const KanbanBoard = () => {
   const [activeTask, setActiveTask] = useState<null | Task>(null);
   const [taskMap, setTaskMap] = useState<Record<string, Task>>({});
   const [taskToUpdate, setTaskToUpdate] = useState<null | Task>(null);
-  const [project, setProject] = useState<null | any>(null);
+  const [project, setProject] = useState<any>(null);
+  const [openFilters, setOpenFilters] = useState(false);
 
   const { data, loading } = useQuery<{
     getProjectById: { name: string; tasks: any[] };
@@ -285,101 +288,125 @@ const KanbanBoard = () => {
   );
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragStart={(event) => {
-        const id = event.active.id;
-        const task = taskMap[id];
-        setActiveTask(task);
-      }}
-      onDragEnd={(event) => {
-        handleDragEnd(event);
-        setActiveTask(null);
-      }}
-    >
-      <div className="w-full h-full">
-        <div className="flex justify-between items-center mb-4 relative">
-          <h2 className="text-xl font-semibold dark:bg-black w-full h-12 flex items-center justify-between">
-            {project?.name}
-            <CreateButton open="member" />
-          </h2>
-        </div>
-
-        <div className="flex gap-8 min-w-max pr-[2rem] pb-[1rem]">
-          {columnsData.map((col) => (
-            <div
-              key={col.id}
-              className={`w-[320px] rounded-xl flex-shrink-0 flex flex-col bg-white/6 p-4 ${col.shadow} shadow-xl`}
+    <>
+      <div className="flex justify-between items-center mb-4 sticky top-0 left-0 light:bg-[#ededed] dark:bg-black w-full z-20">
+        <h2 className="text-xl font-semibold dark:bg-black w-full h-12 flex items-center justify-between">
+          <span className="min-w-[80%]">{project?.name}</span>
+          <span className="flex items-center gap-8">
+            <button
+              className="flex items-center gap-2 text-sm font-normal outline px-4 py-2 rounded-md cursor-pointer hover:border hover:border-cyan-500 hover:outline-none"
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenFilters(true);
+              }}
             >
-              <div className="font-semibold flex">
-                {col.title.replaceAll('_', ' ').toUpperCase()}
-                <span
-                  className={`ml-2 inline-block h-5 w-5 rounded-sm bg-blue-500 text-blue-100 text-center font-normal text-sm ${col.color}`}
-                >
-                  {taskGroup?.[col?.title?.toLowerCase()]?.length ?? 0}
-                </span>
-              </div>
-              <hr className="mt-4 border-t light:border-gray-200 dark:border-white/20" />
-              <DroppableColumn id={col.title.toLowerCase()}>
-                <SortableContext
-                  items={(taskGroup[col.title.toLowerCase()] || []).map(
-                    (t) => t.id,
-                  )}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div className="pt-2 overflow-y-auto flex-grow space-y-4 my-2 min-h-[600px] max-h-[600px] [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-                    <button
-                      className="text-blue-400 text-sm hover:underline cursor-pointer"
+              Filter <FaFilter size={18} />
+            </button>
+            <CreateButton open="member" />
+          </span>
+        </h2>
+        <FilterOverlay
+          isOpen={openFilters}
+          closePanel={() => setOpenFilters(false)}
+        />
+      </div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={(event) => {
+          const id = event.active.id;
+          const task = taskMap[id];
+          setActiveTask(task);
+        }}
+        onDragEnd={(event) => {
+          handleDragEnd(event);
+          setActiveTask(null);
+        }}
+      >
+        <div className="w-full h-full">
+          <div className="flex gap-8 min-w-max pr-[2rem] pb-[1rem]">
+            {columnsData.map((col) => (
+              <div
+                key={col.id}
+                className={`w-[320px] rounded-xl flex-shrink-0 flex flex-col bg-white/6 p-4 ${col.shadow} shadow-xl`}
+              >
+                <div className="font-semibold flex items-center justify-between uppercase">
+                  <div>
+                    {col.title.replaceAll('_', ' ')}
+                    <span
+                      className={`ml-2 inline-block h-5 w-5 rounded-sm text-center font-normal text-sm ${col.color}`}
+                    >
+                      {taskGroup?.[col?.title?.toLowerCase()]?.length ?? 0}
+                    </span>
+                  </div>
+                  <button
+                    className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer bg-cyan-500 rounded-full p-1"
+                    onClick={() => setModalOpen(true)}
+                  >
+                    <FaPlus size={18} color={'white'} />
+                  </button>
+                </div>
+                <hr className="mt-4 border-t light:border-gray-400 dark:border-white/20" />
+                <DroppableColumn id={col.title.toLowerCase()}>
+                  <SortableContext
+                    items={(taskGroup[col.title.toLowerCase()] || []).map(
+                      (t) => t.id,
+                    )}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="pt-2 overflow-y-auto flex-grow space-y-4 my-2 min-h-[600px] max-h-[600px] [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+                      {/* <button
+                      className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer"
                       onClick={() => setModalOpen(true)}
                     >
                       Add Task
-                    </button>
-                    {modalOpen && (
-                      <CreateOrUpdateTaskModal
-                        isOpen={modalOpen}
-                        onClose={() => setModalOpen(false)}
-                      />
-                    )}
-                    {taskGroup[col?.title?.toLowerCase()]?.length ? (
-                      (taskGroup[col?.title?.toLowerCase()] || []).map(
-                        (card) => (
-                          <TaskCard
-                            key={card.id}
-                            card={card}
-                            owner={project.owner}
-                            border={col.border}
-                            color={col.color}
-                          />
-                        ),
-                      )
-                    ) : (
-                      <div className="flex items-center justify-center min-h-[30rem]">
-                        <p className="text-sm text-center align-middle">
-                          No Task assigned
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </SortableContext>
-              </DroppableColumn>
-            </div>
-          ))}
+                    </button> */}
+                      {modalOpen && (
+                        <CreateOrUpdateTaskModal
+                          isOpen={modalOpen}
+                          onClose={() => setModalOpen(false)}
+                        />
+                      )}
+                      {taskGroup[col?.title?.toLowerCase()]?.length ? (
+                        (taskGroup[col?.title?.toLowerCase()] || []).map(
+                          (card) => (
+                            <TaskCard
+                              key={card.id}
+                              card={card}
+                              owner={project.owner}
+                              border={col.border}
+                              color={col.color}
+                            />
+                          ),
+                        )
+                      ) : (
+                        <div className="flex items-center justify-center min-h-[30rem]">
+                          <p className="text-sm text-center align-middle">
+                            No Task assigned
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </SortableContext>
+                </DroppableColumn>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <DragOverlay>
-        {activeTask ? (
-          <TaskCard
-            card={activeTask}
-            owner={project.owner}
-            border={''}
-            color={''}
-            overlay
-          />
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+        <DragOverlay>
+          {activeTask ? (
+            <TaskCard
+              card={activeTask}
+              owner={project.owner}
+              border={''}
+              color={''}
+              overlay
+            />
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+    </>
   );
 };
 

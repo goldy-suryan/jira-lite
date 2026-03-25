@@ -16,10 +16,11 @@ const BoardLayout = ({ children }: { children: ReactNode }) => {
           <div className="text-xl">
             <input
               type="search"
-              placeholder="Search"
+              placeholder="Coming Soon..."
               name="search"
               id="search"
-              className="rounded-lg light:bg-gray-200 dark:bg-white/10 border light:border-gray-200 dark:border-white/10 px-4 py-1 mr-8 min-w-[35rem]"
+              disabled={true}
+              className="rounded-lg light:bg-gray-200 dark:bg-white/5 border light:border-gray-200 dark:border-white/10 px-4 py-1 mr-8 min-w-[35rem]"
             />
           </div>
           <div className="flex items-center gap-8">

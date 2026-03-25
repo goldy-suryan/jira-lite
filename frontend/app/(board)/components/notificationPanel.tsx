@@ -4,19 +4,18 @@ import { FaBell, FaCircle, FaX } from 'react-icons/fa6';
 export const NotificationPanel = ({ setIsOpen, notifications, markRead }) => {
   return (
     <aside className="fixed top-0 bottom-0 right-0 w-[15vw] min-w-[25rem] max-w-[30rem] flex flex-col h-full shadow-xl dark:bg-black light:bg-white z-40">
-      <div className="flex items-center justify-between mt-1 px-6 py-8 border-b dark:border-gray-500 light:border-gray-400">
-        <div className="flex items-center gap-2">
-          <FaBell className="text-blue-500" />
-          <h2 className="font-semibold text-lg">Notifications</h2>
-        </div>
+      <header className="p-6 border-b border-gray-700 flex justify-between items-center">
+        <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide">
+          <FaBell className="text-cyan-500" size={18}/> Notifications
+        </h2>
         <button
           onClick={() => setIsOpen(false)}
-          aria-label="Close notifications"
-          className=" text-xl font-bold"
+          aria-label="Close panel"
+          className="text-white"
         >
           <FaX className="cursor-pointer" />
         </button>
-      </div>
+      </header>
 
       <div className="flex-1 overflow-y-auto">
         {notifications?.length > 0 ? (
@@ -27,7 +26,7 @@ export const NotificationPanel = ({ setIsOpen, notifications, markRead }) => {
                 markRead(noti.id);
               }}
               key={noti.id}
-              className="flex items-center border-b-2 dark:border-gray-700 light:border-gray-400 px-4 py-2 light:hover:border-green-800 dark:hover:border-green-800 cursor-pointer"
+              className="flex items-center border-b-2 dark:border-gray-700 light:border-gray-400 px-4 py-2 light:hover:bg-cyan-200 dark:hover:bg-cyan-300 dark:hover:text-gray-900 cursor-pointer"
             >
               {!noti.isRead && (
                 <div className="mr-4">
@@ -55,7 +54,7 @@ export const NotificationPanel = ({ setIsOpen, notifications, markRead }) => {
 
       {notifications?.length > 0 && (
         <div className="p-4 border-t border-gray-700 dark:bg-black light:bg-gray-100 text-center flex-shrink-0">
-          <button className="text-blue-500 hover:underline">
+          <button className="text-cyan-500 hover:font-semibold cursor-pointer tracking-wide">
             MARK ALL AS READ
           </button>
         </div>

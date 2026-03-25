@@ -10,12 +10,14 @@ import {
   GET_PROJECT_USERS,
 } from '@/app/graphql/queries/board.query';
 import { useAppSelector } from '@/app/state/hooks';
+import { isPartialDeepEqual } from '@/app/utils/helperFunc';
 import { useMutation, useQuery } from '@apollo/client/react';
+import moment from 'moment';
+import { useTheme } from 'next-themes';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaX } from 'react-icons/fa6';
 import { ConfirmDialog } from '../../components/confirmDialog';
-import { useTheme } from 'next-themes';
 
 const formInitialValue = {
   title: '',
@@ -38,6 +40,7 @@ export const CreateOrUpdateTaskModal = ({
   const { theme } = useTheme();
   const [formValue, setFormValue] = useState(formInitialValue);
   const [error, setError] = useState('');
+  const [toUpdate, setToUpdate] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const queryToRefetch = {
     query: GET_PROJECT_BY_ID,
@@ -62,7 +65,7 @@ export const CreateOrUpdateTaskModal = ({
 
   useEffect(() => {
     if (task) {
-      setFormValue({
+      setFormValue((prev) => ({
         title: task.title,
         description: task.description,
         status: task.status,
@@ -70,11 +73,23 @@ export const CreateOrUpdateTaskModal = ({
         projectId: task.projectId,
         createdBy: task.createdBy,
         assigneeId: task.assigneeId,
-        dueDate: new Date(task.dueDate).toISOString().slice(0, 10),
+        dueDate: moment(task.dueDate).format('YYYY-MM-DD'),
         position: task.position,
-      });
+      }));
     }
   }, [task]);
+
+  useEffect(() => {
+    if (!task) return;
+
+    const normalizedTask = {
+      ...task,
+      priority: task.priority?.toLowerCase(),
+      dueDate: moment(task.dueDate).format('YYYY-MM-DD'),
+    };
+
+    setToUpdate(isPartialDeepEqual(formValue, normalizedTask));
+  }, [formValue, task]);
 
   const addOrEditTask = async () => {
     try {
@@ -110,7 +125,7 @@ export const CreateOrUpdateTaskModal = ({
       console.log(e, 'error while creating/updating task');
     } finally {
       setFormValue(formInitialValue);
-      onClose();
+      // onClose();
     }
   };
 
@@ -160,7 +175,7 @@ export const CreateOrUpdateTaskModal = ({
           <button
             onClick={onClose}
             aria-label="Close modal"
-            className="transition"
+            className="transition cursor-pointer"
           >
             <FaX />
           </button>
@@ -178,7 +193,7 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, title: e.target.value }))
             }
-            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4"
+            className="w-full rounded-md dark:bg-white/5 px-3 py-2 mb-4 mt-1"
             placeholder="Enter task title"
             autoFocus
           />
@@ -192,7 +207,7 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4 h-32"
+            className="w-full rounded-md dark:bg-white/5 px-3 py-2 mb-4 mt-1 h-32"
             placeholder="Enter description"
             autoFocus
           />
@@ -206,7 +221,7 @@ export const CreateOrUpdateTaskModal = ({
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, status: e.target.value }))
             }
-            className={`w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4 ${theme == 'light' ? 'light_theme' : ''}`}
+            className={`w-full rounded-md dark:bg-zinc-800 px-3 py-2 mb-4 mt-1 ${theme == 'light' ? 'light_theme' : ''}`}
           >
             <option value="todo">Todo</option>
             <option value="in_progress">In Progress</option>
@@ -221,7 +236,7 @@ export const CreateOrUpdateTaskModal = ({
           </label>
           <select
             id="priority"
-            className={`w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4 ${theme == 'light' ? 'light_theme' : ''}`}
+            className={`w-full rounded-md dark:bg-zinc-800 px-3 py-2 mb-4 mt-1 ${theme == 'light' ? 'light_theme' : ''}`}
             value={formValue.priority}
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, priority: e.target.value }))
@@ -238,24 +253,24 @@ export const CreateOrUpdateTaskModal = ({
           </label>
           <select
             id="assign"
-            className={`w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4 ${theme == 'light' ? 'light_theme' : ''}`}
+            className={`w-full rounded-md dark:bg-zinc-800 px-3 py-2 mb-4 mt-1 ${theme == 'light' ? 'light_theme' : ''}`}
             value={formValue.assigneeId}
             onChange={(e) => {
               setFormValue((prev) => ({ ...prev, assigneeId: e.target.value }));
               if (
                 !(currentProjectSelector as any).users.some(
                   (item) => item.id == e.target.value,
-                )
+                ) && e.target.value
               ) {
                 setOpenDialog(true);
               }
             }}
           >
-            <option value="">Select</option>
+            {/* <option value="">Select</option> */}
             {projectUsers?.getProjectUsers?.users?.map((user: any) => {
               return (
                 <option key={user?.id} value={user?.id}>
-                  {user?.name} &nbsp;&nbsp;{getOwner(user)}
+                  {user?.name}&nbsp;&nbsp;{getOwner(user)}
                 </option>
               );
             })}
@@ -268,7 +283,7 @@ export const CreateOrUpdateTaskModal = ({
             type="date"
             id="date"
             min={new Date().toISOString().split('T')[0]}
-            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-4"
+            className="w-full rounded-md dark:bg-zinc-800 px-3 py-2 mb-4 mt-1"
             value={formValue.dueDate}
             onClick={(e) => {
               e.preventDefault();
@@ -287,14 +302,15 @@ export const CreateOrUpdateTaskModal = ({
                 setFormValue(formInitialValue);
                 onClose();
               }}
-              className="rounded-md border border-gray-700 px-6 py-2 transition"
+              className="rounded-md border border-gray-700 px-6 py-2 transition cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={addOrEditTask}
-              className="px-4 py-2 rounded-md light:text-white bg-blue-600 font-semibold hover:bg-blue-700 transition cursor-pointer"
+              disabled={task ? toUpdate : (!formValue.title || !formValue.status || !formValue.priority)}
+              className="px-4 py-2 rounded-md light:text-white bg-cyan-600 font-semibold hover:bg-cyan-700 transition cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {task ? 'Save Changes' : 'Create'}
             </button>

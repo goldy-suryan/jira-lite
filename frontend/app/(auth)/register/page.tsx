@@ -70,7 +70,7 @@ export const Register = () => {
 
       <section className="relative w-full max-w-md">
         <header className="relative">
-          <h1 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight">
+          <h1 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight text-cyan-500">
             Create your account
           </h1>
         </header>
@@ -102,7 +102,7 @@ export const Register = () => {
                     onChange={(e) =>
                       setformValues({ ...formValues, name: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl light:bg-gray-200 border border-white/10 dark:bg-white/5 pl-11 pr-4 text-sm outline-none transition"
+                    className="h-11 w-full rounded-xl border border-white/10 dark:bg-white/5 pl-11 pr-4 text-sm outline-none transition"
                     required
                   />
                 </div>
@@ -136,7 +136,7 @@ export const Register = () => {
                     onChange={(e) =>
                       setformValues({ ...formValues, email: e.target.value })
                     }
-                    className="h-11 w-full rounded-xl light:bg-gray-200 border border-white/10 dark:bg-white/5 pl-11 pr-4 text-sm outline-none transition"
+                    className="h-11 w-full rounded-xl dark:bg-white/5 pl-11 pr-4 text-sm outline-none transition"
                     required
                   />
                 </div>
@@ -167,7 +167,7 @@ export const Register = () => {
                       setformValues({ ...formValues, password: e.target.value })
                     }
                     minLength={8}
-                    className="h-11 w-full rounded-xl light:bg-gray-200 border border-white/10 dark:bg-white/5 pl-11 pr-16 text-sm outline-none transition"
+                    className="h-11 w-full rounded-xl dark:bg-white/5 pl-11 pr-16 text-sm outline-none transition"
                     required
                   />
 
@@ -202,7 +202,7 @@ export const Register = () => {
               <button
                 type="button"
                 onClick={registerUser}
-                className="h-11 w-full rounded-xl border text-sm font-semibold tracking-tight transition shadow-[0_10px_30px_rgba(0,0,0,0.35)] active:scale-[0.99] border-violet-300/30 light:bg-blue-600 light:text-white dark:bg-gradient-to-b from-violet-400/25 to-violet-400/10 hover:from-violet-400/30 hover:to-violet-400/12 cursor-pointer"
+                className="h-11 w-full rounded-xl border text-sm font-semibold tracking-tight transition shadow-[0_10px_30px_rgba(0,0,0,0.35)] active:scale-[0.99] border-violet-300/30 light:bg-cyan-600 light:text-white dark:bg-gradient-to-b from-violet-400/25 to-violet-400/10 hover:from-violet-400/30 hover:to-violet-400/12 cursor-pointer"
               >
                 Register
               </button>
@@ -213,7 +213,7 @@ export const Register = () => {
                 Already have an account?{' '}
                 <Link
                   href="/login"
-                  className="underline underline-offset-4 decoration-white/20 hover:decoration-white/50 transition"
+                  className="hover:underline hover:underline-offset-4 hover:decoration-cyan-500 transition"
                 >
                   Sign in
                 </Link>

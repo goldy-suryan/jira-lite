@@ -90,7 +90,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center light:bg-white dark:bg-black bg-opacity-70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center light:bg-white dark:bg-black bg-opacity-70 backdrop-blur-sm font-normal text-normal text-sm"
       aria-modal="true"
       aria-labelledby="invite-modal-title"
     >
@@ -112,7 +112,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           <div className="relative" ref={dropdownRef}>
             <label
               htmlFor="email-input"
-              className="block uppercase text-xs font-semibold tracking-wide mb-1"
+              className="block tracking-wide mb-1"
             >
               Email
             </label>
@@ -122,7 +122,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
               value={email}
               onChange={handleEmailChange}
               placeholder="name@example.com"
-              className="w-full rounded-lg light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 p-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-lg dark:bg-white/5 p-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
             />
             {result?.length > 0 && (
@@ -148,7 +148,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           <div>
             <label
               htmlFor="role-select"
-              className="block uppercase text-xs font-semibold tracking-wide mb-1"
+              className="block tracking-wide mb-1"
             >
               Role (optional)
             </label>
@@ -156,7 +156,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
               id="role-select"
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-lg light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 p-3 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full rounded-lg dark:bg-zinc-800 p-3 focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               <option>Member</option>
               <option>Admin</option>
@@ -167,7 +167,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           <button
             type="button"
             onClick={addMember}
-            className="self-start rounded-md light:text-white bg-blue-600 px-5 py-2 font-semibold hover:bg-blue-700 transition"
+            className="self-start rounded-md light:text-white bg-cyan-600 px-5 py-2 font-semibold hover:bg-cyan-700 transition cursor-pointer"
           >
             Add Member
           </button>
@@ -204,7 +204,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-gray-700 px-6 py-2 hover:border-gray-500 transition"
+            className="rounded-md border border-gray-700 px-6 py-2 hover:border-gray-500 transition cursor-pointer"
           >
             Cancel
           </button>
@@ -214,8 +214,8 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
             disabled={members.length === 0}
             className={`rounded-md px-6 py-2 font-semibold transition ${
               members.length === 0
-                ? 'bg-gray-700 light:text-white cursor-not-allowed'
-                : 'bg-blue-600 light:text-white hover:bg-blue-700'
+                ? 'bg-gray-400 light:text-white disabled:cursor-not-allowed'
+                : 'bg-cyan-600 light:text-white hover:bg-cyan-700 cursor-pointer'
             }`}
           >
             Send Invite

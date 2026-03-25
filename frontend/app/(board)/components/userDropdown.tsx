@@ -56,7 +56,7 @@ export const UserDropdown = () => {
               onClick={() => setOpen(false)}
             >
               <span>Profile</span>{' '}
-              <span className="text-[10px] px-2 py-1 rounded-full bg-blue-500 light:text-white">
+              <span className="text-[10px] px-2 py-1 rounded-full bg-cyan-600 light:text-white">
                 {userSelector?.name?.split(' ')[0]}
               </span>
             </Link>

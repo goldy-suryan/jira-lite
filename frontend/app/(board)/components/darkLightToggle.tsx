@@ -17,7 +17,7 @@ export default function DarkLightToggle({ themeTo, theme }) {
   return (
     <button
       onClick={toggleTheme}
-      className={`relative inline-flex items-center h-4 rounded-full w-12 focus:outline-none cursor-pointer bg-blue-500`}
+      className={`relative inline-flex items-center h-4 rounded-full w-12 focus:outline-none cursor-pointer bg-cyan-600`}
       aria-label="Toggle dark/light mode"
       role="switch"
       aria-checked={isDark}

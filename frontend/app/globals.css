@@ -23,8 +23,8 @@
 }
 
 body {
-  @apply bg-white text-black dark:bg-black dark:text-white;
-  @apply bg-black text-gray-900 light:bg-gray-100 light:text-gray-900;
+  @apply bg-white text-black dark:bg-black dark:text-[#ededed];
+  @apply bg-black text-gray-900 light:bg-[#ededed] light:text-gray-900;
   /* background: var(--bodyColor); */
   /* color: var(--foreground); */
   font-family: Arial, Helvetica, sans-serif;
@@ -64,7 +64,7 @@ input:focus,
 textarea:focus,
 select:focus,
 button:focus {
-  outline: none !important;
+  /* outline: none !important; */
   box-shadow: none !important;
   border-color: transparent !important;
   --tw-ring-shadow: 0 0 #0000 !important;
@@ -148,4 +148,25 @@ select {
   /* Optional: override background if needed */
   /* -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important; */
   /* transition: background-color 5000s ease-in-out 0s; */
+}
+
+.light input,
+.light input:focus,
+.light textarea,
+.light textarea:focus,
+.light select {
+  outline-width: 2px !important;
+  outline-style: solid !important;
+  outline-color: #cccccc !important;
+  border-color: #cccccc !important;
+  background-color: #e5e7eb !important;
+  color: #364153 !important;
+}
+
+.dark input,
+.dark input:focus,
+.dark textarea,
+.dark textarea:focus,
+.dark select {
+  outline: none !important;
 }

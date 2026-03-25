@@ -1,17 +1,17 @@
 'use client';
 
-import { formatDate, priorityBackground } from '@/app/utils/helperFunc';
+import { formatDate } from '@/app/utils/helperFunc';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useState } from 'react';
-import { FaRegCommentDots, FaPaperclip } from 'react-icons/fa6';
-import { TaskCardKebabMenu } from './taskCardKebabMenu';
-import { TaskDetailModal } from './taskDetailModal';
 import {
   BsChevronDoubleDown,
   BsChevronDoubleUp,
   BsChevronExpand,
 } from 'react-icons/bs';
+import { FaPaperclip, FaRegClock, FaRegCommentDots } from 'react-icons/fa6';
+import { TaskCardKebabMenu } from './taskCardKebabMenu';
+import { TaskDetailModal } from './taskDetailModal';
 
 export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
   const [taskDetailDialogOpen, setTaskDetailDialogOpen] = useState(false);
@@ -68,7 +68,7 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
           <span className=" max-w-[10rem] lines-ellipsis">{card?.title}</span>
         </h3>
         <p className="mt-2 lines-ellipsis two text-sm">{card.description}</p>
-        <p className="text-xs mt-6">Due Date: {formatDate(card.dueDate)}</p>
+        <p className="flex items-center gap-2 text-xs mt-6"><FaRegClock color={'red'}/> {formatDate(card.dueDate)}</p>
 
         <div className="flex justify-between items-center mt-4 text-sm text-gray-400">
           <p className="flex items-center gap-4">

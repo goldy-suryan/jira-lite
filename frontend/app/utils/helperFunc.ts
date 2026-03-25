@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const debounce = (fn: Function, delay = 500) => {
   let timer;
   return function (this: any, ...args: any[]) {
@@ -7,28 +9,8 @@ export const debounce = (fn: Function, delay = 500) => {
 };
 
 export const formatDate = (date: string | number, time = false) => {
-  const parsedDate =
-    typeof date === 'string' && /^\d+$/.test(date)
-      ? new Date(Number(date))
-      : new Date(date);
-
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  };
-
-  if (time) {
-    const dateTimeOptions: Intl.DateTimeFormatOptions = {
-      ...options,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    };
-    return parsedDate.toLocaleString(undefined, dateTimeOptions);
-  }
-  return parsedDate.toLocaleDateString(undefined, options);
+  if (!time) return moment(date).format('MMM DD, YYYY');
+  return moment(date).format('MMM DD, YYYY | HH:MM');
 };
 
 export const priorityBackground = (priority: string) => {
@@ -46,4 +28,47 @@ export const priorityBackground = (priority: string) => {
   } else {
     return { priorityColor: 'bg-red-800', borderColor: 'border-l-red-800' };
   }
+};
+
+// Comparing dates ignoring time
+function isSameDate(d1, d2) {
+  return moment(d1).isSame(d2, 'day');
+}
+
+function isDate(value) {
+  if (value instanceof Date) return true;
+  if (moment.isMoment(value)) return true;
+  if (typeof value === 'string') {
+    return moment(value, moment.ISO_8601, false).isValid();
+  }
+  return false;
+}
+
+export const isPartialDeepEqual = (obj1, obj2) => {
+  if (typeof obj1 !== 'object' || obj1 === null) {
+    if (typeof obj1 === 'string' && typeof obj2 === 'string') {
+      return obj1.toLowerCase() === obj2.toLowerCase();
+    }
+
+    if (isDate(obj1) && isDate(obj2)) {
+      return isSameDate(obj1, obj2);
+    }
+
+    return obj1 === obj2;
+  }
+
+  if (typeof obj2 !== 'object' || obj2 === null) {
+    return false;
+  }
+
+  for (const key of Object.keys(obj1)) {
+    if (!(key in obj2)) {
+      return false;
+    }
+    if (!isPartialDeepEqual(obj1[key], obj2[key])) {
+      return false;
+    }
+  }
+
+  return true;
 };

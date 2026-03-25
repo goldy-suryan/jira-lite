@@ -67,7 +67,7 @@ const Invitation = () => {
         </p>
 
         <button
-          className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-md mb-3 cursor-pointer"
+          className="w-full bg-cyan-600 hover:bg-cyan-700 py-2 rounded-md mb-3 cursor-pointer"
           onClick={() => respondToInvitation('accepted')}
         >
           Accept Invitation

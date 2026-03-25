@@ -10,7 +10,7 @@ import { useAppSelector } from '@/app/state/hooks';
 import { useMutation, useQuery, useSubscription } from '@apollo/client/react';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { FaBell } from 'react-icons/fa6';
+import { FaBell, FaCircle } from 'react-icons/fa6';
 import { NotificationPanel } from './notificationPanel';
 
 const Notification = () => {
@@ -87,12 +87,9 @@ const Notification = () => {
 
   return (
     <>
-      <FaBell
-        onClick={() => setOpenNotification(true)}
-        className="cursor-pointer h-5 w-5"
-      />
-      <div
-        className={`
+      <div className={`${openNotification && 'fixed inset-0 z-60'}`}>
+        <div
+          className={`
           fixed top-0 right-0 h-full
           w-[15vw] min-w-[25rem] max-w-[30rem]
           transform transition-transform duration-300 ease-in-out
@@ -103,18 +100,33 @@ const Notification = () => {
           overflow-auto
           dark:bg-black light:bg-white
           `}
-        style={{ boxShadow: '-4px 0 6px -1px rgba(92, 92, 92, 0.5)' }}
-      >
-        {openNotification && (
-          <div ref={notiRef}>
-            <NotificationPanel
-              setIsOpen={hideNotiPanel}
-              notifications={notifications}
-              markRead={markRead}
-            />
-          </div>
-        )}
+          style={{ boxShadow: '-4px 0 6px -1px rgba(92, 92, 92, 0.5)' }}
+        >
+          {openNotification && (
+            <div ref={notiRef}>
+              <NotificationPanel
+                setIsOpen={hideNotiPanel}
+                notifications={notifications}
+                markRead={markRead}
+              />
+            </div>
+          )}
+        </div>
       </div>
+      <span className="relative">
+        <FaBell
+          onClick={() => setOpenNotification(true)}
+          className="cursor-pointer h-5 w-5"
+        />
+        {notifications?.length > 0 &&
+          notifications?.some((noti) => !noti.isRead) && (
+            <FaCircle
+              color={'green'}
+              size={8}
+              className="absolute top-0 right-0"
+            />
+          )}
+      </span>
     </>
   );
 };

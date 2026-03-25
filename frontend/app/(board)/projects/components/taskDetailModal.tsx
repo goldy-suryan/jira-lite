@@ -115,13 +115,21 @@ export const TaskDetailModal = ({
     }
   }, [urlData]);
 
+  const handleKeyDown = (e) => {
+    setComment(e.target.value);
+      if ((e.ctrlKey || e.metaKey) && e.key == 'Enter') {
+      e.preventDefault();
+      addTaskComment(e);
+    }
+  };
+
   const addTaskComment = async (e) => {
     e.preventDefault();
     if (!comment?.trim()) return;
     await addComment({
       variables: {
         taskId: task.id,
-        message: comment,
+        message: comment.trim(),
       },
     });
     setComment('');
@@ -223,7 +231,7 @@ export const TaskDetailModal = ({
             aria-label="Close modal"
             className="transition"
           >
-            <FaX className='cursor-pointer'/>
+            <FaX className="cursor-pointer" />
           </button>
         </header>
 
@@ -275,7 +283,7 @@ export const TaskDetailModal = ({
                       {commentState.map((cmt) => (
                         <div
                           key={cmt.id}
-                          className="light:bg-gray-500 light:text-white dark:bg-gray-800 rounded-lg p-3"
+                          className="light:bg-cyan-600 light:text-white dark:bg-gray-800 rounded-lg p-2"
                           aria-label={`Comment by ${cmt.user.name}`}
                         >
                           <div className="flex justify-between items-baseline mb-1">
@@ -296,15 +304,17 @@ export const TaskDetailModal = ({
                     <textarea
                       id="comment-input"
                       rows={1}
-                      className="resize-y rounded-lg light:bg-gray-200 dark:bg-gray-900 border dark:border-gray-700 p-3 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                      className="resize-y rounded-lg light:bg-gray-200 dark:bg-white/5 border dark:border-gray-700 p-3 pr-10 placeholder-gray-500 mx-1 outline-none focus:ring-2 focus:ring-cyan-500"
                       placeholder="Write a comment…"
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
+                      onKeyDown={handleKeyDown}
                     />
                     <FaPaperPlane
-                      className="absolute right-5 top-5"
+                      className="absolute right-5 top-5 dark:text-cyan-500"
                       onClick={addTaskComment}
                     />
+                    <span className='text-[12px] text-right inline-block'>Press Ctrl + Enter to send</span>
                   </form>
                 </article>
               </TabPanel>
@@ -380,7 +390,7 @@ export const TaskDetailModal = ({
                   <span className="mt-3 flex items-center gap-3">
                     <label
                       htmlFor="file-upload"
-                      className="cursor-pointer inline-flex items-center gap-2 rounded-full border dark:border-gray-600 dark:bg-gray-800 px-4 py-2 text-sm font-semibold hover:bg-gray-700 transition"
+                      className="cursor-pointer inline-flex items-center gap-2 rounded-full border dark:border-gray-600 dark:bg-white/5 px-4 py-2 text-sm font-semibold light:hover:bg-cyan-400 dark:hover:bg-gray-700 transition"
                     >
                       <BsCloudUploadFill />
                       Upload
@@ -404,7 +414,11 @@ export const TaskDetailModal = ({
                       width={19}
                       height={19}
                       className="h-19 w-19 object-fill"
-                      onClick={() => setExpandedImage(`${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${fileName}`)}
+                      onClick={() =>
+                        setExpandedImage(
+                          `${process.env.NEXT_PUBLIC_CLOUDFRONT_URL}/${fileName}`,
+                        )
+                      }
                     />
                     <p className="text-xs truncate">
                       {fileName?.split('_')?.[1]}

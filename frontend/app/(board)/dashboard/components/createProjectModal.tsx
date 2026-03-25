@@ -74,9 +74,8 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, name: e.target.value }))
             }
-            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-6"
+            className="w-full rounded-md dark:bg-white/5 px-3 py-2 mb-4 mt-1"
             placeholder="Enter project name"
-            autoFocus
           />
           <label htmlFor="key" className="block">
             Key
@@ -88,9 +87,8 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, key: e.target.value }))
             }
-            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-6"
+            className="w-full rounded-md dark:bg-white/5 px-3 py-2 mb-4 mt-1"
             placeholder="Enter key"
-            autoFocus
           />
           <label htmlFor="description" className="block">
             Description
@@ -101,9 +99,8 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
             onChange={(e) =>
               setFormValue((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full rounded-md light:bg-gray-200 dark:bg-zinc-800 dark:border dark:border-white/20 px-3 py-2 mb-6 h-32"
+            className="w-full rounded-md dark:bg-white/5 px-3 py-2 mb-6 h-34 mt-1"
             placeholder="Enter description"
-            autoFocus
           />
           <div className="mt-2 flex justify-end gap-4">
             <button
@@ -119,7 +116,7 @@ export const CreateProjectModal = ({ isOpen, onClose }: any) => {
             <button
               type="button"
               onClick={addProject}
-              className="px-4 py-2 rounded-md light:text-white bg-blue-600 font-semibold hover:bg-blue-700 transition cursor-pointer"
+              className="px-4 py-2 rounded-md light:text-white bg-cyan-600 font-semibold hover:bg-cyan-700 transition cursor-pointer"
             >
               Create
             </button>

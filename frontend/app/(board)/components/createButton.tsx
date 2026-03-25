@@ -21,8 +21,14 @@ export const CreateButton = ({ open }) => {
             : setProjectMemberOpen(true);
         }}
       >
-        <div className="flex items-center justify-center rounded-full bg-blue-500 transition-transform duration-300 ease-in-out hover:scale-125">
-          <Image src="/invite-member.png" alt="invite member" style={{filter: 'invert(1)'}} height={30} width={30} />
+        <div className="flex items-center justify-center rounded-full bg-cyan-600 transition-transform duration-300 ease-in-out hover:scale-125">
+          <Image
+            src="/invite-member.png"
+            alt="invite member"
+            style={{ filter: 'invert(1)' }}
+            height={30}
+            width={30}
+          />
         </div>
       </button>
       {projectModalOpen && open == 'project' && (
