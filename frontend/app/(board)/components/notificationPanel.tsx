@@ -3,7 +3,7 @@ import { FaBell, FaCircle, FaX } from 'react-icons/fa6';
 
 export const NotificationPanel = ({ setIsOpen, notifications, markRead }) => {
   return (
-    <aside className="fixed top-0 bottom-0 right-0 w-[15vw] min-w-[25rem] max-w-[30rem] flex flex-col h-full shadow-xl dark:bg-black light:bg-white z-40">
+    <aside className="fixed top-0 bottom-0 right-0 w-screen sm:w-[28vw] flex flex-col h-full shadow-xl dark:bg-black light:bg-white z-40">
       <header className="p-6 border-b border-gray-700 flex justify-between items-center">
         <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide">
           <FaBell className="text-cyan-500" size={18}/> Notifications
@@ -11,13 +11,12 @@ export const NotificationPanel = ({ setIsOpen, notifications, markRead }) => {
         <button
           onClick={() => setIsOpen(false)}
           aria-label="Close panel"
-          className="text-white"
         >
           <FaX className="cursor-pointer" />
         </button>
       </header>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1">
         {notifications?.length > 0 ? (
           notifications.map((noti) => (
             <div

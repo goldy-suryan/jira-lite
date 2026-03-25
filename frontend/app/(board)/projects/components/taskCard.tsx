@@ -59,7 +59,7 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
         setTaskDetailDialogOpen(true);
       }}
     >
-      <div className="flex flex-col h-full p-5 pb-3 rounded-lg flex-1">
+      <div className="flex flex-col h-full p-5 pb-3 rounded-lg flex-1 light:bg-[#f4f6f8]">
         <TaskCardKebabMenu card={card} />
         <h3 className="flex items-center text-md font-semibold">
           <span className="mr-2">
@@ -68,7 +68,7 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
           <span className=" max-w-[10rem] lines-ellipsis">{card?.title}</span>
         </h3>
         <p className="mt-2 lines-ellipsis two text-sm">{card.description}</p>
-        <p className="flex items-center gap-2 text-xs mt-6"><FaRegClock color={'red'}/> {formatDate(card.dueDate)}</p>
+        <p className="flex items-center gap-2 text-xs mt-6"><FaRegClock /> {formatDate(card.dueDate)}</p>
 
         <div className="flex justify-between items-center mt-4 text-sm text-gray-400">
           <p className="flex items-center gap-4">

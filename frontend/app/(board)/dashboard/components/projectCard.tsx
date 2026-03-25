@@ -16,9 +16,9 @@ export const ProjectCard = ({
   return (
     <Link
       href={`/projects/${id}`}
-      className="glass-card overflow-hidden border light:border-gray-300 dark:border-white/20 rounded-lg dark:bg-white/5 shadow-lg hover:shadow-xl cursor-pointer"
+      className="glass-card border light:border-gray-300 dark:border-white/20 rounded-lg dark:bg-white/5 shadow-lg hover:shadow-xl cursor-pointer"
     >
-      <div className={`h-30 ${colorClass} p-4 flex items-end`}>
+      <div className={`h-30 ${colorClass} p-4 flex items-end rounded-t-lg`}>
         <span className="text-[10px] font-bold uppercase bg-white/20 px-2 py-1 rounded">
           {tag}
         </span>
@@ -33,7 +33,7 @@ export const ProjectCard = ({
             <FaEllipsis size={20} className='light:text-gray-500 dark:text-white'/>
           </button>
         </div>
-        <p className="text-sm dark:text-gray-200 line-clamp-2 mb-6">{description}</p>
+        <p className="text-sm dark:text-gray-200 line-clamp-2 mb-6 min-h-[2.5rem]">{description}</p>
 
         <div className="flex items-center justify-between mt-4">
           <div className="flex -space-x-2">

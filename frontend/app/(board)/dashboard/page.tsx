@@ -26,7 +26,7 @@ export default function DashboardLayout() {
   }, [data]);
 
   return (
-    <div className="flex-grow">
+    <div className="flex-grow px-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold mb-2">Your Projects</h2>
         {/* <CreateButton btnText={'Create Project'} open="project" /> */}

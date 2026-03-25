@@ -18,7 +18,7 @@ export const TaskActivity = ({ activities, tabIndex }) => {
 
   return (
     <ul
-      className="list-disc list-inside space-y-2 text-sm overflow-y-auto max-h-[13rem] sm:max-h-[13rem] xl:max-h-[23rem]"
+      className="list-disc list-inside space-y-2 text-sm max-h-[13rem] sm:max-h-[13rem] xl:max-h-[23rem]"
       ref={activityRef}
     >
       {!activityList?.length && (

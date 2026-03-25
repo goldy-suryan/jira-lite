@@ -41,12 +41,11 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
       <div
         className={`
           fixed top-0 right-0 h-full
-          w-[15vw] min-w-[25rem] max-w-[30rem]
+          w-screen sm:w-[28vw]
           transform transition-transform duration-300 ease-in-out
           z-50
           flex flex-col
           shadow-xl
-          overflow-auto
           dark:bg-black light:bg-[#ededed]
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
@@ -62,7 +61,7 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
         </header>
 
         {/* Panel content here */}
-        <div className="flex-1 p-6 flex flex-col gap-8 text-sm text-gray-300 overflow-y-auto">
+        <div className="flex-1 p-6 flex flex-col gap-8 text-sm text-gray-300">
           <div>
             <label
               htmlFor="search-keywords"

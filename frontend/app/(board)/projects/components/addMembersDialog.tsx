@@ -96,7 +96,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
     >
       <div
         ref={modalRef}
-        className="dark:bg-[#121212] light:shadow-lg light:border light:border-gray-200 rounded-2xl shadow-xl max-w-md w-full max-h-[80vh] overflow-hidden flex flex-col"
+        className="dark:bg-[#121212] light:shadow-lg light:border light:border-gray-200 rounded-2xl shadow-xl max-w-md w-full max-h-[80vh] flex flex-col"
       >
         {/* Header */}
         <header className="p-6 border-b border-gray-700">
@@ -108,7 +108,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
           </h2>
         </header>
 
-        <section className="p-6 flex flex-col gap-6 overflow-y-auto">
+        <section className="p-6 flex flex-col gap-6">
           <div className="relative" ref={dropdownRef}>
             <label
               htmlFor="email-input"

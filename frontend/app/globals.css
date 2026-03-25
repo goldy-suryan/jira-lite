@@ -23,7 +23,7 @@
 }
 
 body {
-  @apply bg-white text-black dark:bg-black dark:text-[#ededed];
+  @apply bg-[#fdfdfd] text-black dark:bg-black dark:text-[#ededed];
   @apply bg-black text-gray-900 light:bg-[#ededed] light:text-gray-900;
   /* background: var(--bodyColor); */
   /* color: var(--foreground); */
@@ -169,4 +169,8 @@ select {
 .dark textarea:focus,
 .dark select {
   outline: none !important;
+}
+
+.align-hor {
+  @apply flex justify-between items-center;
 }

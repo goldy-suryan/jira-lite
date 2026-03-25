@@ -289,12 +289,12 @@ const KanbanBoard = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4 sticky top-0 left-0 light:bg-[#ededed] dark:bg-black w-full z-20">
-        <h2 className="text-xl font-semibold dark:bg-black w-full h-12 flex items-center justify-between">
-          <span className="min-w-[80%]">{project?.name}</span>
-          <span className="flex items-center gap-8">
+      <div className="max-w-full px-6">
+        <header className="align-hor text-xl font-semibold light:bg-[#ededed] dark:bg-black h-12 fixed left-0 sm:left-[15%] right-0 px-6 z-20">
+          <span className="">{project?.name}</span>
+          <span className="align-hor gap-8">
             <button
-              className="flex items-center gap-2 text-sm font-normal outline px-4 py-2 rounded-md cursor-pointer hover:border hover:border-cyan-500 hover:outline-none"
+              className="align-hor gap-2 text-sm font-normal outline px-4 py-2 rounded-md cursor-pointer hover:border hover:border-cyan-500 hover:outline-none"
               onClick={(e) => {
                 e.preventDefault();
                 setOpenFilters(true);
@@ -304,7 +304,7 @@ const KanbanBoard = () => {
             </button>
             <CreateButton open="member" />
           </span>
-        </h2>
+        </header>
         <FilterOverlay
           isOpen={openFilters}
           closePanel={() => setOpenFilters(false)}
@@ -323,7 +323,7 @@ const KanbanBoard = () => {
           setActiveTask(null);
         }}
       >
-        <div className="w-full h-full">
+        <div className="w-full h-full px-6 mt-[4rem]">
           <div className="flex gap-8 min-w-max pr-[2rem] pb-[1rem]">
             {columnsData.map((col) => (
               <div
@@ -354,7 +354,7 @@ const KanbanBoard = () => {
                     )}
                     strategy={verticalListSortingStrategy}
                   >
-                    <div className="pt-2 overflow-y-auto flex-grow space-y-4 my-2 min-h-[600px] max-h-[600px] [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+                    <div className="pt-2 flex-grow space-y-4 my-2 min-h-[600px] max-h-[600px] [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
                       {/* <button
                       className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer"
                       onClick={() => setModalOpen(true)}

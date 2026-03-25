@@ -41,7 +41,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${manrope.variable} ${inter.variable} antialiased overflow-hidden`}
+        className={`${manrope.variable} ${inter.variable} antialiased`}
       >
         <Toaster
           position="bottom-right"

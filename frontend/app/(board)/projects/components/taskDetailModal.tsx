@@ -212,7 +212,7 @@ export const TaskDetailModal = ({
     >
       <div
         ref={modalRef}
-        className="dark:bg-[#121212] rounded-2xl shadow-xl max-w-6xl w-full min-h-[92vh] max-h-[92vh] overflow-hidden flex flex-col"
+        className="dark:bg-[#121212] rounded-2xl shadow-xl max-w-6xl w-full xs:h-full overflow-auto sm:overflow-hidden min-h-[92vh] max-h-[92vh] flex flex-col"
       >
         {/* Header */}
         <header className="flex justify-between items-start p-4 border-b dark:border-gray-700">
@@ -235,9 +235,9 @@ export const TaskDetailModal = ({
           </button>
         </header>
 
-        <div className="flex flex-1 overflow-hidden">
+        <div className="sm:flex">
           {/* Left Section */}
-          <section className="flex-1 overflow-auto p-6 border-r dark:border-gray-700 flex flex-col gap-6">
+          <section className="sm:flex-3 p-6 sm:border-r dark:border-gray-700 flex flex-col gap-6">
             <article className="mb-4">
               <h3 className="uppercase text-sm font-semibold mb-2 tracking-wide">
                 Description
@@ -273,7 +273,7 @@ export const TaskDetailModal = ({
                   </span>
                 </Tab>
               </TabList>
-              <TabPanel className="dark:bg-[#121212] pt-6 rounded-b-md overflow-y-auto">
+              <TabPanel className="dark:bg-[#121212] pt-6 rounded-b-md">
                 <article className="flex flex-col gap-4">
                   {!commentLoading && (
                     <div
@@ -329,7 +329,7 @@ export const TaskDetailModal = ({
           </section>
 
           {/* Right Section */}
-          <aside className="w-80 dark:bg-[#1a1a1a] p-6 overflow-y-auto flex flex-col gap-6">
+          <aside className="sm:flex-1 dark:bg-[#1a1a1a] p-6 flex flex-col gap-6 border-t md:border-t-0">
             <dl className="flex flex-col gap-4">
               <div className="flex justify-between items-center">
                 <dt className="uppercase text-xs font-semibold tracking-wide">

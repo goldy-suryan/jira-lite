@@ -40,7 +40,7 @@ function Login() {
   };
 
   return (
-    <main className="min-h-screen px-6 py-12 grid place-items-center overflow-hidden">
+    <main className="min-h-screen px-6 py-12 grid place-items-center">
       {/* Ambient background */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0">
         <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-violet-500/20 blur-3xl" />

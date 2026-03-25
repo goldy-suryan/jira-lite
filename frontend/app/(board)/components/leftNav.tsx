@@ -7,7 +7,7 @@ export const LeftNav = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-col justify-between h-full pr-6 border-r light:border-gray-400 dark:border-white/20">
+    <nav className="flex flex-col justify-between h-full pr-6 border-r light:border-gray-400 dark:border-white/20 hidden md:block w-[15%]">
       {/* Top section */}
       <div>
         <h1 className="text-2xl font-bold text-cyan-600 mb-8">JiraLite</h1>
