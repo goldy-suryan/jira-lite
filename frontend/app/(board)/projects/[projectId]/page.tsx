@@ -30,6 +30,11 @@ import { CreateOrUpdateTaskModal } from '../components/createOrUpdateTaskModal';
 import { DroppableColumn } from '../components/dropableColumn';
 import { TaskCard } from '../components/taskCard';
 import FilterOverlay from '../components/filterOverlay';
+import { BsArrowsCollapseVertical } from 'react-icons/bs';
+import {
+  TbLayoutSidebarLeftCollapse,
+  TbLayoutSidebarRightCollapse,
+} from 'react-icons/tb';
 
 const KanbanBoard = () => {
   const params = useParams();
@@ -43,6 +48,7 @@ const KanbanBoard = () => {
   const [taskToUpdate, setTaskToUpdate] = useState<null | Task>(null);
   const [project, setProject] = useState<any>(null);
   const [openFilters, setOpenFilters] = useState(false);
+  const [collapseId, setCollapseId] = useState<Array<number>>([]);
 
   const { data, loading } = useQuery<{
     getProjectById: { name: string; tasks: any[] };
@@ -323,72 +329,93 @@ const KanbanBoard = () => {
           setActiveTask(null);
         }}
       >
-        <div className="w-full h-full px-6 mt-[4rem]">
-          <div className="flex gap-8 min-w-max pr-[2rem] pb-[1rem]">
+        <div className="w-full h-[79vh] overflow-y-hidden px-6 mt-[4.5rem]">
+          <div className="flex gap-6 min-w-max pr-[2rem] pb-[1rem] h-full">
             {columnsData.map((col) => (
               <div
                 key={col.id}
-                className={`w-[320px] rounded-xl flex-shrink-0 flex flex-col bg-white/6 p-4 ${col.shadow} shadow-xl`}
+                className={`rounded-xl flex-shrink-0 flex flex-col bg-white/6 px-4 pt-4 ${col.shadow} shadow-xl ${collapseId.includes(col.id) ? 'w-[2rem]' : 'w-[19rem]'} `}
               >
                 <div className="font-semibold flex items-center justify-between uppercase">
-                  <div>
-                    {col.title.replaceAll('_', ' ')}
-                    <span
-                      className={`ml-2 inline-block h-5 w-5 rounded-sm text-center font-normal text-sm ${col.color}`}
-                    >
-                      {taskGroup?.[col?.title?.toLowerCase()]?.length ?? 0}
-                    </span>
-                  </div>
+                  {!collapseId.includes(col.id) && (
+                    <div>
+                      {col.title.replaceAll('_', ' ')}
+                      <span
+                        className={`ml-2 inline-block h-5 w-5 rounded-sm text-center font-normal text-sm ${col.color}`}
+                      >
+                        {taskGroup?.[col?.title?.toLowerCase()]?.length ?? 0}
+                      </span>
+                    </div>
+                  )}
                   <button
-                    className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer bg-cyan-500 rounded-full p-1"
-                    onClick={() => setModalOpen(true)}
+                    title={`${collapseId.includes(col.id) ? 'Expand' : 'Collapse'} ${col.title.replaceAll('_', ' ')}`}
+                    className="cursor-pointer hover:text-cyan-500"
+                    onClick={() =>
+                      setCollapseId((prev) =>
+                        prev.includes(col.id)
+                          ? prev.filter((item) => item != col.id)
+                          : [...prev, col.id],
+                      )
+                    }
                   >
-                    <FaPlus size={18} color={'white'} />
+                    {collapseId.includes(col.id) ? (
+                      <TbLayoutSidebarRightCollapse
+                        size={20}
+                        className={`-ml-2`}
+                      />
+                    ) : (
+                      <TbLayoutSidebarLeftCollapse
+                        size={20}
+                        className={`-ml-2`}
+                      />
+                    )}
                   </button>
                 </div>
                 <hr className="mt-4 border-t light:border-gray-400 dark:border-white/20" />
-                <DroppableColumn id={col.title.toLowerCase()}>
-                  <SortableContext
-                    items={(taskGroup[col.title.toLowerCase()] || []).map(
-                      (t) => t.id,
-                    )}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    <div className="pt-2 flex-grow space-y-4 my-2 min-h-[600px] max-h-[600px] [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-                      {/* <button
-                      className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer"
-                      onClick={() => setModalOpen(true)}
+                <div className="overflow-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+                  <DroppableColumn id={col.title.toLowerCase()}>
+                    <SortableContext
+                      items={(taskGroup[col.title.toLowerCase()] || []).map(
+                        (t) => t.id,
+                      )}
+                      strategy={verticalListSortingStrategy}
                     >
-                      Add Task
-                    </button> */}
-                      {modalOpen && (
-                        <CreateOrUpdateTaskModal
-                          isOpen={modalOpen}
-                          onClose={() => setModalOpen(false)}
-                        />
-                      )}
-                      {taskGroup[col?.title?.toLowerCase()]?.length ? (
-                        (taskGroup[col?.title?.toLowerCase()] || []).map(
-                          (card) => (
-                            <TaskCard
-                              key={card.id}
-                              card={card}
-                              owner={project.owner}
-                              border={col.border}
-                              color={col.color}
-                            />
-                          ),
-                        )
-                      ) : (
-                        <div className="flex items-center justify-center min-h-[30rem]">
-                          <p className="text-sm text-center align-middle">
-                            No Task assigned
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </SortableContext>
-                </DroppableColumn>
+                      <div className="flex-grow space-y-4 my-1">
+                        <button
+                          className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer"
+                          onClick={() => setModalOpen(true)}
+                        >
+                          Add Task
+                        </button>
+                        {modalOpen && (
+                          <CreateOrUpdateTaskModal
+                            isOpen={modalOpen}
+                            onClose={() => setModalOpen(false)}
+                          />
+                        )}
+                        {taskGroup[col?.title?.toLowerCase()]?.length ? (
+                          (taskGroup[col?.title?.toLowerCase()] || []).map(
+                            (card) => (
+                              <TaskCard
+                                key={card.id}
+                                card={card}
+                                owner={project.owner}
+                                border={col.border}
+                                color={col.color}
+                              />
+                            ),
+                          )
+                        ) : (
+                          <div className="flex items-center justify-center pt-8">
+                            <p className="text-sm text-center align-middle">
+                              No Task assigned
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </SortableContext>
+                  </DroppableColumn>
+                </div>
               </div>
             ))}
           </div>

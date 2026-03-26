@@ -49,7 +49,7 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
 
   return (
     <div
-      className={`dark:bg-white/10 light:bg-white shadow-lg hover:shadow-xl rounded-md cursor-pointer hover:bg-white/12 transition relative border-l-4 ${border} min-h-[160px] flex flex-col`}
+      className={`dark:bg-white/10 light:bg-white shadow-lg hover:shadow-xl rounded-md cursor-pointer hover:bg-white/12 transition relative border-l-4 ${border} min-h-[10rem] flex flex-col`}
       ref={setNodeRef}
       style={style}
       {...listeners}
@@ -65,10 +65,14 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
           <span className="mr-2">
             {getPriorityIcon(card?.priority?.toLowerCase())}
           </span>
-          <span className=" max-w-[10rem] lines-ellipsis">{card?.title}</span>
+          <span className="max-w-[10rem] lines-ellipsis">{card?.title}</span>
         </h3>
-        <p className="mt-2 lines-ellipsis two text-sm">{card.description}</p>
-        <p className="flex items-center gap-2 text-xs mt-6"><FaRegClock /> {formatDate(card.dueDate)}</p>
+        <p className="mt-2 lines-ellipsis two text-sm">
+          {card.description || 'No description provided'}
+        </p>
+        <p className="flex items-center gap-2 text-xs mt-6">
+          <FaRegClock /> {formatDate(card.dueDate)}
+        </p>
 
         <div className="flex justify-between items-center mt-4 text-sm text-gray-400">
           <p className="flex items-center gap-4">

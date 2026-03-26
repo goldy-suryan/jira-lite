@@ -1,5 +1,6 @@
 'use client';
 
+import { columnsData } from '@/app/utils/constants';
 import { useReducer } from 'react';
 import {
   BsChevronDoubleDown,
@@ -10,24 +11,40 @@ import { FaX } from 'react-icons/fa6';
 
 const initialStore = {
   searchTerm: '',
-  status: '',
-  priority: '',
-  member: '',
+  status: [] as Array<string>,
+  priority: [] as Array<string>,
+  member: [] as Array<string>,
   due: '',
 };
 
-const reducer = (state, action) => {
-  switch (action.type) {
+type stateConfig = typeof initialStore;
+
+const reducer = (state: stateConfig, action) => {
+  const payload = action.payload as string;
+  const type = action.type;
+  let arrData;
+
+  const currentArr = type.toLowerCase();
+  if (['status', 'priority', 'member'].includes(currentArr)) {
+    const index = state[currentArr].indexOf(payload);
+    arrData = {
+      ...state,
+      [currentArr]:
+        index > -1
+          ? state[currentArr].filter((item) => item != payload)
+          : [...state[currentArr], payload],
+    };
+  }
+
+  switch (type) {
     case 'TERM':
-      return { ...state, searchTerm: action.payload };
+      return { ...state, searchTerm: payload };
     case 'STATUS':
-      return { ...state, status: action.payload };
     case 'PRIORITY':
-      return { ...state, priority: action.payload };
     case 'MEMBER':
-      return { ...state, member: action.payload };
+      return arrData;
     case 'DUE':
-      return { ...state, due: action.payload };
+      return { ...state, due: payload };
     default:
       return state;
   }
@@ -85,23 +102,22 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
               PIPELINE STAGE
             </p>
             <div className="grid grid-cols-2 gap-4">
-              {[
-                'To Do',
-                'In Progress',
-                'Ready For Review',
-                'In Review',
-                'Done',
-              ].map((stage) => (
+              {columnsData.map((stage) => (
                 <button
-                  key={stage}
-                  onClick={(e) => dispatch({ type: 'STATUS', payload: stage })}
-                  className={`flex-1 py-2 rounded-md text-center uppercase cursor-pointer ${
-                    stage.toLowerCase() === filters?.status?.toLowerCase()
-                      ? 'bg-cyan-600 text-white'
-                      : 'dark:bg-[#1e1e1e] dark:text-gray-400 hover:bg-[#2a2a2a] light:bg-cyan-200 light:text-gray-900'
+                  key={stage.id}
+                  onClick={(e) =>
+                    dispatch({
+                      type: 'STATUS',
+                      payload: stage.general,
+                    })
+                  }
+                  className={`flex-1 py-2 rounded-md text-center uppercase cursor-pointer uppercase ${
+                    filters?.status?.includes(stage.general)
+                      ? 'bg-cyan-600 text-white font-semibold'
+                      : 'dark:bg-[#1e1e1e] dark:text-gray-400 hover:bg-[#2a2a2a] light:bg-gray-300 light:text-gray-900'
                   }`}
                 >
-                  {stage}
+                  {stage.general}
                 </button>
               ))}
             </div>
@@ -114,7 +130,7 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
             </p>
             <ul className="space-y-2">
               <li
-                className={`flex items-center gap-3 cursor-pointer ${filters.priority == 'high' ? 'text-cyan-500' : 'light:text-gray-700'}`}
+                className={`flex items-center gap-3 cursor-pointer ${filters.priority.includes('high') ? 'text-cyan-500' : 'light:text-gray-700'}`}
                 onClick={(e) => dispatch({ type: 'PRIORITY', payload: 'high' })}
               >
                 <BsChevronDoubleUp color="red" />
@@ -122,7 +138,7 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
                 <span className="ml-auto text-xs">14</span>
               </li>
               <li
-                className={`flex items-center gap-3 cursor-pointer ${filters.priority == 'medium' ? 'text-cyan-500' : 'light:text-gray-700'}`}
+                className={`flex items-center gap-3 cursor-pointer ${filters.priority.includes('medium') ? 'text-cyan-500' : 'light:text-gray-700'}`}
                 onClick={(e) =>
                   dispatch({ type: 'PRIORITY', payload: 'medium' })
                 }
@@ -132,7 +148,7 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
                 <span className="ml-auto text-xs">12</span>
               </li>
               <li
-                className={`flex items-center gap-3 cursor-pointer ${filters.priority == 'low' ? 'text-cyan-500' : 'light:text-gray-700'}`}
+                className={`flex items-center gap-3 cursor-pointer ${filters.priority.includes('low') ? 'text-cyan-500' : 'light:text-gray-700'}`}
                 onClick={(e) => dispatch({ type: 'PRIORITY', payload: 'low' })}
               >
                 <BsChevronDoubleDown color="green" />
@@ -151,13 +167,13 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
               <img
                 src="https://randomuser.me/api/portraits/women/68.jpg"
                 alt="Operative 1"
-                className={`w-8 h-8 rounded-full border-2 cursor-pointer ${filters.member == 'mem123' ? 'border-cyan-400' : 'border-gray-700'}`}
+                className={`w-8 h-8 rounded-full border-2 cursor-pointer ${filters.member.includes('mem123') ? 'border-cyan-400' : 'border-gray-700'}`}
                 onClick={(e) => dispatch({ type: 'MEMBER', payload: 'mem123' })}
               />
               <img
                 src="https://randomuser.me/api/portraits/men/45.jpg"
                 alt="Operative 2"
-                className={`w-8 h-8 rounded-full border-2 cursor-pointer ${filters.member == 'mem234' ? 'border-cyan-400' : 'border-gray-700'}`}
+                className={`w-8 h-8 rounded-full border-2 cursor-pointer ${filters.member.includes('mem234') ? 'border-cyan-400' : 'border-gray-700'}`}
                 onClick={(e) => dispatch({ type: 'MEMBER', payload: 'mem234' })}
               />
               {/* <button
@@ -199,7 +215,7 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
 
         <footer className="flex justify-between items-center px-6 py-4 border-t border-gray-700 flex-shrink-0">
           <button
-            className="text-gray-500 hover:text-cyan-400 uppercase text-xs font-semibold tracking-wide cursor-pointer"
+            className="text-gray-500 hover:text-cyan-400 uppercase text-sm font-semibold tracking-wide cursor-pointer"
             onClick={closePanel}
           >
             Clear All

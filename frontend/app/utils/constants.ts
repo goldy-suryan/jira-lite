@@ -15,6 +15,7 @@ export const columnsData = [
   {
     id: 1,
     title: 'Todo',
+    general: 'todo',
     color: 'bg-blue-700 light:text-white',
     border: 'border-l-[2px] border-l-blue-600',
     shadow: 'inset-shadow-sm inset-shadow-blue-600',
@@ -22,6 +23,7 @@ export const columnsData = [
   {
     id: 2,
     title: 'In_progress',
+    general: 'in progress',
     color: 'bg-purple-700 light:text-white',
     border: 'border-l-[2px] border-l-purple-600',
     shadow: 'inset-shadow-sm inset-shadow-purple-600',
@@ -29,6 +31,7 @@ export const columnsData = [
   {
     id: 3,
     title: 'Ready_for_review',
+    general: 'ready for review',
     color: 'bg-yellow-700 light:text-white',
     border: 'border-l-[2px] border-l-yellow-600',
     shadow: 'inset-shadow-sm inset-shadow-yellow-600',
@@ -36,6 +39,7 @@ export const columnsData = [
   {
     id: 4,
     title: 'In_review',
+    general: 'in review',
     color: 'bg-teal-700 light:text-white',
     border: 'border-l-[2px] border-l-teal-600',
     shadow: 'inset-shadow-sm inset-shadow-teal-600',
@@ -43,6 +47,7 @@ export const columnsData = [
   {
     id: 5,
     title: 'Done',
+    general: 'done',
     color: 'bg-green-700 light:text-white',
     border: 'border-l-green-600',
     shadow: 'inset-shadow-sm inset-shadow-green-600',

@@ -18,6 +18,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaX } from 'react-icons/fa6';
 import { ConfirmDialog } from '../../components/confirmDialog';
+import toast from 'react-hot-toast';
 
 const formInitialValue = {
   title: '',
@@ -27,7 +28,7 @@ const formInitialValue = {
   projectId: '',
   createdBy: '',
   assigneeId: '',
-  dueDate: '',
+  dueDate: new Date().toISOString().split('T')[0],
   position: 0,
 };
 
@@ -39,7 +40,6 @@ export const CreateOrUpdateTaskModal = ({
   const params = useParams();
   const { theme } = useTheme();
   const [formValue, setFormValue] = useState(formInitialValue);
-  const [error, setError] = useState('');
   const [toUpdate, setToUpdate] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const queryToRefetch = {
@@ -93,8 +93,15 @@ export const CreateOrUpdateTaskModal = ({
 
   const addOrEditTask = async () => {
     try {
-      if (!formValue.title || !formValue.status || !formValue.priority) {
-        return setError('Project name and key are required');
+      if (
+        !formValue.title ||
+        !formValue.status ||
+        !formValue.priority ||
+        !formValue.assigneeId
+      ) {
+        return toast.error(
+          'Enter valid values for title, status, priority and assignee',
+        );
       }
       const inputValues = {
         title: formValue.title,
@@ -121,11 +128,11 @@ export const CreateOrUpdateTaskModal = ({
           },
         });
       }
+      onClose();
     } catch (e) {
       console.log(e, 'error while creating/updating task');
     } finally {
       setFormValue(formInitialValue);
-      // onClose();
     }
   };
 
@@ -195,7 +202,6 @@ export const CreateOrUpdateTaskModal = ({
             }
             className="w-full rounded-md dark:bg-white/5 px-3 py-2 mb-4 mt-1"
             placeholder="Enter task title"
-            autoFocus
           />
           {/* Description */}
           <label htmlFor="description" className="block">
@@ -209,7 +215,6 @@ export const CreateOrUpdateTaskModal = ({
             }
             className="w-full rounded-md dark:bg-white/5 px-3 py-2 mb-4 mt-1 h-32"
             placeholder="Enter description"
-            autoFocus
           />
           {/* Status */}
           <label htmlFor="status" className="block">
@@ -260,13 +265,14 @@ export const CreateOrUpdateTaskModal = ({
               if (
                 !(currentProjectSelector as any).users.some(
                   (item) => item.id == e.target.value,
-                ) && e.target.value
+                ) &&
+                e.target.value
               ) {
                 setOpenDialog(true);
               }
             }}
           >
-            {/* <option value="">Select</option> */}
+            <option value="">Select</option>
             {projectUsers?.getProjectUsers?.users?.map((user: any) => {
               return (
                 <option key={user?.id} value={user?.id}>
@@ -309,7 +315,11 @@ export const CreateOrUpdateTaskModal = ({
             <button
               type="button"
               onClick={addOrEditTask}
-              disabled={task ? toUpdate : (!formValue.title || !formValue.status || !formValue.priority)}
+              disabled={
+                task
+                  ? toUpdate
+                  : !formValue.title || !formValue.status || !formValue.priority
+              }
               className="px-4 py-2 rounded-md light:text-white bg-cyan-600 font-semibold hover:bg-cyan-700 transition cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {task ? 'Save Changes' : 'Create'}
