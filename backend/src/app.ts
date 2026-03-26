@@ -31,6 +31,10 @@ export class App {
   app: Application;
   server: ApolloServer;
   private readonly logger = winston.createLogger({
+    format: winston.format.combine(
+      winston.format.timestamp(),
+      winston.format.json(),
+    ),
     transports: [
       new winston.transports.File({
         filename: path.join(__dirname, '..', 'access.log'),
@@ -51,17 +55,28 @@ export class App {
       plugins: [
         {
           async requestDidStart(requestContext) {
+            const startTime = Date.now();
             const { request } = requestContext;
-            logger.info({
-              type: 'GRAPHQL_REQUEST',
-              query: request.query,
-              variables: request.variables,
-            });
+
             return {
+              async willSendResponse(ctx) {
+                const duration = Date.now() - startTime;
+
+                logger.info({
+                  type: 'GRAPHQL_REQUEST',
+                  query: request.query,
+                  user: ctx.contextValue?.['user'],
+                  variables: request.variables,
+                  duration: `${duration}ms`,
+                });
+              },
               async didEncounterErrors(ctx) {
                 logger.error({
-                  type: 'GRAPHQL_ERROR',
-                  errors: ctx.errors,
+                  type: 'GRAPHQL_ERRORS',
+                  query: request.query,
+                  error: ctx.errors,
+                  variables: request.variables,
+                  user: ctx.contextValue?.['user'],
                 });
               },
             };
