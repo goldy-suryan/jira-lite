@@ -5,7 +5,7 @@ import { GET_PROJECT_BY_ID } from '@/app/graphql/queries/board.query';
 import { Task } from '@/app/graphql/types/interfaces';
 import { addTitle } from '@/app/state/features/pageTitle.slice';
 import { addCurrentProject } from '@/app/state/features/project.slice';
-import { useAppDispatch } from '@/app/state/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/state/hooks';
 import { columnsData } from '@/app/utils/constants';
 import { useMutation, useQuery } from '@apollo/client/react';
 import {
@@ -24,21 +24,26 @@ import {
 } from '@dnd-kit/sortable';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { FaFilter, FaPlus } from 'react-icons/fa6';
-import { CreateButton } from '../../components/createButton';
-import { CreateOrUpdateTaskModal } from '../components/createOrUpdateTaskModal';
-import { DroppableColumn } from '../components/dropableColumn';
-import { TaskCard } from '../components/taskCard';
-import FilterOverlay from '../components/filterOverlay';
-import { BsArrowsCollapseVertical } from 'react-icons/bs';
+import toast from 'react-hot-toast';
+import { FaFilter } from 'react-icons/fa6';
 import {
   TbLayoutSidebarLeftCollapse,
   TbLayoutSidebarRightCollapse,
 } from 'react-icons/tb';
+import { CreateButton } from '../../components/createButton';
+import Chips from '../components/chips';
+import { CreateOrUpdateTaskModal } from '../components/createOrUpdateTaskModal';
+import { DroppableColumn } from '../components/dropableColumn';
+import FilterOverlay from '../components/filterOverlay';
+import { TaskCard } from '../components/taskCard';
 
 const KanbanBoard = () => {
   const params = useParams();
   const dispatch = useAppDispatch();
+  const filteredTaskSel = useAppSelector(
+    (state) => state.project.filteredTasks,
+  );
+
   const router = useRouter();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -72,21 +77,7 @@ const KanbanBoard = () => {
     dispatch(addTitle(data?.getProjectById?.name ?? 'Projects'));
     dispatch(addCurrentProject(data?.getProjectById));
     setProject(data?.getProjectById);
-    const tasks = data?.getProjectById?.tasks ?? [];
-    const grouped = Object.groupBy(
-      tasks.map((task) => ({
-        ...task,
-        status: task.status.toLowerCase(),
-      })),
-      (task) => task.status,
-    ) as Record<string, Task[]>;
-    setTaskGroup(grouped);
-
-    const map: Record<string, Task> = {};
-    tasks.forEach((task) => {
-      map[task.id] = task;
-    });
-    setTaskMap(map);
+    createTaskGroupAndMap(data?.getProjectById?.tasks ?? []);
   }, [data, dispatch, router]);
 
   useEffect(() => {
@@ -102,14 +93,40 @@ const KanbanBoard = () => {
             },
           },
         });
-      } catch (e) {
+      } catch (e: any) {
         console.log(e, 'error while updating task');
+        toast.error(e.message)
       } finally {
         setTaskToUpdate(null);
       }
     };
     updateTaskStatusAndPosition();
   }, [taskToUpdate]);
+
+  useEffect(() => {
+    if (filteredTaskSel) {
+      createTaskGroupAndMap(filteredTaskSel);
+    } else {
+      createTaskGroupAndMap(data?.getProjectById?.tasks ?? []);
+    }
+  }, [filteredTaskSel]);
+
+  const createTaskGroupAndMap = (tasks) => {
+    const grouped = Object.groupBy(
+      tasks.map((task) => ({
+        ...task,
+        status: task.status.toLowerCase(),
+      })),
+      (task) => task.status,
+    ) as Record<string, Task[]>;
+    setTaskGroup(grouped);
+
+    const map: Record<string, Task> = {};
+    tasks.forEach((task) => {
+      map[task.id] = task;
+    });
+    setTaskMap(map);
+  };
 
   const updateTaskGroup = (
     draggedTaskId: string,
@@ -297,7 +314,7 @@ const KanbanBoard = () => {
     <>
       <div className="max-w-full px-6">
         <header className="align-hor text-xl font-semibold light:bg-[#ededed] dark:bg-black h-12 fixed left-0 sm:left-[15%] right-0 px-6 z-20">
-          <span className="">{project?.name}</span>
+          <span className="text-cyan-600 text-[1.5rem]">{project?.name}</span>
           <span className="align-hor gap-8">
             <button
               className="align-hor gap-2 text-sm font-normal outline px-4 py-2 rounded-md cursor-pointer hover:border hover:border-cyan-500 hover:outline-none"
@@ -329,7 +346,8 @@ const KanbanBoard = () => {
           setActiveTask(null);
         }}
       >
-        <div className="w-full h-[79vh] overflow-y-hidden px-6 mt-[4.5rem]">
+        <div className="w-full h-[79vh] overflow-y-hidden px-6 mt-[5rem]">
+          <Chips />
           <div className="flex gap-6 min-w-max pr-[2rem] pb-[1rem] h-full">
             {columnsData.map((col) => (
               <div

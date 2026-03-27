@@ -53,3 +53,11 @@ export const columnsData = [
     shadow: 'inset-shadow-sm inset-shadow-green-600',
   },
 ];
+
+export const filtersConst = {
+  searchTerm: '',
+  status: [] as any,
+  priority: [] as any,
+  member: [] as any,
+  due: '',
+};

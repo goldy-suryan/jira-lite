@@ -235,7 +235,7 @@ export const TaskDetailModal = ({
           </button>
         </header>
 
-        <div className="sm:flex">
+        <div className="sm:flex h-screen">
           {/* Left Section */}
           <section className="sm:flex-3 p-6 sm:border-r dark:border-gray-700 flex flex-col gap-6">
             <article className="mb-4">

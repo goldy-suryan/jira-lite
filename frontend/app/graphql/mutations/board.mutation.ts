@@ -81,3 +81,25 @@ export const ADD_ATTACHMENT_METADATA = gql`
     addAttachmentMetadata(taskId: $taskId, fileName: $fileName)
   }
 `;
+
+export const FILTER_TASKS = gql`
+  mutation FilterTasks($input: FiltersInput) {
+    filterTasks(input: $input) {
+      id
+      title
+      description
+      priority
+      status
+      dueDate
+      position
+      assigneeId
+      createdBy
+      projectId
+      attachmentsCount
+      commentsCount
+      assignee {
+        name
+      }
+    }
+  }
+`;

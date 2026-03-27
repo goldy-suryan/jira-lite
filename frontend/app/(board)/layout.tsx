@@ -1,16 +1,19 @@
+'use client';
+
 import { ReactNode } from 'react';
 import { ThemeSwitcher } from '../ui/theme-switcher';
 import { LeftNav } from './components/leftNav';
 import Notification from './components/notification';
 import { UserDropdown } from './components/userDropdown';
+import { useAuthCheck } from '../hooks/useAuthCheck';
 
 const BoardLayout = ({ children }: { children: ReactNode }) => {
+  useAuthCheck();
+
   return (
     <main className="h-screen w-screen pt-8 flex md:pl-4 overflow-hidden">
       <LeftNav />
-      <section
-        className="flex flex-col gap-6 overflow-auto w-full"
-      >
+      <section className="flex flex-col gap-6 overflow-auto w-full">
         <header className="align-hor px-4">
           <div className="text-xl flex-grow md:max-w-[50%]">
             <input

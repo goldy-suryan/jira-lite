@@ -8,7 +8,10 @@ export const useAuthCheck = () => {
   useEffect(() => {
     const user = localStorage.getItem('user');
     if (!user) {
-      instance.post('/auth/logout', {}).then();
+      instance.post('/auth/logout', {}).then(() => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('filters');
+      });
       router.push('/');
     }
   }, [router]);

@@ -84,13 +84,13 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
             </span>
           </p>
           <div className="flex -space-x-2">
-            {card.assignee.name != owner.name && (
+            {card.assignee.name != owner?.name && (
               <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-gray-700 text-gray-100 flex items-center justify-center">
                 {card.assignee.name[0]}
               </div>
             )}
             <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-gray-700 text-gray-100 flex items-center justify-center">
-              {owner.name[0]}
+              {owner?.name[0]}
             </div>
           </div>
         </div>

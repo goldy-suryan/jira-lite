@@ -1,7 +1,18 @@
 'use client';
 
+import { FILTER_TASKS } from '@/app/graphql/mutations/board.mutation';
+import {
+  clearAll,
+  setFilters,
+  toggleFilters,
+} from '@/app/state/features/filters.slice';
+import { addFilteredTasks } from '@/app/state/features/project.slice';
+import { useAppDispatch, useAppSelector } from '@/app/state/hooks';
 import { columnsData } from '@/app/utils/constants';
-import { useReducer } from 'react';
+import { useMutation } from '@apollo/client/react';
+import moment from 'moment';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 import {
   BsChevronDoubleDown,
   BsChevronDoubleUp,
@@ -9,49 +20,35 @@ import {
 } from 'react-icons/bs';
 import { FaX } from 'react-icons/fa6';
 
-const initialStore = {
-  searchTerm: '',
-  status: [] as Array<string>,
-  priority: [] as Array<string>,
-  member: [] as Array<string>,
-  due: '',
-};
-
-type stateConfig = typeof initialStore;
-
-const reducer = (state: stateConfig, action) => {
-  const payload = action.payload as string;
-  const type = action.type;
-  let arrData;
-
-  const currentArr = type.toLowerCase();
-  if (['status', 'priority', 'member'].includes(currentArr)) {
-    const index = state[currentArr].indexOf(payload);
-    arrData = {
-      ...state,
-      [currentArr]:
-        index > -1
-          ? state[currentArr].filter((item) => item != payload)
-          : [...state[currentArr], payload],
-    };
-  }
-
-  switch (type) {
-    case 'TERM':
-      return { ...state, searchTerm: payload };
-    case 'STATUS':
-    case 'PRIORITY':
-    case 'MEMBER':
-      return arrData;
-    case 'DUE':
-      return { ...state, due: payload };
-    default:
-      return state;
-  }
-};
-
 const FilterOverlay = ({ isOpen, closePanel }) => {
-  const [filters, dispatch] = useReducer(reducer, initialStore);
+  const dispatcher = useAppDispatch();
+  const currentProjectSel = useAppSelector(
+    (state) => state.project.currentProject,
+  );
+  const filters = useAppSelector((state) => state.filters.appliedFilters);
+
+  const [filterTasks, { data: filteredData, loading }] =
+    useMutation<any>(FILTER_TASKS);
+
+  useEffect(() => {
+    if (!loading) {
+      dispatcher(addFilteredTasks(filteredData?.filterTasks));
+    }
+  }, [filteredData, dispatcher]);
+
+  const applyFilters = async () => {
+    try {
+      await filterTasks({
+        variables: {
+          input: filters,
+        },
+      });
+      toast.success('Done filtering');
+      // closePanel();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
 
   return (
     <div className={`${isOpen && 'fixed inset-0 z-50'}`}>
@@ -89,10 +86,12 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
             <input
               id="search-keywords"
               type="text"
-              placeholder="Task ID, title or desc..."
+              placeholder="Title or desc..."
               className="w-full rounded-md dark:bg-white/5 px-3 py-2 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
               onChange={(e) =>
-                dispatch({ type: 'TERM', payload: e.target.value })
+                dispatcher(
+                  setFilters({ key: 'searchTerm', value: e.target.value }),
+                )
               }
             />
           </div>
@@ -106,13 +105,12 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
                 <button
                   key={stage.id}
                   onClick={(e) =>
-                    dispatch({
-                      type: 'STATUS',
-                      payload: stage.general,
-                    })
+                    dispatcher(
+                      toggleFilters({ key: 'status', value: stage.general }),
+                    )
                   }
                   className={`flex-1 py-2 rounded-md text-center uppercase cursor-pointer uppercase ${
-                    filters?.status?.includes(stage.general)
+                    filters.status.includes(stage.general)
                       ? 'bg-cyan-600 text-white font-semibold'
                       : 'dark:bg-[#1e1e1e] dark:text-gray-400 hover:bg-[#2a2a2a] light:bg-gray-300 light:text-gray-900'
                   }`}
@@ -131,7 +129,9 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
             <ul className="space-y-2">
               <li
                 className={`flex items-center gap-3 cursor-pointer ${filters.priority.includes('high') ? 'text-cyan-500' : 'light:text-gray-700'}`}
-                onClick={(e) => dispatch({ type: 'PRIORITY', payload: 'high' })}
+                onClick={(e) =>
+                  dispatcher(toggleFilters({ key: 'priority', value: 'high' }))
+                }
               >
                 <BsChevronDoubleUp color="red" />
                 <span>High</span>
@@ -140,7 +140,9 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
               <li
                 className={`flex items-center gap-3 cursor-pointer ${filters.priority.includes('medium') ? 'text-cyan-500' : 'light:text-gray-700'}`}
                 onClick={(e) =>
-                  dispatch({ type: 'PRIORITY', payload: 'medium' })
+                  dispatcher(
+                    toggleFilters({ key: 'priority', value: 'medium' }),
+                  )
                 }
               >
                 <BsChevronExpand color="orange" />
@@ -149,7 +151,9 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
               </li>
               <li
                 className={`flex items-center gap-3 cursor-pointer ${filters.priority.includes('low') ? 'text-cyan-500' : 'light:text-gray-700'}`}
-                onClick={(e) => dispatch({ type: 'PRIORITY', payload: 'low' })}
+                onClick={(e) =>
+                  dispatcher(toggleFilters({ key: 'priority', value: 'low' }))
+                }
               >
                 <BsChevronDoubleDown color="green" />
                 <span>Low</span>
@@ -164,18 +168,28 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
               OPERATIVES
             </p>
             <div className="flex items-center gap-3">
-              <img
+              {(currentProjectSel as any)?.users?.length > 0 &&
+                (currentProjectSel as any)?.users.map((user) => {
+                  return (
+                    <span
+                      key={user?.id}
+                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center cursor-pointer ${filters.member.includes(user.id) ? 'bg-cyan-500 border-cyan-800 text-black font-semibold' : 'border-gray-500'}`}
+                      onClick={(e) =>
+                        dispatcher(
+                          toggleFilters({ key: 'member', value: user.id }),
+                        )
+                      }
+                    >
+                      {user?.name?.[0]}
+                    </span>
+                  );
+                })}
+              {/* <img
                 src="https://randomuser.me/api/portraits/women/68.jpg"
                 alt="Operative 1"
                 className={`w-8 h-8 rounded-full border-2 cursor-pointer ${filters.member.includes('mem123') ? 'border-cyan-400' : 'border-gray-700'}`}
                 onClick={(e) => dispatch({ type: 'MEMBER', payload: 'mem123' })}
-              />
-              <img
-                src="https://randomuser.me/api/portraits/men/45.jpg"
-                alt="Operative 2"
-                className={`w-8 h-8 rounded-full border-2 cursor-pointer ${filters.member.includes('mem234') ? 'border-cyan-400' : 'border-gray-700'}`}
-                onClick={(e) => dispatch({ type: 'MEMBER', payload: 'mem234' })}
-              />
+              /> */}
               {/* <button
                 className="w-8 h-8 rounded-full border-2 border-gray-700 flex items-center justify-center text-gray-500 hover:text-white hover:border-cyan-400 transition"
                 aria-label="Add Operative"
@@ -191,7 +205,7 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
               TEMPORAL CONSTRAINTS
             </p>
             <div className="space-y-2">
-              <label className="flex items-center gap-2">
+              {/* <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   className="accent-cyan-500"
@@ -200,12 +214,22 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
                 <span className="light:text-gray-700">
                   Due this current sprint
                 </span>
-              </label>
+              </label> */}
               <label className="flex items-center gap-2 text-red-500">
                 <input
                   type="checkbox"
                   className="accent-red-500"
-                  onClick={(e) => dispatch({ type: 'DUE', payload: 'overdue' })}
+                  checked={Boolean(filters.due)}
+                  onChange={(e) =>
+                    dispatcher(
+                      setFilters({
+                        key: 'due',
+                        value: e.target?.['checked']
+                          ? moment().toISOString()
+                          : '',
+                      }),
+                    )
+                  }
                 />
                 <span>Overdue assets</span>
               </label>
@@ -216,13 +240,17 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
         <footer className="flex justify-between items-center px-6 py-4 border-t border-gray-700 flex-shrink-0">
           <button
             className="text-gray-500 hover:text-cyan-400 uppercase text-sm font-semibold tracking-wide cursor-pointer"
-            onClick={closePanel}
+            onClick={() => {
+              dispatcher(addFilteredTasks(null));
+              dispatcher(clearAll());
+              closePanel();
+            }}
           >
             Clear All
           </button>
           <button
             className="bg-cyan-500 px-4 py-2 rounded-md font-semibold hover:bg-cyan-600 transition light:text-white cursor-pointer"
-            onClick={() => console.log(filters)}
+            onClick={applyFilters}
           >
             Apply Filters
           </button>

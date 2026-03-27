@@ -2,7 +2,6 @@
 
 import { GET_USER_PROJECTS } from '@/app/graphql/queries/board.query';
 import { IGetUserProjects } from '@/app/graphql/types/interfaces';
-import { useAuthCheck } from '@/app/hooks/useAuthCheck';
 import { useAppSelector } from '@/app/state/hooks';
 import { headerColors } from '@/app/utils/constants';
 import { formatDate } from '@/app/utils/helperFunc';
@@ -13,7 +12,6 @@ import { CreateProjectModal } from './components/createProjectModal';
 import { ProjectCard } from './components/projectCard';
 
 export default function DashboardLayout() {
-  useAuthCheck();
   const userSelector = useAppSelector((state) => state.user);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const { data, loading } = useQuery<IGetUserProjects>(GET_USER_PROJECTS, {
