@@ -200,7 +200,7 @@ export class TaskService extends Shared {
   };
 
   filterTasks = async (where) => {
-    let tasks = await TaskModel.findAll({
+    const tasks = await TaskModel.findAll({
       where,
       include: [
         {

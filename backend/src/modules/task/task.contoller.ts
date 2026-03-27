@@ -55,7 +55,7 @@ export class TaskController {
   };
 
   filterTasks = async (user, body) => {
-    let where = {};
+    const where = {};
 
     where['createdBy'] = user.id;
 
