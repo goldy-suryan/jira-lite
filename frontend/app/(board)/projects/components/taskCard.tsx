@@ -49,7 +49,7 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
 
   return (
     <div
-      className={`dark:bg-white/10 light:bg-white shadow-lg hover:shadow-xl rounded-md cursor-pointer hover:bg-white/12 transition relative border-l-4 ${border} min-h-[10rem] flex flex-col`}
+      className={`dark:bg-white/10 light:bg-white shadow-lg hover:shadow-xl rounded-md cursor-pointer hover:bg-white/12 transition relative border-l-4 ${border} min-h-[11rem] flex flex-col`}
       ref={setNodeRef}
       style={style}
       {...listeners}

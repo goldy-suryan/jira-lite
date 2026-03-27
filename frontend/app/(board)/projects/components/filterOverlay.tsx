@@ -43,8 +43,10 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
           input: filters,
         },
       });
+      if (window.innerWidth < 640) {
+        closePanel();
+      }
       toast.success('Done filtering');
-      // closePanel();
     } catch (e: any) {
       toast.error(e.message);
     }
@@ -173,7 +175,7 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
                   return (
                     <span
                       key={user?.id}
-                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center cursor-pointer ${filters.member.includes(user.id) ? 'bg-cyan-500 border-cyan-800 text-black font-semibold' : 'border-gray-500'}`}
+                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center cursor-pointer ${filters.member.includes(user.id) ? 'bg-cyan-500 border-cyan-800 text-black font-semibold' : 'light:text-gray-900 border-gray-500'}`}
                       onClick={(e) =>
                         dispatcher(
                           toggleFilters({ key: 'member', value: user.id }),

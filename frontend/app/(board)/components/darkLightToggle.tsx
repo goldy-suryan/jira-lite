@@ -23,7 +23,7 @@ export default function DarkLightToggle({ themeTo, theme }) {
       aria-checked={isDark}
     >
       <span
-        className={`transform transition-transform duration-300 ease-in-out inline-block w-8 h-8 bg-gray-700 rounded-full shadow-md text-white pt-1 ${
+        className={`transform transition-transform duration-300 ease-in-out inline-flex items-center justify-center w-8 h-8 bg-gray-700 rounded-full shadow-md text-white ${
           isDark ? 'translate-x-6' : 'translate-x-0'
         }`}
       >

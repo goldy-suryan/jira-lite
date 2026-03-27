@@ -12,6 +12,7 @@ import {
   closestCenter,
   DndContext,
   DragOverlay,
+  MouseSensor,
   PointerSensor,
   TouchSensor,
   useSensor,
@@ -95,7 +96,7 @@ const KanbanBoard = () => {
         });
       } catch (e: any) {
         console.log(e, 'error while updating task');
-        toast.error(e.message)
+        toast.error(e.message);
       } finally {
         setTaskToUpdate(null);
       }
@@ -297,14 +298,15 @@ const KanbanBoard = () => {
   };
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
     useSensor(TouchSensor, {
       activationConstraint: {
         delay: 250,
+        tolerance: 5,
+      },
+    }),
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        delay: 200,
         tolerance: 5,
       },
     }),
@@ -313,17 +315,20 @@ const KanbanBoard = () => {
   return (
     <>
       <div className="max-w-full px-6">
-        <header className="align-hor text-xl font-semibold light:bg-[#ededed] dark:bg-black h-12 fixed left-0 sm:left-[15%] right-0 px-6 z-20">
-          <span className="text-cyan-600 text-[1.5rem]">{project?.name}</span>
+        <header className="align-hor text-xl font-semibold light:bg-[#ededed] dark:bg-black h-12 fixed left-0 sm:left-[15%] right-0 -mt-1 p-6 sm:p-0 sm:pr-6 z-20">
+          <span className="text-cyan-600 text-md sm:text-[1.5rem]">
+            {project?.name}
+          </span>
           <span className="align-hor gap-8">
             <button
-              className="align-hor gap-2 text-sm font-normal outline px-4 py-2 rounded-md cursor-pointer hover:border hover:border-cyan-500 hover:outline-none"
+              className="align-hor gap-2 text-sm font-normal sm:outline sm:px-4 sm:py-2 rounded-md cursor-pointer hover:border hover:border-cyan-500 hover:outline-none"
               onClick={(e) => {
                 e.preventDefault();
                 setOpenFilters(true);
               }}
             >
-              Filter <FaFilter size={18} />
+              <span className="hidden sm:inline">Filter</span>{' '}
+              <FaFilter size={18} />
             </button>
             <CreateButton open="member" />
           </span>
@@ -335,6 +340,7 @@ const KanbanBoard = () => {
       </div>
       <DndContext
         sensors={sensors}
+        autoScroll={true}
         collisionDetection={closestCenter}
         onDragStart={(event) => {
           const id = event.active.id;
@@ -399,19 +405,21 @@ const KanbanBoard = () => {
                       strategy={verticalListSortingStrategy}
                     >
                       <div className="flex-grow space-y-4 my-1">
-                        <button
-                          className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer"
-                          onClick={() => setModalOpen(true)}
-                        >
-                          Add Task
-                        </button>
+                        {taskGroup[col?.title?.toLowerCase()]?.length > 0 && (
+                          <button
+                            className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer"
+                            onClick={() => setModalOpen(true)}
+                          >
+                            Add Task
+                          </button>
+                        )}
                         {modalOpen && (
                           <CreateOrUpdateTaskModal
                             isOpen={modalOpen}
                             onClose={() => setModalOpen(false)}
                           />
                         )}
-                        {taskGroup[col?.title?.toLowerCase()]?.length ? (
+                        {taskGroup[col?.title?.toLowerCase()]?.length > 0 ? (
                           (taskGroup[col?.title?.toLowerCase()] || []).map(
                             (card) => (
                               <TaskCard
@@ -424,10 +432,19 @@ const KanbanBoard = () => {
                             ),
                           )
                         ) : (
-                          <div className="flex items-center justify-center pt-8">
+                          <div className="justify-center pt-8">
                             <p className="text-sm text-center align-middle">
-                              No Task assigned
+                              No tasks here yet
                             </p>
+                            <p className="text-sm text-center align-middle mt-2">
+                              Start by adding a new task
+                            </p>
+                            <button
+                              className="text-cyan-500 text-md hover:text-cyan-700 cursor-pointer w-full mt-6"
+                              onClick={() => setModalOpen(true)}
+                            >
+                              Add Task
+                            </button>
                           </div>
                         )}
                       </div>

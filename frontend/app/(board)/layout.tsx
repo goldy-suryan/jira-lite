@@ -1,31 +1,25 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { useAuthCheck } from '../hooks/useAuthCheck';
 import { ThemeSwitcher } from '../ui/theme-switcher';
 import { LeftNav } from './components/leftNav';
+import MobileHamburger from './components/mobileHamburger';
 import Notification from './components/notification';
 import { UserDropdown } from './components/userDropdown';
-import { useAuthCheck } from '../hooks/useAuthCheck';
 
 const BoardLayout = ({ children }: { children: ReactNode }) => {
   useAuthCheck();
 
   return (
-    <main className="h-screen w-screen pt-8 flex md:pl-4 overflow-hidden">
+    <main className="h-screen w-screen flex overflow-hidden">
       <LeftNav />
-      <section className="flex flex-col gap-6 overflow-auto w-full">
+      <section className="flex flex-col gap-6 overflow-auto w-full pt-4">
         <header className="align-hor px-4">
           <div className="text-xl flex-grow md:max-w-[50%]">
-            <input
-              type="search"
-              placeholder="Coming Soon..."
-              name="search"
-              id="search"
-              disabled={true}
-              className="rounded-lg light:bg-gray-200 dark:bg-white/5 border light:border-gray-200 dark:border-white/10 px-4 py-1 w-full"
-            />
+            <MobileHamburger />
           </div>
-          <div className="align-hor gap-8 hidden md:block md:min-w-[15%]">
+          <div className="hidden sm:flex sm:justify-between sm:items-center gap-8 hidden mt-1">
             <Notification />
             <ThemeSwitcher />
             <UserDropdown />

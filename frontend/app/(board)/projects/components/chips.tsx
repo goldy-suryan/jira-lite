@@ -3,23 +3,39 @@
 import { removeFilter } from '@/app/state/features/filters.slice';
 import { useAppDispatch, useAppSelector } from '@/app/state/hooks';
 import { selectFilterChips } from '@/app/state/selectors/filter-chip-builder.selector';
-import { useId } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { FaPlus, FaX } from 'react-icons/fa6';
 
 const Chips = () => {
+  const [maxVisible, setMaxVisible] = useState(3);
   const chips = useAppSelector(selectFilterChips);
   const dispatch = useAppDispatch();
   const id = useId();
 
+  useEffect(() => {
+    const updateMaxVisble = () => {
+      if (window.innerWidth < 640) {
+        setMaxVisible(1);
+      } else {
+        setMaxVisible(3);
+      }
+    };
+    updateMaxVisble();
+    window.addEventListener('resize', updateMaxVisble);
+    return () => window.removeEventListener('resize', updateMaxVisble);
+  }, []);
+
   return (
     <div className="flex">
       {chips.length > 0 && (
-        <div className="flex items-center flex-wrap gap-2 fixed left-0 sm:left-[15%] -mt-[2.4rem] right-0 px-6 z-20">
-          <span className="text-sm text-green-400">Applied Filters:</span>
-          {chips.slice(0, 3).map((item: any) => (
+        <div className="flex items-center flex-wrap gap-2 fixed light:bg-[#ededed] dark:bg-black left-0 sm:left-[15%] -mt-[2.25rem] right-0 px-6 sm:p-0 z-10">
+          <span className="text-xs sm:text-sm font-semibold light:text-green-900 dark:text-green-400 hidden sm:inline">
+            Applied Filters:
+          </span>
+          {chips.slice(0, maxVisible).map((item: any) => (
             <span
               key={`${id}_${item.label}`}
-              className="inline-flex items-center px-3 py-1 rounded-full text-xs border-1 border-gray-400 text-gray-300 uppercase"
+              className="inline-flex items-center px-3 py-1 rounded-full text-xs border-1 uppercase"
             >
               {item.label}
               <button
@@ -33,9 +49,11 @@ const Chips = () => {
               </button>
             </span>
           ))}
-          {chips?.length > 3 && <button className="inline-flex items-center px-1 rounded-full text-md text-gray-100 text-gray-300 gap-1 cursor-pointer hover:text-cyan-500">
-              <FaPlus size={12} /> {chips.length - 3}
-          </button>}
+          {chips?.length > maxVisible && (
+            <button className="inline-flex items-center px-1 rounded-full text-sm gap-1 cursor-pointer hover:text-cyan-500">
+              <FaPlus size={12} /> {chips.length - maxVisible} more
+            </button>
+          )}
         </div>
       )}
     </div>
