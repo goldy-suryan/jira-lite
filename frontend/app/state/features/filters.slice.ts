@@ -1,10 +1,13 @@
+'use client';
+
 import { filtersConst } from '@/app/utils/constants';
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  appliedFilters: localStorage.getItem('filters')
-    ? JSON.parse(localStorage.getItem('filters') as string)
-    : filtersConst,
+  appliedFilters:
+    typeof window !== 'undefined' && localStorage.getItem('filters')
+      ? JSON.parse(localStorage.getItem('filters') as string)
+      : filtersConst,
 };
 
 const filterSlice = createSlice({
