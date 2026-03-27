@@ -198,4 +198,18 @@ export class TaskService extends Shared {
     );
     return true;
   };
+
+  filterTasks = async (where) => {
+    let tasks = await TaskModel.findAll({
+      where,
+      include: [
+        {
+          model: UserModel,
+          as: 'assignee',
+        },
+      ],
+    });
+    await this.getTaskCommentAttachmentCount(tasks);
+    return tasks.map(task => task.toJSON());
+  };
 }

@@ -34,5 +34,6 @@ export const RootMutation = `#graphql
         getSignedUrl(fileName: String!, fileType: String!, fileSize: Int!): Attachment
         addAttachmentMetadata(taskId: ID!, fileName: String!): Boolean
         markAsRead(notiId: ID!): Boolean!
+        filterTasks(input: FiltersInput): [Task]
     }
 `;

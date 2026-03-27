@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 import {
   COMMENT_ADDED,
   pubSub,
-  TASK_ASSIGNED
+  TASK_ASSIGNED,
 } from '../config/pubSub.config.js';
 import type { CommentController } from '../modules/comment/comment.controller.js';
 import type { InvitationController } from '../modules/invitation/invitation.controller.js';
@@ -30,10 +30,6 @@ export const resolvers = {
     ...notificationResolver,
   },
 
-  Task: {
-    attachmentsCount: (task) => task.attachmentsCount,
-    commentsCount: (task) => task.commentsCount,
-  },
 
   Notification: {
     user: (notification) => {
@@ -212,6 +208,17 @@ export const resolvers = {
         throw unauthorizedError();
       }
       return notificationCtrl.markAsRead(args.notiId);
+    },
+
+    filterTasks(
+      parent,
+      args,
+      { user, taskCtrl }: { user: any; taskCtrl: TaskController },
+    ) {
+      if (!user) {
+        throw unauthorizedError();
+      }
+      return taskCtrl.filterTasks(user, args.input);
     },
   },
 

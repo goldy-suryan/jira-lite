@@ -24,5 +24,10 @@ export const CommentModel = DBConfig.sequelize.define(
   },
   {
     tableName: 'task_comments',
+    indexes: [
+      {
+        fields: ['taskId'],
+      },
+    ],
   },
 );

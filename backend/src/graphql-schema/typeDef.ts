@@ -105,4 +105,12 @@ export const typeDefs = `#graphql
         metadata: JSON
         createdAt: Date!
     }
+
+    input FiltersInput {
+        searchTerm: String
+        due: Date
+        member: [ID]
+        priority: [String]
+        status: [String]
+    }
 `;

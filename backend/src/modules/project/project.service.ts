@@ -1,15 +1,14 @@
 import crypto from 'node:crypto';
 import type { Transaction } from 'sequelize';
-import { AttachmentModel } from '../../models/attachment.model.js';
 import { UserProjectJunctionModel } from '../../models/userProject.model.js';
 import { sendEmailInvitation } from '../../services/email.service.js';
-import { CommentModel } from '../comment/comment.model.js';
 import { InvitationModel } from '../invitation/invitation.model.js';
+import { Shared } from '../shared/shared.js';
 import { TaskModel } from '../task/task.model.js';
 import { UserModel } from '../user/user.model.js';
 import { ProjectModel } from './project.model.js';
 
-export class ProjectService {
+export class ProjectService extends Shared {
   addProject = async (
     body: Record<string, any>,
     transaction: Transaction,
@@ -75,20 +74,7 @@ export class ProjectService {
         },
       ],
     });
-    if (foundProject.tasks) {
-      await Promise.all(
-        foundProject.tasks.map(async (task) => {
-          const attachmentsCount = await AttachmentModel.count({
-            where: { taskId: task.id },
-          });
-          const commentsCount = await CommentModel.count({
-            where: { taskId: task.id },
-          });
-          task.setDataValue('attachmentsCount', attachmentsCount ?? 0);
-          task.setDataValue('commentsCount', commentsCount ?? 0);
-        }),
-      );
-    }
+    await this.getTaskCommentAttachmentCount(foundProject.tasks);
     return foundProject.toJSON();
   };
 
@@ -136,11 +122,7 @@ export class ProjectService {
     });
     const projectName = await this.findProjectByPK(body.projectId);
     const invitationLink = `${process.env.FRONTEND_URL}/invite?token=${token}`;
-    sendEmailInvitation(
-      body.email,
-      projectName?.name,
-      invitationLink,
-    );
+    sendEmailInvitation(body.email, projectName?.name, invitationLink);
     return true;
   };
 
