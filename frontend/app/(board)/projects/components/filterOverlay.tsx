@@ -10,7 +10,7 @@ import { addFilteredTasks } from '@/app/state/features/project.slice';
 import { useAppDispatch, useAppSelector } from '@/app/state/hooks';
 import { columnsData } from '@/app/utils/constants';
 import { useMutation } from '@apollo/client/react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import {
@@ -227,7 +227,7 @@ const FilterOverlay = ({ isOpen, closePanel }) => {
                       setFilters({
                         key: 'due',
                         value: e.target?.['checked']
-                          ? moment().toISOString()
+                          ? dayjs().toISOString()
                           : '',
                       }),
                     )

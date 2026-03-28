@@ -96,7 +96,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
     >
       <div
         ref={modalRef}
-        className="dark:bg-[#121212] light:shadow-lg light:border light:border-gray-200 rounded-2xl shadow-xl max-w-md w-full max-h-[80vh] flex flex-col"
+        className="dark:bg-[#121212] light:shadow-lg light:border light:border-gray-200 rounded-2xl shadow-xl w-full mx-4 max-w-lg max-h-[80vh] flex flex-col"
       >
         {/* Header */}
         <header className="p-6 border-b border-gray-700">

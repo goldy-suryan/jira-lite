@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 export const debounce = (fn: Function, delay = 500) => {
   let timer;
@@ -9,8 +9,8 @@ export const debounce = (fn: Function, delay = 500) => {
 };
 
 export const formatDate = (date: string | number, time = false) => {
-  if (!time) return moment(date).format('MMM DD, YYYY');
-  return moment(date).format('MMM DD, YYYY | HH:MM');
+  if (!time) return dayjs(date).format('MMM DD, YYYY');
+  return dayjs(date).format('MMM DD, YYYY | HH:MM');
 };
 
 export const priorityBackground = (priority: string) => {
@@ -32,14 +32,14 @@ export const priorityBackground = (priority: string) => {
 
 // Comparing dates ignoring time
 function isSameDate(d1, d2) {
-  return moment(d1).isSame(d2, 'day');
+  return dayjs(d1).isSame(d2, 'day');
 }
 
 function isDate(value) {
   if (value instanceof Date) return true;
-  if (moment.isMoment(value)) return true;
+  if (dayjs.isDayjs(value)) return true;
   if (typeof value === 'string') {
-    return moment(value, moment.ISO_8601, false).isValid();
+    return dayjs(value).isValid();
   }
   return false;
 }
