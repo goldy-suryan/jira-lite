@@ -3,6 +3,7 @@
 
 A lightweight Jira-inspired project management tool built with a modern **Next.js + GraphQL + Node.js + PostgreSQL** stack.
 It supports **real-time collaboration, task management, activity tracking, and team-based project workflows.**
+Includes **AI-powered** task creation using **LLMs** for natural language input.
 
 This project was built as a **full-stack system design practice**, focusing on scalable architecture, real-time communication, and production-ready backend patterns.
 
@@ -29,6 +30,21 @@ This project was built as a **full-stack system design practice**, focusing on s
 * Drag & drop tasks across columns (Kanban board)
 * Automatic task positioning algorithm
 
+### AI-Powered Task Creation
+
+* Create tasks using natural language input
+* Extracts structured data:
+  - title
+  - description
+  - priority
+  - status
+  - due date
+* Supports relative dates (e.g., "tomorrow", "next Monday")
+* Intelligent defaults (status = TODO, due date fallback)
+* Handles messy real-world inputs
+* Strict rules to prevent invalid or hallucinated data
+* Graceful handling of non-task input
+
 ### Real-Time Collaboration
 
 * Real-time task comments using **GraphQL Subscriptions**
@@ -43,16 +59,30 @@ This project was built as a **full-stack system design practice**, focusing on s
   * Status changes
   * Assignment changes
 
-### Attachments (S3 Integration)
+### Task Filtering & Search
+
+* Filter tasks by:
+  * Keyword
+  * Status
+  * Priority
+  * Members
+  * Overdue tasks
+* Backend-driven filtering for performance
+* Near real-time filtering experience
+
+### Attachments (S3 + CloudFront)
 
 * File attachments for tasks
 * Secure upload using signed URLs
+* Fast delivery via CloudFront CDN
 
 ### Authentication
 
 * JWT-based authentication
+* API rate limiting (planned)
 * Secure login system
 * Centralized error handling
+* Secure file uploads using signed URLs
 
 ---
 
@@ -94,7 +124,7 @@ Backend (Node.js + Express + Apollo Server)
 
 Frontend is deployed on Vercel while the backend runs on an AWS EC2 instance.
 
-File uploads are stored in AWS S3 and served via CloudFront CDN.
+File uploads are stored in AWS S3 and served via CloudFront CDN for faster delivery.
 
 #### Architecture:
 ```
@@ -107,6 +137,8 @@ Next.js (Vercel)
      ▼
 Node.js Backend (AWS EC2)
      │
+     ├── AI Service (Groq / LLM Integration)
+     │      └── Natural language → structured task parsing
      ├── PostgreSQL
      ├── Redis
      └── AWS S3 (File Storage)
@@ -209,6 +241,39 @@ Client B receives comment instantly
 ```
 
 ---
+### Notifications
+
+* Real-time notifications for:
+  - Task assignment
+  - Comments
+
+* Click-to-mark-as-read functionality
+* Unread notification indicator
+
+### Notification Flow
+```
+User Action (e.g., comment / assign)
+        │
+        ▼
+Backend Event Trigger
+        │
+        ▼
+Database (store notification)
+        │
+        ▼
+Redis Pub/Sub
+        │
+        ▼
+GraphQL Subscription
+        │
+        ▼
+Client receives notification instantly
+        │
+        ▼
+User clicks → mark as read (mutation)
+```
+
+---
 
 ## Task Positioning Strategy
 
@@ -290,6 +355,11 @@ These patterns allow the application to scale to multiple backend instances behi
 * Fractional indexing strategy for task positions
 * Avoids full list reordering
 
+### AI Integration
+
+* Prompt-engineered task extraction
+* Controlled output schema (no hallucination)
+
 ---
 
 ## 🛠 Tech Stack
@@ -353,6 +423,7 @@ backend
     │   ├── invitation
     │   ├── project
     │   ├── task
+    |   ├── ai 
     │   └── user
     ├── services
     ├── utils
@@ -432,6 +503,7 @@ AWS_REGION=
 BUCKET_NAME=
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
+GROK_API_KEY=
 ```
 
 frontend/.env
@@ -469,7 +541,8 @@ npm run dev
 
 ## 🔮 Upcoming Improvements
 
-* Notifications system
+* AI-powered task suggestions & auto-complete
+* Multi-task extraction from single input
 * Role-based access controls (Admin / Member / Viewer)
 * Activity filtering
 * Full-text search for tasks
@@ -481,11 +554,31 @@ npm run dev
 
 This project focuses on:
 
-* GraphQL architecture
-* Real-time communication
-* Scalable backend design
-* Database modeling
-* Production-grade patterns
+* GraphQL architecture and resolver design
+* Real-time communication using Redis Pub/Sub and subscriptions
+* Scalable backend design with stateless services
+* Relational database modeling with PostgreSQL
+* Production-grade patterns (service layer, error handling, API proxy)
+
+### AI Integration & Prompt Engineering
+
+* Structured prompt design for task extraction
+* Converting natural language into validated structured data
+* Handling ambiguous and messy real-world inputs
+* Schema-based validation to prevent hallucinated or invalid AI output
+* Intelligent defaults and fallback handling
+
+### Performance & Optimization
+
+* Fractional indexing for efficient drag-and-drop ordering
+* Backend-driven filtering for scalability
+* Redis as an event bus for real-time updates
+
+### System Design Thinking
+
+* Trade-offs between frontend vs backend filtering
+* Designing for horizontal scalability
+* Decoupling real-time systems using Redis
 
 ---
 
