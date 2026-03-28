@@ -15,6 +15,7 @@ import { ValidationError } from 'sequelize';
 import winston from 'winston';
 import { schema } from './graphql-schema/schema.js';
 import { ActivityController } from './modules/activity/activity.controller.js';
+import { AiRoute } from './modules/ai/ai.route.js';
 import { CommentController } from './modules/comment/comment.controller.js';
 import { InvitationController } from './modules/invitation/invitation.controller.js';
 import { NotificationController } from './modules/notification/notification.controller.js';
@@ -42,6 +43,7 @@ export class App {
     ],
   });
   private readonly userRoute: UserRoute;
+  private readonly aiRoute: AiRoute;
 
   constructor() {
     const logger = this.logger;
@@ -85,6 +87,7 @@ export class App {
       ],
     });
     this.userRoute = new UserRoute();
+    this.aiRoute = new AiRoute();
   }
 
   async initializeMiddleware() {
@@ -102,6 +105,7 @@ export class App {
 
     // Registering routes
     this.app.use('/auth', this.userRoute.router);
+    this.app.use('/ai', this.aiRoute.router);
 
     // Graphql Routes
     this.app.use(
