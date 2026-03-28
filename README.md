@@ -92,6 +92,9 @@ This project was built as a **full-stack system design practice**, focusing on s
 
 ![Kanban Board](screenshots/board.png)
 
+### Filters Section
+![Filters Section](screenshots/filters.png)
+
 ### Task Detail with Comments tab
 
 ![Task Detail](screenshots/task-detail.png)
