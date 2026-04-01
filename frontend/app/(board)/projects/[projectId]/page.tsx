@@ -360,21 +360,21 @@ const KanbanBoard = () => {
                 key={col.id}
                 className={`rounded-xl flex-shrink-0 flex flex-col bg-white/6 px-4 pt-4 ${col.shadow} shadow-xl ${collapseId.includes(col.id) ? 'w-[2rem]' : 'w-[19rem]'} `}
               >
-                <div className="font-semibold flex items-center justify-between uppercase">
+                <div className="font-semibold flex items-center justify-between uppercase text-sm">
                   {!collapseId.includes(col.id) && (
                     <div>
                       {col.title.replaceAll('_', ' ')}
                       <span
-                        className={`ml-2 inline-block h-5 w-5 rounded-sm text-center font-normal text-sm ${col.color}`}
+                        className={`ml-2 inline-block h-4 w-4 rounded-sm text-center font-normal text-xs ${col.color}`}
                       >
                         {taskGroup?.[col?.title?.toLowerCase()]?.length ?? 0}
                       </span>
                     </div>
                   )}
                   <div className="flex items-center">
-                    {taskGroup[col?.title?.toLowerCase()]?.length > 0 && (
+                    {!collapseId.includes(col.id) && taskGroup[col?.title?.toLowerCase()]?.length > 0 && (
                       <button
-                        className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer mr-6"
+                        className="text-cyan-500 text-xs hover:text-cyan-700 cursor-pointer mr-4"
                         onClick={() => setModalOpen(true)}
                       >
                         Add Task
@@ -450,7 +450,7 @@ const KanbanBoard = () => {
                               Start by adding a new task
                             </p>
                             <button
-                              className="text-cyan-500 text-md hover:text-cyan-700 cursor-pointer w-full mt-6"
+                              className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer w-full mt-6"
                               onClick={() => setModalOpen(true)}
                             >
                               Add Task
