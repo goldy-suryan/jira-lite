@@ -26,7 +26,7 @@ const Projects = () => {
   return (
     <>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold mb-2">Your Projects</h2>
+        <h2 className="text-xl font-semibold mb-2 text-cyan-600">Your Projects</h2>
         {/* <CreateButton btnText={'Create Project'} open="project" /> */}
         {projectModalOpen && (
           <CreateProjectModal

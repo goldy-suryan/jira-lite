@@ -314,9 +314,9 @@ const KanbanBoard = () => {
 
   return (
     <>
-      <div className="max-w-full px-6">
+      <div className="max-w-full sm:-mt-2">
         <header className="align-hor text-xl font-semibold light:bg-[#ededed] dark:bg-black h-12 fixed left-0 sm:left-[15%] right-0 p-6 sm:p-0 sm:pr-6 z-20">
-          <span className="text-cyan-600 text-md sm:text-[1.5rem]">
+          <span className="text-xl font-semibold mb-2 text-cyan-600">
             {project?.name}
           </span>
           <span className="align-hor gap-8">
@@ -352,7 +352,7 @@ const KanbanBoard = () => {
           setActiveTask(null);
         }}
       >
-        <div className="w-full h-[calc(100vh-3.6rem)] sm:h-[calc(100vh-6.1rem)] overflow-y-hidden">
+        <div className="w-full h-[calc(100vh-3.55rem)] sm:h-[calc(100vh-5.55rem)] overflow-y-hidden">
           <Chips />
           <div className="flex flex-grow gap-6 min-w-max pr-[2rem] h-[90%] mt-[5rem]">
             {columnsData.map((col) => (
