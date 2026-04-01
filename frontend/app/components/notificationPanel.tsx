@@ -16,7 +16,7 @@ export const NotificationPanel = ({ setIsOpen, notifications, markRead }) => {
         </button>
       </header>
 
-      <div className="flex-1">
+      <div className="flex-1 text-sm">
         {notifications?.length > 0 ? (
           notifications.map((noti) => (
             <div
