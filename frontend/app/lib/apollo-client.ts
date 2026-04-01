@@ -12,7 +12,9 @@ import { ErrorLink } from '@apollo/client/link/error';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { OperationTypeNode } from 'graphql';
 import { createClient } from 'graphql-ws';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { instance } from '../utils/interceptors';
 
 const httpLink = new HttpLink({
   uri: '/api/proxy/graphql',
@@ -20,14 +22,25 @@ const httpLink = new HttpLink({
 });
 
 const errorLink = new ErrorLink(({ error, operation }) => {
-  console.error(error, operation)
+  const router = useRouter();
   if (CombinedGraphQLErrors.is(error)) {
-    error.errors.forEach(({ message, locations, path }) =>
-      toast.error(`${message}`),
-    );
+    error.errors.forEach(({ message, locations, path }) => {
+      if (message == 'Unauthorized') {
+        instance.post('/auth/logout', {}).then(() => {
+          localStorage.removeItem('user');
+          localStorage.removeItem('filters');
+        });
+        router.push('/');
+        return;
+      }
+      return toast.error(`${message}`);
+    });
   } else if (CombinedProtocolErrors.is(error)) {
-    error.errors.forEach(({ message, extensions }) => toast.error(message));
+    error.errors.forEach(({ message, extensions }) => {
+      toast.error(message);
+    });
   } else {
+    console.log('Unauthorized', 'hello');
     toast.error(`${error.message}`);
   }
 });

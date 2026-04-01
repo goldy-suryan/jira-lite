@@ -3,10 +3,10 @@
 import { ReactNode } from 'react';
 import { useAuthCheck } from '../hooks/useAuthCheck';
 import { ThemeSwitcher } from '../ui/theme-switcher';
-import { LeftNav } from './components/leftNav';
-import MobileHamburger from './components/mobileHamburger';
-import Notification from './components/notification';
-import { UserDropdown } from './components/userDropdown';
+import { LeftNav } from '../components/leftNav';
+import MobileHamburger from '../components/mobileHamburger';
+import Notification from '../components/notification';
+import { UserDropdown } from '../components/userDropdown';
 
 const BoardLayout = ({ children }: { children: ReactNode }) => {
   useAuthCheck();
@@ -14,7 +14,7 @@ const BoardLayout = ({ children }: { children: ReactNode }) => {
   return (
     <main className="h-screen w-screen flex overflow-hidden">
       <LeftNav />
-      <section className="flex flex-col gap-6 overflow-auto w-full pt-4">
+      <section className="flex flex-col sm:gap-6 overflow-auto w-full pt-4">
         <header className="align-hor px-4">
           <div className="text-xl flex-grow md:max-w-[50%]">
             <MobileHamburger />
@@ -26,7 +26,9 @@ const BoardLayout = ({ children }: { children: ReactNode }) => {
           </div>
         </header>
         <hr className="border-t light:border-gray-400 dark:border-white/20" />
-        <div className="flex-1 overflow-auto">{children}</div>
+        <div className="flex-1 overflow-auto">
+          <div className="flex-grow px-6">{children}</div>
+        </div>
       </section>
     </main>
   );

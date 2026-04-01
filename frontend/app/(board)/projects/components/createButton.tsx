@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { CreateProjectModal } from '../dashboard/components/createProjectModal';
-import { InviteMembersModal } from '../projects/components/addMembersDialog';
+import { CreateProjectModal } from './createProjectModal';
+import { InviteMembersModal } from './addMembersDialog';
+import { FcInvite } from 'react-icons/fc';
 
 export const CreateButton = ({ open }) => {
   const [projectModalOpen, setProjectModalOpen] = useState(false);
@@ -21,14 +22,18 @@ export const CreateButton = ({ open }) => {
             : setProjectMemberOpen(true);
         }}
       >
-        <div className="flex items-center justify-center rounded-full bg-cyan-600 transition-transform duration-300 ease-in-out hover:scale-125">
-          <Image
+        <div
+          className="flex items-center justify-center rounded-full transition-transform duration-300 ease-in-out hover:scale-125"
+          title="Invite member"
+        >
+          <FcInvite size={36} />
+          {/* <Image
             src="/invite-member.png"
             alt="invite member"
             style={{ filter: 'invert(1)' }}
             height={30}
             width={30}
-          />
+          /> */}
         </div>
       </button>
       {projectModalOpen && open == 'project' && (

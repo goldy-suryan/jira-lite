@@ -28,7 +28,7 @@ const Chips = () => {
   return (
     <div className="flex">
       {chips.length > 0 && (
-        <div className="flex items-center flex-wrap gap-2 fixed light:bg-[#ededed] dark:bg-black left-0 sm:left-[15%] -mt-[2.25rem] right-0 px-6 sm:p-0 z-10">
+        <div className="flex items-center flex-wrap gap-2 fixed light:bg-[#ededed] dark:bg-black left-0 sm:left-[15%] mt-[2.8rem] right-0 px-6 sm:p-0 z-20">
           <span className="text-xs sm:text-sm font-semibold light:text-green-900 dark:text-green-400 hidden sm:inline">
             Applied Filters:
           </span>

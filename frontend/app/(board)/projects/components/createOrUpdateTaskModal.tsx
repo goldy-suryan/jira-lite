@@ -17,7 +17,7 @@ import { useTheme } from 'next-themes';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaX } from 'react-icons/fa6';
-import { ConfirmDialog } from '../../components/confirmDialog';
+import { ConfirmDialog } from './confirmDialog';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { instance } from '@/app/utils/interceptors';

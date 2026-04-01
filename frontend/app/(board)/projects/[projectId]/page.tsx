@@ -31,7 +31,7 @@ import {
   TbLayoutSidebarLeftCollapse,
   TbLayoutSidebarRightCollapse,
 } from 'react-icons/tb';
-import { CreateButton } from '../../components/createButton';
+import { CreateButton } from '../components/createButton';
 import Chips from '../components/chips';
 import { CreateOrUpdateTaskModal } from '../components/createOrUpdateTaskModal';
 import { DroppableColumn } from '../components/dropableColumn';
@@ -315,7 +315,7 @@ const KanbanBoard = () => {
   return (
     <>
       <div className="max-w-full px-6">
-        <header className="align-hor text-xl font-semibold light:bg-[#ededed] dark:bg-black h-12 fixed left-0 sm:left-[15%] right-0 -mt-1 p-6 sm:p-0 sm:pr-6 z-20">
+        <header className="align-hor text-xl font-semibold light:bg-[#ededed] dark:bg-black h-12 fixed left-0 sm:left-[15%] right-0 p-6 sm:p-0 sm:pr-6 z-20">
           <span className="text-cyan-600 text-md sm:text-[1.5rem]">
             {project?.name}
           </span>
@@ -352,9 +352,9 @@ const KanbanBoard = () => {
           setActiveTask(null);
         }}
       >
-        <div className="w-full h-[79vh] overflow-y-hidden px-6 mt-[5rem]">
+        <div className="w-full h-[calc(100vh-3.6rem)] sm:h-[calc(100vh-6.1rem)] overflow-y-hidden">
           <Chips />
-          <div className="flex gap-6 min-w-max pr-[2rem] pb-[1rem] h-full">
+          <div className="flex flex-grow gap-6 min-w-max pr-[2rem] h-[90%] mt-[5rem]">
             {columnsData.map((col) => (
               <div
                 key={col.id}
@@ -371,29 +371,39 @@ const KanbanBoard = () => {
                       </span>
                     </div>
                   )}
-                  <button
-                    title={`${collapseId.includes(col.id) ? 'Expand' : 'Collapse'} ${col.title.replaceAll('_', ' ')}`}
-                    className="cursor-pointer hover:text-cyan-500"
-                    onClick={() =>
-                      setCollapseId((prev) =>
-                        prev.includes(col.id)
-                          ? prev.filter((item) => item != col.id)
-                          : [...prev, col.id],
-                      )
-                    }
-                  >
-                    {collapseId.includes(col.id) ? (
-                      <TbLayoutSidebarRightCollapse
-                        size={20}
-                        className={`-ml-2`}
-                      />
-                    ) : (
-                      <TbLayoutSidebarLeftCollapse
-                        size={20}
-                        className={`-ml-2`}
-                      />
+                  <div className="flex items-center">
+                    {taskGroup[col?.title?.toLowerCase()]?.length > 0 && (
+                      <button
+                        className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer mr-6"
+                        onClick={() => setModalOpen(true)}
+                      >
+                        Add Task
+                      </button>
                     )}
-                  </button>
+                    <button
+                      title={`${collapseId.includes(col.id) ? 'Expand' : 'Collapse'} ${col.title.replaceAll('_', ' ')}`}
+                      className="cursor-pointer hover:text-cyan-500"
+                      onClick={() =>
+                        setCollapseId((prev) =>
+                          prev.includes(col.id)
+                            ? prev.filter((item) => item != col.id)
+                            : [...prev, col.id],
+                        )
+                      }
+                    >
+                      {collapseId.includes(col.id) ? (
+                        <TbLayoutSidebarRightCollapse
+                          size={20}
+                          className={`-ml-2`}
+                        />
+                      ) : (
+                        <TbLayoutSidebarLeftCollapse
+                          size={20}
+                          className={`-ml-2`}
+                        />
+                      )}
+                    </button>
+                  </div>
                 </div>
                 <hr className="mt-4 border-t light:border-gray-400 dark:border-white/20" />
                 <div className="overflow-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
@@ -404,15 +414,15 @@ const KanbanBoard = () => {
                       )}
                       strategy={verticalListSortingStrategy}
                     >
-                      <div className="flex-grow space-y-4 my-1">
-                        {taskGroup[col?.title?.toLowerCase()]?.length > 0 && (
+                      <div className="flex-grow space-y-4 my-2">
+                        {/* {taskGroup[col?.title?.toLowerCase()]?.length > 0 && (
                           <button
                             className="text-cyan-500 text-sm hover:text-cyan-700 cursor-pointer"
                             onClick={() => setModalOpen(true)}
                           >
                             Add Task
                           </button>
-                        )}
+                        )} */}
                         {modalOpen && (
                           <CreateOrUpdateTaskModal
                             isOpen={modalOpen}

@@ -1,71 +1,61 @@
-'use client';
-
-import { GET_USER_PROJECTS } from '@/app/graphql/queries/board.query';
-import { IGetUserProjects } from '@/app/graphql/types/interfaces';
-import { useAppSelector } from '@/app/state/hooks';
-import { headerColors } from '@/app/utils/constants';
-import { formatDate } from '@/app/utils/helperFunc';
-import { useQuery } from '@apollo/client/react';
-import { useEffect, useState } from 'react';
-import { CraeteProjectCard } from './components/createProjectCard';
-import { CreateProjectModal } from './components/createProjectModal';
-import { ProjectCard } from './components/projectCard';
-
-export default function DashboardLayout() {
-  const userSelector = useAppSelector((state) => state.user);
-  const [projectModalOpen, setProjectModalOpen] = useState(false);
-  const { data, loading } = useQuery<IGetUserProjects>(GET_USER_PROJECTS, {
-    variables: { userId: userSelector?.user?.id },
-  });
-  const [myProjects, setMyProjects] = useState(data?.getUserProjects);
-
-  useEffect(() => {
-    setMyProjects((prev) => data?.getUserProjects);
-  }, [data]);
-
+export default function Dashboard() {
   return (
-    <div className="flex-grow px-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold mb-2">Your Projects</h2>
-        {/* <CreateButton btnText={'Create Project'} open="project" /> */}
-        {projectModalOpen && (
-          <CreateProjectModal
-            isOpen={projectModalOpen}
-            onClose={() => setProjectModalOpen(false)}
-          />
-        )}
-      </div>
+    <div className="mb-6">
+      <h2 className="text-xl font-semibold mb-2 text-cyan-600 text-md">Dashboard</h2>
+      <div className="mx-auto p-6 font-sans">
+        {/* Greeting and notification */}
+        {/* <div className="flex justify-between items-center mb-6 font-semibold text-lg">
+          <div>👋 Good Morning, Goldy</div>
+          <div className="cursor-pointer select-none">🔔</div>
+        </div> */}
 
-      {(myProjects?.projects ?? []).length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-xxl mb-4">
-          <CraeteProjectCard onClick={() => setProjectModalOpen(true)} />
-          {myProjects?.projects?.map((proj: any, index: number) => {
-            return (
-              <ProjectCard
-                key={proj?.id}
-                {...{
-                  id: proj.id,
-                  title: proj.name,
-                  tag: proj.key,
-                  description: proj.description,
-                  members: proj.users,
-                  tasks: proj?.tasks?.length,
-                  time: formatDate(proj.createdAt),
-                  lead: proj.owner.name,
-                  colorClass: headerColors[index % headerColors.length],
-                }}
-              />
-            );
-          })}
+        {/* Task summary */}
+        <div className="flex gap-6 mb-8">
+          <div>[24 Tasks]</div>
+          <div>[8 In Progress]</div>
+          <div>[12 Done]</div>
+          <div>[4 Overdue]</div>
         </div>
-      )}
-      {!loading && (
-        <div className="flex justify-center items-center min-h-full">
-          {!(myProjects?.projects ?? []).length && (
-            <CraeteProjectCard onClick={() => setProjectModalOpen(true)} />
-          )}
+
+        {/* Main grid */}
+        <div className="grid grid-cols-2 gap-8 border-t border-gray-300 py-8">
+          {/* My Tasks */}
+          <section>
+            <h2 className="font-semibold mb-3">My Tasks</h2>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Fix login bug</li>
+              <li>Update UI</li>
+            </ul>
+          </section>
+
+          {/* Due Today */}
+          <section>
+            <h2 className="font-semibold mb-3">Due Today</h2>
+            <ul className="list-disc list-inside space-y-1">
+              <li>API issue</li>
+              <li>DB migration</li>
+            </ul>
+          </section>
+
+          {/* Recent Activity */}
+          <section>
+            <h2 className="font-semibold mb-3">Recent Activity</h2>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Task moved</li>
+              <li>Comment added</li>
+            </ul>
+          </section>
+
+          {/* Project Summary */}
+          <section>
+            <h2 className="font-semibold mb-3">Project Summary</h2>
+            <div className="space-y-1">
+              <div>Frontend (70%)</div>
+              <div>Backend (50%)</div>
+            </div>
+          </section>
         </div>
-      )}
+      </div>
     </div>
   );
 }

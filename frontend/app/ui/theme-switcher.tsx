@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import DarkLightToggle from '../(board)/components/darkLightToggle';
+import DarkLightToggle from '../components/darkLightToggle';
 
 export const ThemeSwitcher = () => {
   const { theme, setTheme } = useTheme();

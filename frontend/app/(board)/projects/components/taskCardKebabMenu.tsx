@@ -6,7 +6,7 @@ import { useMutation } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { FaEllipsis } from 'react-icons/fa6';
-import { ConfirmDialog } from '../../components/confirmDialog';
+import { ConfirmDialog } from './confirmDialog';
 import { CreateOrUpdateTaskModal } from './createOrUpdateTaskModal';
 
 export const TaskCardKebabMenu = ({ card }) => {
@@ -59,7 +59,7 @@ export const TaskCardKebabMenu = ({ card }) => {
         className="absolute top-2 right-2 p-1 rounded hover:bg-white/5 cursor-pointer"
         aria-label="Open task menu"
       >
-        <FaEllipsis size={20}/>
+        <FaEllipsis size={20} />
       </button>
       {menuOpen && (
         <div
