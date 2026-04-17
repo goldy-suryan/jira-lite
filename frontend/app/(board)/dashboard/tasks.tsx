@@ -26,7 +26,7 @@ const UsersTask = () => {
           <div>
             {/* <p className="font-semibold uppercase mb-1">list of few tasks</p> */}
             <ul className="space-y-1">
-              {data.getUserTasks.map((task) => (
+              {data?.getUserTasks.map((task) => (
                 <li key={task.id}>
                   <div
                     onClick={() => {

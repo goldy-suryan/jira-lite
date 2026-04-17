@@ -24,7 +24,7 @@ const UserAssignedTasks = () => {
       <div className=" mb-3 pb-1 font-semibold">Assigned to Me</div>
       {!loading && (
         <div className="space-y-3">
-          {data.getUserAssignedTasks.map((task) => (
+          {data?.getUserAssignedTasks.map((task) => (
             <div
               onClick={() => {
                 setActiveTask(task);
