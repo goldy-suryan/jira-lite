@@ -19,14 +19,9 @@ import { FaPaperPlane, FaX } from 'react-icons/fa6';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import ImageModal from './imageModal';
 import { TaskActivity } from './taskActivity';
+import { columnsData } from '@/app/utils/constants';
 
-export const TaskDetailModal = ({
-  isOpen,
-  onClose,
-  task,
-  priorityIcon,
-  color,
-}) => {
+export const TaskDetailModal = ({ isOpen, onClose, task, priorityIcon }) => {
   const {
     data,
     loading,
@@ -117,7 +112,7 @@ export const TaskDetailModal = ({
 
   const handleKeyDown = (e) => {
     setComment(e.target.value);
-      if ((e.ctrlKey || e.metaKey) && e.key == 'Enter') {
+    if ((e.ctrlKey || e.metaKey) && e.key == 'Enter') {
       e.preventDefault();
       addTaskComment(e);
     }
@@ -314,7 +309,9 @@ export const TaskDetailModal = ({
                       className="absolute right-5 top-5 dark:text-cyan-500"
                       onClick={addTaskComment}
                     />
-                    <span className='text-[12px] text-right inline-block'>Press Ctrl + Enter to send</span>
+                    <span className="text-[12px] text-right inline-block">
+                      Press Ctrl + Enter to send
+                    </span>
                   </form>
                 </article>
               </TabPanel>
@@ -337,7 +334,7 @@ export const TaskDetailModal = ({
                 </dt>
                 <dd>
                   <span
-                    className={`inline-flex items-center gap-2 rounded-full ${color} px-3 py-1 text-xs font-semibold`}
+                    className={`inline-flex items-center gap-2 rounded-full ${columnsData.find((item) => item.general == taskDetail?.status?.replaceAll('_', ' ').toLowerCase())?.color} px-3 py-1 text-xs font-semibold`}
                   >
                     {taskDetail?.status?.replaceAll('_', ' ')?.toUpperCase()}
                   </span>

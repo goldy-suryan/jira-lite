@@ -1,3 +1,6 @@
+import UsersTask from './tasks';
+import UserAssignedTasks from './userAssignedTasks';
+
 export default function Dashboard() {
   return (
     <div className="mb-6">
@@ -35,31 +38,7 @@ export default function Dashboard() {
             </section>
 
             {/* Quick links */}
-            <section className="light:shadow-xl dark:shadow-md dark:shadow-[#212124] rounded p-4 border-t-4 border-cyan-500">
-              <div className=" mb-3 pb-1 font-semibold">My Tasks</div>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="font-semibold uppercase mb-1">list of few tasks</p>
-                  <ul className="space-y-1">
-                    <li>
-                      <a href="#" className="underline cursor-pointer">
-                        task 1
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="underline cursor-pointer">
-                        task 2
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="underline cursor-pointer">
-                        task 3
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </section>
+            <UsersTask />
 
             {/* Pie Chart panel (static placeholder) */}
             <section className="light:shadow-xl dark:shadow-md dark:shadow-[#212124] rounded p-4 border-t-4 border-cyan-500">
@@ -106,58 +85,7 @@ export default function Dashboard() {
             </section>
 
             {/* Assigned to Me */}
-            <section className="light:shadow-xl dark:shadow-md dark:shadow-[#212124] rounded p-4 border-t-4 border-cyan-500 ">
-              <div className=" mb-3 pb-1 font-semibold">Assigned to Me</div>
-              <div className="space-y-3">
-                {/* Card 1 */}
-                <div className="p-4 shadow shadow-md dark:border dark:border-gray-700 hover:shadow-md cursor-pointer">
-                  <div className="font-semibold">Battery won’t hold charge</div>
-                  <div className="text-sm text-gray-600">
-                    CS • Due Apr 10 • Priority{' '}
-                    <span className="text-red-600">🔴</span>
-                  </div>
-                </div>
-
-                {/* Card 2 */}
-                <div className="p-4 shadow shadow-md dark:border dark:border-gray-700 hover:shadow-md cursor-pointer">
-                  <div className="font-semibold">
-                    Audio drops too low when headphones installed
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    CS • Due Apr 12 • Priority{' '}
-                    <span className="text-red-600">🔴</span>
-                  </div>
-                </div>
-
-                {/* Card 3 */}
-                <div className="p-4 shadow shadow-md dark:border dark:border-gray-700 hover:shadow-md cursor-pointer">
-                  <div className="font-semibold">Decide on built-in apps</div>
-                  <div className="text-sm text-gray-600">
-                    PA • Due Apr 15 • Priority{' '}
-                    <span className="text-red-600">🔴</span>
-                  </div>
-                </div>
-
-                {/* Card 4 */}
-                <div className="p-4 shadow shadow-md dark:border dark:border-gray-700 hover:shadow-md cursor-pointer">
-                  <div className="font-semibold">Figure out grid</div>
-                  <div className="text-sm text-gray-600">
-                    DES • Due Apr 18 • Priority{' '}
-                    <span className="text-red-600">🔴</span>
-                  </div>
-                </div>
-
-                {/* Card 5 */}
-                <div className="p-4 shadow shadow-md dark:border dark:border-gray-700 hover:shadow-md cursor-pointer">
-                  <div className="font-semibold">Clear up bugs</div>
-                  <div className="text-sm text-gray-600">
-                    CS • Due Apr 20 • Priority{' '}
-                    <span className="text-red-600">🔴</span>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-2 text-xs text-gray-500">1-5 of 7</div>
-            </section>
+            <UserAssignedTasks />
 
             {/* Activity Stream */}
             <section className="light:shadow-xl dark:shadow-md dark:shadow-[#212124] rounded p-4 border-t-4 border-cyan-500 ">

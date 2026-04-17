@@ -13,6 +13,16 @@ import { FaPaperclip, FaRegClock, FaRegCommentDots } from 'react-icons/fa6';
 import { TaskCardKebabMenu } from './taskCardKebabMenu';
 import { TaskDetailModal } from './taskDetailModal';
 
+export const getPriorityIcon = (priority) => {
+  if (priority == 'high') {
+    return <BsChevronDoubleUp color="red" />;
+  } else if (priority == 'medium') {
+    return <BsChevronExpand color="orange" />;
+  } else {
+    return <BsChevronDoubleDown color="green" />;
+  }
+};
+
 export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
   const [taskDetailDialogOpen, setTaskDetailDialogOpen] = useState(false);
   const {
@@ -37,16 +47,6 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
     opacity: isDragging ? 0 : 1,
   };
 
-  const getPriorityIcon = (priority) => {
-    if (priority == 'high') {
-      return <BsChevronDoubleUp color="red" />;
-    } else if (priority == 'medium') {
-      return <BsChevronExpand color="orange" />;
-    } else {
-      return <BsChevronDoubleDown color="green" />;
-    }
-  };
-
   return (
     <div
       className={`dark:bg-white/10 light:bg-white shadow-lg hover:shadow-xl rounded-md cursor-pointer hover:bg-white/12 transition relative border-l-4 ${border} flex flex-col`}
@@ -65,9 +65,9 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
           <span className="mr-2">
             {getPriorityIcon(card?.priority?.toLowerCase())}
           </span>
-          <span className="max-w-[10rem] lines-ellipsis">{card?.title}</span>
+          <span className="max-w-[10rem] line-clamp-1">{card?.title}</span>
         </h3>
-        <p className="mt-2 lines-ellipsis two text-sm">
+        <p className="mt-2 line-clamp-2 text-sm">
           {card.description || 'No description provided'}
         </p>
         <p className="flex items-center gap-2 text-xs mt-6">
@@ -105,7 +105,6 @@ export const TaskCard = ({ card, owner, border, color, overlay = false }) => {
           }}
           task={card}
           priorityIcon={getPriorityIcon}
-          color={color}
         />
       )}
     </div>
