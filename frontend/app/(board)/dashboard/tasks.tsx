@@ -14,7 +14,7 @@ const UsersTask = () => {
   const userSelector = useAppSelector((state) => state.user.user);
   const { data, loading } = useQuery<any>(GET_USER_TASKS, {
     variables: {
-      userId: userSelector.id,
+      userId: userSelector?.id,
     },
   });
 
