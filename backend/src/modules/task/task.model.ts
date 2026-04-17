@@ -63,7 +63,7 @@ export const TaskModel = DBConfig.sequelize.define(
     },
     indexes: [
       {
-        fields: ['projectId'],
+        fields: ['projectId', 'assigneeId', 'createdBy'],
       },
     ],
   },

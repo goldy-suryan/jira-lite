@@ -86,4 +86,12 @@ export class TaskController {
 
     return await this.taskSrvc.filterTasks(where);
   };
+
+  getUserTasks = async (userId: string) => {
+    return await this.taskSrvc.getUserTasks(userId);
+  };
+
+  getUserAssignedTasks = async (userId: string) => {
+    return await this.taskSrvc.getUserAssignedTasks(userId);
+  };
 }

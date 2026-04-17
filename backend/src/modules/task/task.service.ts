@@ -210,6 +210,24 @@ export class TaskService extends Shared {
       ],
     });
     await this.getTaskCommentAttachmentCount(tasks);
-    return tasks.map(task => task.toJSON());
+    return tasks.map((task) => task.toJSON());
+  };
+
+  getUserTasks = async (userId: string) => {
+    const userTasks = await TaskModel.findAll({
+      where: {
+        createdBy: userId,
+      },
+    });
+    return userTasks.map((task) => task.toJSON());
+  };
+
+  getUserAssignedTasks = async (userId: string) => {
+    const userAssignedTasks = await TaskModel.findAll({
+      where: {
+        assigneeId: userId,
+      },
+    });
+    return userAssignedTasks.map((task) => task.toJSON());
   };
 }

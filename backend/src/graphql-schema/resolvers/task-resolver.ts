@@ -12,4 +12,26 @@ export const taskResolver = {
     }
     return taskCtrl.getTaskDetail(args.id);
   },
+
+  getUserTasks(
+    parent,
+    args,
+    { user, taskCtrl }: { user: any; taskCtrl: TaskController },
+  ) {
+    if (!user) {
+      return unauthorizedError();
+    }
+    return taskCtrl.getUserTasks(args.userId);
+  },
+
+  getUserAssignedTasks(
+    parent,
+    args,
+    { user, taskCtrl }: { user: any; taskCtrl: TaskController },
+  ) {
+    if (!user) {
+      return unauthorizedError();
+    }
+    return taskCtrl.getUserAssignedTasks(args.userId);
+  },
 };

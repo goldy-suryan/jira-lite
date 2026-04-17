@@ -11,5 +11,7 @@ export const RootQuery = `#graphql
         getAllTaskComments(taskId: ID!): [Comment]
         getAllTaskActivity(taskId: ID!): [Activity]
         getAllUserNotification: [Notification]
+        getUserTasks(userId: ID!): [Task]
+        getUserAssignedTasks(userId: ID!): [Task]
     }
 `;
