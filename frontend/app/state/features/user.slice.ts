@@ -1,13 +1,8 @@
 'use client';
 import { createSlice } from '@reduxjs/toolkit';
 
-let userObj;
-const isBrowser = () => typeof window !== 'undefined';
-if (isBrowser()) {
-  userObj = localStorage.getItem('user');
-}
 const initialState = {
-  user: userObj ? JSON.parse(userObj) : null,
+  user: null,
 };
 
 export const userSlice = createSlice({

@@ -372,14 +372,15 @@ const KanbanBoard = () => {
                     </div>
                   )}
                   <div className="flex items-center">
-                    {!collapseId.includes(col.id) && taskGroup[col?.title?.toLowerCase()]?.length > 0 && (
-                      <button
-                        className="text-cyan-500 text-xs hover:text-cyan-700 cursor-pointer mr-4"
-                        onClick={() => setModalOpen(true)}
-                      >
-                        Add Task
-                      </button>
-                    )}
+                    {!collapseId.includes(col.id) &&
+                      taskGroup[col?.title?.toLowerCase()]?.length > 0 && (
+                        <button
+                          className="text-cyan-500 text-xs hover:text-cyan-700 cursor-pointer mr-4"
+                          onClick={() => setModalOpen(true)}
+                        >
+                          Add Task
+                        </button>
+                      )}
                     <button
                       title={`${collapseId.includes(col.id) ? 'Expand' : 'Collapse'} ${col.title.replaceAll('_', ' ')}`}
                       className="cursor-pointer hover:text-cyan-500"
@@ -435,7 +436,7 @@ const KanbanBoard = () => {
                               <TaskCard
                                 key={card.id}
                                 card={card}
-                                owner={project.owner}
+                                owner={project?.owner}
                                 border={col.border}
                                 color={col.color}
                               />
@@ -470,7 +471,7 @@ const KanbanBoard = () => {
           {activeTask ? (
             <TaskCard
               card={activeTask}
-              owner={project.owner}
+              owner={project?.owner}
               border={''}
               color={''}
               overlay

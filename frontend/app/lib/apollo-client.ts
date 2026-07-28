@@ -12,7 +12,6 @@ import { ErrorLink } from '@apollo/client/link/error';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { OperationTypeNode } from 'graphql';
 import { createClient } from 'graphql-ws';
-import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { instance } from '../utils/interceptors';
 
@@ -22,7 +21,6 @@ const httpLink = new HttpLink({
 });
 
 const errorLink = new ErrorLink(({ error, operation }) => {
-  const router = useRouter();
   if (CombinedGraphQLErrors.is(error)) {
     error.errors.forEach(({ message, locations, path }) => {
       if (message == 'Unauthorized') {
@@ -30,7 +28,9 @@ const errorLink = new ErrorLink(({ error, operation }) => {
           localStorage.removeItem('user');
           localStorage.removeItem('filters');
         });
-        router.push('/');
+        if (typeof window !== 'undefined') {
+          window.location.href = '/';
+        }
         return;
       }
       return toast.error(`${message}`);
