@@ -66,7 +66,7 @@ export const InviteMembersModal = ({ isOpen, onClose }) => {
       (item) =>
         (item.email.toLowerCase().includes(term.toLowerCase()) ||
           item.name.toLowerCase().includes(term.toLowerCase())) &&
-        userSelector.id != item.id,
+        userSelector?.id != item.id,
     );
     setResult(filteredResult);
   };
