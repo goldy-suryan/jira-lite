@@ -44,6 +44,9 @@ export class App {
   });
   private readonly userRoute: UserRoute;
   private readonly aiRoute: AiRoute;
+  private readonly userData = new Map();
+  private readonly LIMIT = 10;
+  private readonly WINDOW_MS = 60000;
 
   constructor() {
     const logger = this.logger;
@@ -90,6 +93,37 @@ export class App {
     this.aiRoute = new AiRoute();
   }
 
+  private readonly slidingWindowRateLimiter = (req, res, next) => {
+    const userIP = req.ip;
+    const now = Date.now();
+    const windowStart = now - this.WINDOW_MS;
+
+    let timestamps = this.userData.get(userIP) || [];
+    timestamps = timestamps.filter((ts) => ts > windowStart);
+
+    if (timestamps.length >= this.LIMIT) {
+      return res.status(429).json({
+        errors: [{ message: 'Too many requests' }],
+      });
+    }
+
+    timestamps.push(now);
+    this.userData.set(userIP, timestamps);
+
+    // If user is inactive
+    if (timestamps.length == 1) {
+      setTimeout(() => {
+        if (
+          this.userData.has(userIP) &&
+          this.userData.get(userIP).length == 0
+        ) {
+          this.userData.delete(userIP);
+        }
+      }, this.WINDOW_MS);
+    }
+    next();
+  }
+
   async initializeMiddleware() {
     await this.server.start();
     this.app.use(
@@ -102,6 +136,7 @@ export class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cookieParser());
+    this.app.use(this.slidingWindowRateLimiter);
 
     // Registering routes
     this.app.use('/auth', this.userRoute.router);
