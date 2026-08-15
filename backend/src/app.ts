@@ -45,7 +45,7 @@ export class App {
   private readonly userRoute: UserRoute;
   private readonly aiRoute: AiRoute;
   private readonly userData = new Map();
-  private readonly LIMIT = 10;
+  private readonly LIMIT = 20;
   private readonly WINDOW_MS = 60000;
 
   constructor() {
@@ -110,19 +110,23 @@ export class App {
     timestamps.push(now);
     this.userData.set(userIP, timestamps);
 
-    // If user is inactive
-    if (timestamps.length == 1) {
-      setTimeout(() => {
-        if (
-          this.userData.has(userIP) &&
-          this.userData.get(userIP).length == 0
-        ) {
-          this.userData.delete(userIP);
-        }
-      }, this.WINDOW_MS);
-    }
     next();
-  }
+  };
+
+  // Periodic Cleanup: Har 1-2 minute me inactive/expired IPs clean karega
+  private readonly cleanupTimer = setInterval(() => {
+    const now = Date.now();
+    const windowStart = now - this.WINDOW_MS;
+
+    for (const [ip, timestamps] of this.userData.entries()) {
+      const valid = timestamps.filter((ts) => ts > windowStart);
+      if (valid.length === 0) {
+        this.userData.delete(ip);
+      } else {
+        this.userData.set(ip, valid);
+      }
+    }
+  }, this.WINDOW_MS);
 
   async initializeMiddleware() {
     await this.server.start();
